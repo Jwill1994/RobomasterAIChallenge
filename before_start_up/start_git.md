@@ -4,7 +4,7 @@
                                                 commented by kwakdonghwan
 
 
-run below script in your turminal
+아래의 스크립트를 터비널에서 실행해주세요.
 
 ###############################################################################
 
@@ -17,26 +17,22 @@ sh smartgit.sh
 
 ###############################################################################
 
-and than start install 
+설치 프로그램이 실행되면,
 
-check Non-commercial use only 
-wait a few second, do license agreement
-
-check Use SmartGit as SSH client
-
-input your email and name
-our project URL is "https://github.com/woong164/RobomasterAIChallenge.git"
-configur local directory, and it must be empty 
-
-after finish setting there might be no file on your screen 
-don`t worry, right top on your SmartGit screen you can use File filter 
-check the icon (which is rightside of the File filter) you can see unchanged files
+1. Non-commercial use only 채크하기
+2. wait a few second, do license agreement
+3. check Use SmartGit as SSH client
+>>> 계속 진행하고 설치가 완료되면
+1. 이름과 이메일 주소 입력하기
+2. 우리 프로젝트 URI는 "https://github.com/woong164/RobomasterAIChallenge.git"
+3. github와 연동할 폴더 선택하기 (원드라이브마냥 그쪽 폴더에 연동됩니다)
+4. 실행하고 아무 파일이 없다고 당황하지 않기
+5. 오른쪽 위에 File Filter 오른쪽에 종이모양 아이콘들 다 클릭하면 파일들이 나옵니다.
 
 ###############################################################################
 ### simple use of smart git
 
-if you download git files, click pull button (on your left top)
-if you want to upload file, click commit button and write some comment, click push button
-
+git에서 파일을 다운받을 때는 왼쪽 위에 pull버튼을 클릭합니다. 
+git에 파일을 업로드할 때는 push버튼을 클릭하는데, 그전에! commit버튼으로 commit를 해주고 push합니다!
 
 ###############################################################################
