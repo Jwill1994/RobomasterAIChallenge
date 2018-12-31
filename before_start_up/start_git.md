@@ -8,12 +8,12 @@
 
 ###############################################################################
 
-wget https://www.syntevo.com/downloads/smartgit/smartgit-linux-18_2_3.tar.gz
-tar -xzvf smartgit-linux-18_2_3.tar.gz
-cd smartgit
-cd bin
-chmod +x smartgit.sh
-sh smartgit.sh
+wget https://www.syntevo.com/downloads/smartgit/smartgit-linux-18_2_3.tar.gz <br />
+tar -xzvf smartgit-linux-18_2_3.tar.gz <br />
+cd smartgit <br />
+cd bin <br />
+chmod +x smartgit.sh <br />
+sh smartgit.sh <br />
 
 ###############################################################################
 
