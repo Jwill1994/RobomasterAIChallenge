@@ -2,7 +2,6 @@
 # This module contains global constants that are used throughout the game.
 #
 
-FOODMAX = 3
 # Nr of dishes to eat
 
 STEPMAX = 300
@@ -20,6 +19,5 @@ MS_TO_QUIT = 2000
 # Milli-seconds from termination to removal of window.
 # We give the user some time to read the "Game Over..." message.
 
-FOOD = []
 
 

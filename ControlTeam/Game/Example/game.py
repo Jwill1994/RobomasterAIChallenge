@@ -11,6 +11,7 @@ class thing:
     self.ttl = turtle.Turtle() # create a new Python turtle object
     self.ttl.hideturtle()
     self.ttl.penup()
+    self.ttl.pendown()
     self.ttl.speed('fastest')
     self.ttl.goto(x, y)
     self.ttl.showturtle()
@@ -45,7 +46,21 @@ class Wall(thing):
         self.ttl.shape('square')
         self.ttl.color('gray')
         self.ttl.shapesize(global_vals.SCALE * height/20, global_vals.SCALE * width/20)
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+
         self.all.append(self)
+
+    def range(self):
+        left_low = (self.x - self.width/2, self.y - self.height/2)
+        right_low = (self.x + self.width/2, self.y - self.height/2)
+
+        left_high = (self.x - self.width/2, self.y + self.height/2)
+        right_high = (self.x + self.width/2, self.y + self.height/2)
+
+        return left_low, right_low, left_high, right_high
 
 
 
@@ -58,36 +73,43 @@ class Bullet(thing):
         thing.__init__(self, x, y) # Call __init__ of the superclass
         self.ttl.setheading(heading)
         self.all.append(self)
+        self.prevPosition = (x, y)
 
 
     def fly(self):
+
+        self.prevPosition = self.getPosition()
         self.ttl.forward(100)
 
-    def move(self, pm):
 
-        pmPos = pm.getPosition()
-        ghPos = self.getPosition()
 
-        dy = pmPos[1]-ghPos[1]
-        dx = pmPos[0]-ghPos[0]
 
-        if math.atan2(dy,dx)*180/math.pi<0 :
-            degree=360+math.atan2(dy,dx)*180/math.pi
-      # print(360+math.atan2(dy,dx)*180/math.pi)
-        else:
-            degree=math.atan2(dy,dx)*180/math.pi
-            # print(math.atan2(dy,dx)*180/math.pi)
-    
-        self.ttl.setheading(degree)
 
-        if self.ttl.xcor() > global_vals.X_MAX + 25:
-          self.ttl.setx(-global_vals.X_MAX - 25)
-        elif self.ttl.xcor() > global_vals.Y_MAX +25:
-          self.ttl.sety(-global_vals.Y_MAX - 25)
-        elif self.ttl.xcor() < -global_vals.X_MAX -25:
-          self.ttl.setx(global_vals.X_MAX + 25)
-        elif self.ttl.xcor() < -global_vals.Y_MAX -25:
-          self.ttl.setx(-global_vals.Y_MAX -25)
+    # def move(self, pm):
+    #
+    #     pmPos = pm.getPosition()
+    #     ghPos = self.getPosition()
+    #
+    #     dy = pmPos[1]-ghPos[1]
+    #     dx = pmPos[0]-ghPos[0]
+    #
+    #     if math.atan2(dy,dx)*180/math.pi<0 :
+    #         degree=360+math.atan2(dy,dx)*180/math.pi
+    #   # print(360+math.atan2(dy,dx)*180/math.pi)
+    #     else:
+    #         degree=math.atan2(dy,dx)*180/math.pi
+    #         # print(math.atan2(dy,dx)*180/math.pi)
+    #
+    #     self.ttl.setheading(degree)
+    #
+    #     if self.ttl.xcor() > global_vals.X_MAX + 25:
+    #       self.ttl.setx(-global_vals.X_MAX - 25)
+    #     elif self.ttl.xcor() > global_vals.Y_MAX +25:
+    #       self.ttl.sety(-global_vals.Y_MAX - 25)
+    #     elif self.ttl.xcor() < -global_vals.X_MAX -25:
+    #       self.ttl.setx(global_vals.X_MAX + 25)
+    #     elif self.ttl.xcor() < -global_vals.Y_MAX -25:
+    #       self.ttl.setx(-global_vals.Y_MAX -25)
 
 
 class tanktop(thing):
@@ -161,7 +183,7 @@ class Tank(thing):
 
   def goForward(self, step=stepFW):
     if self.blocked():
-      self.ttl.back(1)
+      self.ttl.back(5)
       return
     self.ttl.forward(step)
     self.gun.setPosition(self.getPosition())
@@ -169,7 +191,7 @@ class Tank(thing):
 
   def goBackward(self, step=stepBW):
     if self.blocked():
-      self.ttl.forward(1)
+      self.ttl.forward(5)
       return
     self.ttl.back(step)
     self.gun.setPosition(self.getPosition())
