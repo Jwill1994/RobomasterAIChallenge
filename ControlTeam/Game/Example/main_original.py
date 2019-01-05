@@ -1,5 +1,5 @@
-from globals import FOODMAX,  STEPMAX, WIDTH, HEIGHT, X_MAX, Y_MAX, MS_TO_QUIT
-from globals import FOOD as food, GHOSTS as ghosts
+from globals import FOODMAX,  STEPMAX, WIDTH, HEIGHT, X_MAX, Y_MAX, MS_TO_QUIT, SCALE
+from globals import FOOD as food
 # Import our own constants
 
 from game_original import ghost, dobbogi, pacman
@@ -24,28 +24,13 @@ def checkCollision(t1, t2):
   return False
  
 def periodicTimer():
-  """Timer function which is called periodically by Python.
-     This function implements the game logic:
-     - creating all objects
-     - arranging objects on the screen
-     - calling object's move() methods
-     - checking for collisions
-     - checking for invalid moves
-     - detection program termination conditions (all food eaten, ...)
-     - initiate termination
-  """
-  global phase
+
   global isQuit
   global food
   global score        # pacman's achieved score
   turtle.tracer(0, 0) # disable screen updates
 
-  for g in ghosts:
-    g.updateShape()   # make ghost change its shape
-    g.move(pm)          # move ghost
-  if phase % 4 == 0:
-    # pm shape is updated every 4th iteration.
-    pm.updateShape()  # make pacman change its shape
+
   p_old = pm.getPosition()
   pm.move()           # move pacman
   p_new = pm.getPosition()
@@ -59,12 +44,9 @@ def periodicTimer():
   if pm.getRemainingSteps() == 0:
     print('You ran out of steps!')
     isQuit = True 
-  # check collisions pm versus ghosts:
+
   pm_pos = pm.getPosition()
-  for g in ghosts:
-    if checkCollision(pm_pos, g.getPosition()):
-      isQuit = True
-      print('You bumped into a ghost!')
+
   # check collisions pm versus food:
   eaten_dishes = []
   for dish in food:
@@ -81,10 +63,6 @@ def periodicTimer():
     print('Congratulation, all food collected.')
     isQuit = True
 
-  if phase == 7:
-    phase = 0
-  else:
-    phase += 1
   if isQuit:
     # Game will terminate, put the "Game Over" image:
     game_over.setposition(0, -HEIGHT//2 + 22)
@@ -129,10 +107,8 @@ def placeFood():
     while not ok: # loop until proper position was computed:
       r_x = random.randrange(-X_MAX + 20, X_MAX - 20)
       if Upper:
-        # Position above the ghosts:
         r_y = random.randrange(160, Y_MAX)
       else:  
-        # Position below the ghosts:
         r_y = random.randrange(-Y_MAX, -40)
       new_pos = (r_x, r_y)
       HaveCollision = False 
@@ -155,27 +131,8 @@ window = turtle.Screen()
 window.title('Dobbogi-Man')
 window.bgcolor('black')
 
-turtle.register_shape('ghost_red_1_small.gif')
-turtle.register_shape('ghost_red_2_small.gif')
-turtle.register_shape('pac_open_small_east.gif')
-turtle.register_shape('pac_open_small_west.gif')
-turtle.register_shape('pac_open_small_north.gif')
-turtle.register_shape('pac_open_small_south.gif')
-turtle.register_shape('pac_wopen_small_east.gif')
-turtle.register_shape('pac_wopen_small_west.gif')
-turtle.register_shape('pac_wopen_small_north.gif')
-turtle.register_shape('pac_wopen_small_south.gif')
-turtle.register_shape('dobbogi_2_small.gif')
 turtle.register_shape('yum.gif')
 turtle.register_shape('game_over.gif')
-#
-# Instantiate ghost objects:
-#
-ghosts.append(ghost('inky'))
-ghosts.append(ghost('pinky', 120, 120))
-#
-# Comment-out the following line and uncomment the next line to
-# use your auto-pacman:
 #
 pm = pacman(120, -40) # Instantiate pacman object
 #
@@ -186,7 +143,6 @@ food += placeFood()
 game_over = turtle.Turtle()
 game_over.hideturtle()
 game_over.speed('fastest')
-phase = 0
 # Install the keyboard handlers:
 window.onkey(RightKeyHandler, 'Right')
 window.onkey(LeftKeyHandler,  'Left')

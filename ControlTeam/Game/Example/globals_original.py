@@ -8,7 +8,7 @@ FOODMAX = 3
 STEPMAX = 300
 # Maximum number of steps until the game terminates. 
 
-WIDTH, HEIGHT = 500, 500
+WIDTH, HEIGHT = 1600, 1000# 실제로는 8000*5000
 # Screen resolution
 
 X_MAX = (WIDTH  // 2) - (47 // 2)
@@ -20,4 +20,3 @@ MS_TO_QUIT = 2000
 # We give the user some time to read the "Game Over..." message.
 
 FOOD = []
-GHOSTS = []
