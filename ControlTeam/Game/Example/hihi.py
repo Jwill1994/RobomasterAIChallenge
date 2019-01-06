@@ -1,8 +1,9 @@
 
 import global_vals
 # Import our own constants
-from game import dobbogi, Tank, tanktop, Bullet, Wall
+from game import Tank, tanktop, Bullet, Wall
 # Import our game character classes
+import numpy as np
 
 import turtle
 import random
@@ -13,15 +14,59 @@ def shutDownHander():
   print('Your score:', score)
   window.bye()
 
-def hit(bullet, wall):
+def get_intersect(a1, a2, b1, b2):
+    """
+    Returns the point of intersection of the lines passing through a2,a1 and b2,b1.
+    a1: [x, y] a point on the first line
+    a2: [x, y] another point on the first line
+    b1: [x, y] a point on the second line
+    b2: [x, y] another point on the second line
+    """
+    s = np.vstack([a1,a2,b1,b2])        # s for stacked
+    h = np.hstack((s, np.ones((4, 1)))) # h for homogeneous
+    l1 = np.cross(h[0], h[1])           # get first line
+    l2 = np.cross(h[2], h[3])           # get second line
+    x, y, z = np.cross(l1, l2)          # point of intersection
+    if z == 0:                          # lines are parallel
+        return (float('inf'), float('inf'))
+    return (x/z, y/z)
+
+# if __name__ == "__main__":
+#     print(get_intersect((0, 1), (0, 2), (1, 10), (1, 9)) ) # parallel  lines
+#     print(get_intersect((0, 1), (0, 2), (1, 10), (2, 10))) # vertical and horizontal lines
+#     print(get_intersect((0, 1), (1, 2), (0, 10), (1, 9)))  # another line for fun
+
+
+def hitWall(bullet, wall):
+    global isQuit
     # left_low, right_low, left_high, right_high
     prev_bullet_position = bullet.prevPosition
     curr_bullet_position = bullet.getPosition()
 
+    # left, right, high, low
+    sides = wall.sides()
+    #
+    for side in sides:
+
+        inter = get_intersect(side[0], side[1], prev_bullet_position, curr_bullet_position)
+        # print(prev_bullet_position, curr_bullet_position)
+        if ( min(prev_bullet_position[0], curr_bullet_position[0]) < inter[0] < max(prev_bullet_position[0], curr_bullet_position[0]) )\
+                and ( min(side[0][0], side[1][0]) < inter[0] < max(side[0][0], side[1][0]) ):
+            print(side[0], side[1], inter)
+
+            return True
+
+        if ( min(prev_bullet_position[1], curr_bullet_position[1]) < inter[1] < max(prev_bullet_position[1], curr_bullet_position[1]) )\
+                and ( min(side[0][1], side[1][1]) < inter[1] < max(side[0][1], side[1][1]) ):
+            print(side[0], side[1], inter)
+
+            return True
+
+    return False
 
 
-    left_low, right_low, left_high, right_high = wall.range()
-
+def hitTank(bullet, tank):
+    pass
 
 def periodicTimer():
 
@@ -33,15 +78,16 @@ def periodicTimer():
 
   for bullet in Bullet.all:
     bullet.fly()
+
     for wall in Wall.all:
-        if hit(bullet, wall):
-            pass
+        if hitWall(bullet, wall):
+            bullet.ttl.hideturtle()
+            Bullet.all.remove(bullet)
+            break
+
 
 
   turtle.tracer(1, 10) # re-enable periodic screen updates
-
-
-
   tank_pos = tank.getPosition()
 
 
@@ -101,7 +147,7 @@ window.bgcolor('white')
 turtle.register_shape('game_over.gif')
 
 def Fire():
-    tank.gun.fire(tank.getPosition())
+    tank.gun.fire(tank.getPosition(), tank)
 
 
 

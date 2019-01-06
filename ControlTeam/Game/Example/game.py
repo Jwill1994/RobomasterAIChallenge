@@ -11,7 +11,7 @@ class thing:
     self.ttl = turtle.Turtle() # create a new Python turtle object
     self.ttl.hideturtle()
     self.ttl.penup()
-    self.ttl.pendown()
+    # self.ttl.pendown()
     self.ttl.speed('fastest')
     self.ttl.goto(x, y)
     self.ttl.showturtle()
@@ -22,20 +22,6 @@ class thing:
     """
     return (self.ttl.xcor(), self.ttl.ycor()) # retrieve coordinates from
                                               # turtle ttl and return tuple
-
-
-class dobbogi(thing):
-
-  def __init__(self, x = 0, y = 0):
-    """Special method to initialize a 'doboggi' object in memory."""
-    thing.__init__(self, x, y)            # Call __init__() of the superclass
-    self.ttl.shape('square') # Set image of the object's turtle
-    self.ttl.color('yellow')
-
-  def setIsEaten(self):
-    """Stop displaying this doboggi object in the game."""
-    self.ttl.hideturtle()
-
 
 
 class Wall(thing):
@@ -62,6 +48,16 @@ class Wall(thing):
 
         return left_low, right_low, left_high, right_high
 
+    def sides(self):
+        left_low, right_low, left_high, right_high = self.range()
+
+        left = (left_high, left_low)
+        right = (right_high, right_low)
+        high = (left_high, right_high)
+        low = (left_low, right_low)
+
+        return left, right, high, low
+
 
 
 
@@ -69,48 +65,18 @@ class Wall(thing):
 class Bullet(thing):
     all = []
 
-    def __init__(self, x=0, y=0, heading=0):
+    def __init__(self, tank, x=0, y=0, heading=0):
         thing.__init__(self, x, y) # Call __init__ of the superclass
         self.ttl.setheading(heading)
-        self.all.append(self)
         self.prevPosition = (x, y)
-
+        self.tank = tank
+        tank.bullets.append(self)
+        self.all.append(self)
 
     def fly(self):
 
         self.prevPosition = self.getPosition()
-        self.ttl.forward(100)
-
-
-
-
-
-    # def move(self, pm):
-    #
-    #     pmPos = pm.getPosition()
-    #     ghPos = self.getPosition()
-    #
-    #     dy = pmPos[1]-ghPos[1]
-    #     dx = pmPos[0]-ghPos[0]
-    #
-    #     if math.atan2(dy,dx)*180/math.pi<0 :
-    #         degree=360+math.atan2(dy,dx)*180/math.pi
-    #   # print(360+math.atan2(dy,dx)*180/math.pi)
-    #     else:
-    #         degree=math.atan2(dy,dx)*180/math.pi
-    #         # print(math.atan2(dy,dx)*180/math.pi)
-    #
-    #     self.ttl.setheading(degree)
-    #
-    #     if self.ttl.xcor() > global_vals.X_MAX + 25:
-    #       self.ttl.setx(-global_vals.X_MAX - 25)
-    #     elif self.ttl.xcor() > global_vals.Y_MAX +25:
-    #       self.ttl.sety(-global_vals.Y_MAX - 25)
-    #     elif self.ttl.xcor() < -global_vals.X_MAX -25:
-    #       self.ttl.setx(global_vals.X_MAX + 25)
-    #     elif self.ttl.xcor() < -global_vals.Y_MAX -25:
-    #       self.ttl.setx(-global_vals.Y_MAX -25)
-
+        self.ttl.forward(50)
 
 class tanktop(thing):
 
@@ -130,17 +96,19 @@ class tanktop(thing):
     def rotateCCW(self):
         self.ttl.left(self.rotateAngle)
 
-    def fire(self, position):
+    def fire(self, position, tank):
         heading = self.ttl.heading()
-        Bullet(position[0], position[1], heading)
+        Bullet(tank, position[0], position[1], heading)
 
 
 
 
 
 class Tank(thing):
+  all = []
   stepFW = 3
   stepBW = 3
+
   def __init__(self, x = 0, y = 0):
     thing.__init__(self, x, y) # call __init__() of the superclass
     self.steps = global_vals.STEPMAX       # remaining steps
@@ -149,15 +117,34 @@ class Tank(thing):
     self.isYum = False         # no
     self.isYumOff = False      # bubble
 
+    self.hp = 3
+
     self.ttl.shape('square')
     self.ttl.shapesize(stretch_wid=1, stretch_len=2)
     self.gun = tanktop(x, y)
+    self.bullets = []
+
+    self.all.append(self)
+
+  def otherTanks(self):
+      copy = self.all[:]
+      copy.remove(self)
+      return copy
 
   def blocked(self):
     if self.ttl.xcor() > global_vals.X_MAX or self.ttl.xcor() < -global_vals.X_MAX or self.ttl.ycor() > global_vals.Y_MAX or self.ttl.ycor() < -global_vals.Y_MAX:
       return True
     else:
       return False
+
+
+  def decreaseHP(self):
+      self.hp -= 1
+
+      if self.hp <= 0:
+        self.all.remove(self)
+
+
 
 
 
