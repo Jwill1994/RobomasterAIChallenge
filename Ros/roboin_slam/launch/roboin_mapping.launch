@@ -1,0 +1,26 @@
+<launch>
+
+  <!--gmapping config file-->
+  <arg name="configuration_basename" default="lds_2d_gazebo.lua"/>
+
+
+
+  <!--tf publisher-->
+  <include file="$(find roboin_description)/launch/roboin_robot_state_publisher.launch"/>
+
+
+  <!--gmapping w/ config-->
+  <include file="$(find roboin_slam)/launch/roboin_mapping_gmapping.launch">
+    <arg name="configuration_basename" value="$(arg configuration_basename)"/>
+  </include>
+
+  <!--teleop control-->
+  <include file="$(find roboin_control)/launch/keyboard_teleop.launch"/>
+
+
+  <!--rviz w/ config-->
+  <node name="rviz" pkg="rviz" type="rviz"
+        args="-d $(find roboin_slam)/rviz/mapping.rviz" />
+
+
+</launch>
