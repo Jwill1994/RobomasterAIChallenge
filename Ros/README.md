@@ -2,7 +2,10 @@
 
 
 <1.2>amcl기능을 추가했습니다.
-영상: https://github.com/woong164/RobomasterAIChallenge/blob/ROS_SLAM/Ros/Screencast%202019-01-16%2014:04:32.mp4
+![alt text](https://github.com/woong164/RobomasterAIChallenge/blob/ROS_SLAM/Ros/ezgif-5-6cb57719c867.gif)
+
+
+전체영상: https://github.com/woong164/RobomasterAIChallenge/blob/ROS_SLAM/Ros/Screencast%202019-01-16%2014:04:32.mp4
 
 
 
