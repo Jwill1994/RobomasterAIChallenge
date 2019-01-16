@@ -1,7 +1,7 @@
 # RobomasterAIChallenge
 
 
-<1.2>amcl기능을 추가했습니다.
+<1.2>amcl기능을 추가했습니다. roboin_simulation 패키지의 roboin_amcl.launch로 확인할 수 있습니다.
 
 ![alt text](https://github.com/woong164/RobomasterAIChallenge/blob/master/Ros/ezgif-5-6cb57719c867.gif)
 
