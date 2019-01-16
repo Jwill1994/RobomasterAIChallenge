@@ -1,4 +1,17 @@
 # RobomasterAIChallenge
+
+
+<1.2>amcl기능을 추가했습니다.
+
+![alt text](https://github.com/woong164/RobomasterAIChallenge/blob/ROS_SLAM/Ros/ezgif-5-6cb57719c867.gif)
+
+
+전체영상: https://github.com/woong164/RobomasterAIChallenge/blob/ROS_SLAM/Ros/Screencast%202019-01-16%2014:04:32.mp4
+
+
+
+
+
 <1.1> mapping기능 추가했습니다. roslaunch roboin_simulation robomaster_mapping.launch 로 확인하실 수 있습니다.
 ROS naviagation stack이 필요합니다. gmapping알고리즘 사용하였습니다.
 ![alt text](https://github.com/woong164/RobomasterAIChallenge/blob/ROS_SLAM/Ros/Screenshot%20from%202019-01-15%2016-37-37.png)

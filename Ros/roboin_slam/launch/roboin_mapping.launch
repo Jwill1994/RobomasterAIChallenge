@@ -5,8 +5,7 @@
 
 
 
-  <!--tf publisher-->
-  <include file="$(find roboin_description)/launch/roboin_robot_state_publisher.launch"/>
+
 
 
   <!--gmapping w/ config-->
@@ -14,8 +13,7 @@
     <arg name="configuration_basename" value="$(arg configuration_basename)"/>
   </include>
 
-  <!--teleop control-->
-  <include file="$(find roboin_control)/launch/keyboard_teleop.launch"/>
+
 
 
   <!--rviz w/ config-->
