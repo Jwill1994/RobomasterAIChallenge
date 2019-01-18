@@ -35,6 +35,7 @@
   </gazebo>
 
 
+
   <gazebo>
     <plugin name="diff_control" filename="libgazebo_ros_diff_drive.so">
       <commandTopic>cmd_vel</commandTopic>
@@ -52,7 +53,7 @@
       <rightJoint>right_wheel_joint</rightJoint>
       <wheelSeparation>0.23</wheelSeparation>
       <wheelDiameter>0.06</wheelDiameter>
-      <wheelAcceleration>1</wheelAcceleration>
+      <wheelAcceleration>0</wheelAcceleration>
       <wheelTorque>5</wheelTorque>
       <rosDebugLevel>na</rosDebugLevel>
     </plugin>
@@ -67,7 +68,7 @@
     <sensor type="ray" name="lidar">
       <pose>0 0 0 0 0 0</pose>
       <visualize>$(arg laser_visual)</visualize>
-      <update_rate>5</update_rate>
+      <update_rate>10</update_rate>
       <ray>
         <scan>
           <horizontal>
