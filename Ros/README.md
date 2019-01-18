@@ -1,20 +1,23 @@
 # RobomasterAIChallenge
 
 
+
+
+<1.3>global, local motion planner를 추가하였습니다. 이외에도 gazebo상의 모델의 footprint 좌표가 잘못 설정되어 회전시 localizing이 흐트러지던 오류를 수정하였으며 경기장 모델을 실제 규격에 맞춰 조정하였습니다.
+![alt text](https://github.com/woong164/RobomasterAIChallenge/blob/master/Images/ezgif-5-595d31b957e2.gif)
+
+
+
 <1.2>amcl기능을 추가했습니다. roboin_simulation 패키지의 roboin_amcl.launch로 확인할 수 있습니다.
 
-![alt text](https://github.com/woong164/RobomasterAIChallenge/blob/master/Ros/ezgif-5-6cb57719c867.gif)
-
-
-전체영상: https://github.com/woong164/RobomasterAIChallenge/blob/master/Ros/Screencast%202019-01-16%2014:04:32.mp4
-
+![alt text](https://github.com/woong164/RobomasterAIChallenge/blob/master/Images/ezgif-5-6cb57719c867.gif)
 
 
 
 
 <1.1> mapping기능 추가했습니다. roslaunch roboin_simulation robomaster_mapping.launch 로 확인하실 수 있습니다.
 ROS naviagation stack이 필요합니다. gmapping알고리즘 사용하였습니다.
-![alt text](https://github.com/woong164/RobomasterAIChallenge/blob/master/Ros/Screenshot%20from%202019-01-15%2016-37-37.png)
+![alt text](https://github.com/woong164/RobomasterAIChallenge/blob/master/Images/Screenshot%20from%202019-01-15%2016-37-37.png)
 
 
 
