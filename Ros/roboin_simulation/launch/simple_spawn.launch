@@ -2,8 +2,8 @@
 <launch>
 
 <!--spawn coordinate-->
-  <arg name="x_pos" default="-2.35989"/>
-  <arg name="y_pos" default="-2.01781"/>
+  <arg name="x_pos" default="-3.5"/>
+  <arg name="y_pos" default="2"/>
   <arg name="z_pos" default="0.0"/>
 
 
