@@ -1,6 +1,6 @@
 # RobomasterAIChallenge
 
-# opencv는 3.4.4로 부탁드립니다. 
+# opencv는 버전 상관 없음
 
 출석부 : https://docs.google.com/spreadsheets/d/1Htv2S5IP0vr-hYOx6zsh1bpdf5dKta1j30IU1j53mRs/edit?ts=5c4cbb0d#gid=0
 
