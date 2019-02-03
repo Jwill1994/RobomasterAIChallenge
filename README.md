@@ -38,6 +38,6 @@ MADDPG Paper: https://arxiv.org/pdf/1706.02275.pdf
 > 영상: https://www.youtube.com/results?search_query=maddpg 을 참고하면 훨씬 빨리 이해가 될듯 싶음
 
 # DevelopmentBoard - STM32F427II (TrueStudio, Cubemx, HALdriver)
->> https://www.youtube.com/playlist?list=PLUaCOzp6U-RqMo-QEJQOkVOl1Us8BNgXk
-
+> https://www.youtube.com/playlist?list=PLUaCOzp6U-RqMo-QEJQOkVOl1Us8BNgXk
+> DevelpomentBoardA 의 코어인 STM32F4의 이용법을 익힐 수 있음. Keil(MDK-ARM V5) 컴파일러는 유료화되어 디버그 용량 32Kb 제한 걸림 > TrueStudio 무료. 
 
