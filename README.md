@@ -36,12 +36,12 @@ David Silver의 강화학습 강의 : https://www.youtube.com/watch?v=2pWv7GOvuf
 Open AI Blog : https://blog.openai.com/
 > 강화학습에 사용되는 다양한 알고리즘. 궁금한 사람만.
 
-# MADDPG 논문
+## MADDPG 논문
 MADDPG Paper: https://arxiv.org/pdf/1706.02275.pdf
 > 최종은 교수님의 창의설계프로젝트(2) 수업 마지막 부분에서 소개되었던 개념으로, 강화학습을 한다면 전략 수립에 도움이 될 것으로 추정됨
 > 영상: https://www.youtube.com/results?search_query=maddpg 을 참고하면 훨씬 빨리 이해가 될듯 싶음
 
-# DevelopmentBoard - STM32F427II (TrueStudio, Cubemx, HALdriver)
+## DevelopmentBoard - STM32F427II (TrueStudio, Cubemx, HALdriver)
 > https://www.youtube.com/playlist?list=PLUaCOzp6U-RqMo-QEJQOkVOl1Us8BNgXk
 > DevelpomentBoardA 의 코어인 STM32F4의 이용법을 익힐 수 있음. Keil(MDK-ARM V5) 컴파일러는 유료화되어 디버그 용량 32Kb 제한 걸림 > TrueStudio 무료. 
 
