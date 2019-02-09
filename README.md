@@ -40,6 +40,7 @@ Open AI Blog : https://blog.openai.com/
 MADDPG Paper: https://arxiv.org/pdf/1706.02275.pdf
 > 최종은 교수님의 창의설계프로젝트(2) 수업 마지막 부분에서 소개되었던 개념으로, 강화학습을 한다면 전략 수립에 도움이 될 것으로 추정됨
 > 영상: https://www.youtube.com/results?search_query=maddpg 을 참고하면 훨씬 빨리 이해가 될듯 싶음
+> 논문 해석이 어렵다면 다음 링크의 설명이 굉장히 도움이 될듯 싶습니다 https://jay.tech.blog/2018/08/04/multi-agent-actor-critic-rl/
 
 ## DevelopmentBoard - STM32F427II (TrueStudio, Cubemx, HALdriver)
 > https://www.youtube.com/playlist?list=PLUaCOzp6U-RqMo-QEJQOkVOl1Us8BNgXk
