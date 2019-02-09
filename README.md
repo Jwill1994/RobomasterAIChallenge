@@ -36,6 +36,9 @@ David Silver의 강화학습 강의 : https://www.youtube.com/watch?v=2pWv7GOvuf
 Open AI Blog : https://blog.openai.com/
 > 강화학습에 사용되는 다양한 알고리즘. 궁금한 사람만.
 
+ROS WIKI TUTORIAL : http://wiki.ros.org/ROS/Tutorials#Intermediate_Level
+> 로스 튜토리얼. step by step으로 따라가기 좋음.
+
 ## MADDPG -> Multi Agent DDPG
 MADDPG Paper: https://arxiv.org/pdf/1706.02275.pdf
 
