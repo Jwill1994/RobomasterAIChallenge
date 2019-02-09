@@ -1,6 +1,6 @@
 # 개요
 
-만약 지금 강화학습 결과를 보고 싶다면 Assets.zip 파일 내부 파일을
+만약 지금 강화학습 결과를 보고 싶다면 Assets(3).zip 파일 내부 파일을
 \ml-agents\UnitySDK\Assets 에 덮어쓰기 하면 됨.
 
 
