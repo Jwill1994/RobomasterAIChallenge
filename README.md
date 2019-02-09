@@ -38,8 +38,11 @@ Open AI Blog : https://blog.openai.com/
 
 ## MADDPG -> Multi Agent DDPG
 MADDPG Paper: https://arxiv.org/pdf/1706.02275.pdf
+
 > 최종은 교수님의 창의설계프로젝트(2) 수업 마지막 부분에서 소개되었던 개념으로, 강화학습을 한다면 전략 수립에 도움이 될 것으로 추정됨
+
 > 영상: https://www.youtube.com/results?search_query=maddpg 위의 개념을 실제로 visualize시킨 것으로 이해에 도움이 될듯
+
 > 논문 해석이 어렵다면 다음 링크의 설명이 굉장히 도움이 될듯 싶습니다 https://jay.tech.blog/2018/08/04/multi-agent-actor-critic-rl/
 
 > Code는 ybkim95 branch에 넣어놓음 
