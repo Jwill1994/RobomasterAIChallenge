@@ -7,6 +7,7 @@ using namespace std;    //cpp기본 함수 라이브러리 사용
 
 int main(int argc, char * argv[]) try
 {
+#pragma region initialization
 	/*이미지 해상도 셋팅*/
 	int Width = 640;
 	int Height = 480;
@@ -50,9 +51,15 @@ int main(int argc, char * argv[]) try
 	int X, Y;
 	double distance = 0;
 
+
+#pragma endregion 초기화 코드 모음
+	
+	
 	/*실제 실행코드*/
 	while (waitKey(1) < 0 && cvGetWindowHandle(window_name))
 	{
+		#pragma region camera_setting
+
 		X = 0;
 		Y = 0;
 		/*카메라에서 데이터 획득*/
@@ -84,11 +91,14 @@ int main(int argc, char * argv[]) try
 		if (color_frame.get_frame_number() == last_frame_number) continue;
 		last_frame_number = color_frame.get_frame_number();    //컬러 프레임으로만 직전 코드확인하기
 		*/
+		#pragma endregion intel카메라 셋팅 /화각 조정 함수 포함
 		
+
 		/*realsense 정보를 opencv연산가능한 이미지 행렬로 변환*/
 		cv::Mat color_mat = frame_to_mat(color_frame);  //RGB로 변환
 		cv::Mat depth_mat = depth_frame_to_meters(pipe, depth_frame);  //meter법으로 변환 행렬에 입력
 		
+
 		/*딥러닝 내부 함수*/
 		blobFromImage(color_mat, blob, 1 / 255.0, cvSize(inpWidth, inpHeight), Scalar(0, 0, 0), true, false);  //4D blob 생성
 		net.setInput(blob);  
