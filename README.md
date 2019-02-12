@@ -54,3 +54,6 @@ MADDPG Paper: https://arxiv.org/pdf/1706.02275.pdf
 > https://www.youtube.com/playlist?list=PLUaCOzp6U-RqMo-QEJQOkVOl1Us8BNgXk
 > DevelpomentBoardA 의 코어인 STM32F4의 이용법을 익힐 수 있음. Keil(MDK-ARM V5) 컴파일러는 유료화되어 디버그 용량 32Kb 제한 걸림 > TrueStudio 무료. 
 
+
+## Deep RL 관련 참고
+> openAI Five 네트워크 다이어그램: https://s3-us-west-2.amazonaws.com/openai-assets/dota_benchmark_results/network_diagram_08_06_2018.pdf
