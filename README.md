@@ -10,7 +10,9 @@
 
 # 환경 구축 공지
 
-opencv는 버전 상관 없음
+opencv 3.4.5버전 추천
+
+ros Kinetic버전만 realsense(카메라)를 사용할수 있습니다. 
 
 # 자료 공유
 
