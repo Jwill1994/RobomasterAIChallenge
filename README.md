@@ -28,6 +28,8 @@ NJUST : https://github.com/jackychen227/ICRA2018_DJI_RM_AI_Challenge_NJUST
 RoboRTS Tutorial : https://robomaster.github.io/RoboRTS-Tutorial/#/
 > 번역 작업 중 완료되는 대로 공유 예정.
 
+Robomaster Summer Camp : https://github.com/Webb-Bing/RoboMaster
+
 ## ROS
 터틀봇3 : http://emanual.robotis.com/docs/en/platform/turtlebot3/overview/
 > 터틀봇을 활용한 다양한 예제 및 강의. 모바일 로봇을 이용한 ROS 환경에 관한 전반적인 내용.
