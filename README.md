@@ -65,3 +65,8 @@ MADDPG Paper: https://arxiv.org/pdf/1706.02275.pdf
 
 ## Deep RL 관련 참고
 > openAI Five 네트워크 다이어그램: https://s3-us-west-2.amazonaws.com/openai-assets/dota_benchmark_results/network_diagram_08_06_2018.pdf
+
+
+## DJI Developer Onboard SDK
+https://developer.dji.com/onboard-sdk/
+https://github.com/dji-sdk/Onboard-SDK
