@@ -1,9 +1,5 @@
 # RobomasterAIChallenge
 
-https://www.amazon.com/SmartFly-info-LIDAR-053-YDLIDAR-Frequency/dp/B07DBYHJVQ/ref=sr_1_2?crid=37N4CIQD8MDMY&keywords=lidar&qid=1550311512&s=gateway&sprefix=laidar%2Caps%2C718&sr=8-2
-
-라이다 
-
 # 구글 드라이브 공유
 
 출석부 : https://docs.google.com/spreadsheets/d/1Htv2S5IP0vr-hYOx6zsh1bpdf5dKta1j30IU1j53mRs/edit?ts=5c4cbb0d#gid=0
