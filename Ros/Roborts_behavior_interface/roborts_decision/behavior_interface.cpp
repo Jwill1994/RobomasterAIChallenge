@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
         break;
         //chase.
       case 3:
-        patrol_behavior.Cancel();
+        chase_behavior.Run();
         break;
         //search
       case 4:
@@ -70,6 +70,15 @@ int main(int argc, char **argv) {
         //goal.
       case 6:
         goal_behavior.Run();
+        break;
+        //cancel all
+      case 7:
+        back_boot_area_behavior.Cancel();
+        patrol_behavior.Cancel();
+        chase_behavior.Cancel();
+        search_behavior.Cancel();
+        escape_behavior.Cancel();
+        goal_behavior.Cancel();
         break;
       case 27:
         ROS_INFO("termination command");
