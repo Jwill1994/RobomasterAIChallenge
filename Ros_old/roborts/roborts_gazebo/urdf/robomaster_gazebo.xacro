@@ -7,7 +7,7 @@
 
 
 
-  <gazebo reference="base_scan">
+  <gazebo reference="base_laser_link">
     <material>Gazebo/FlatBlack</material>
     <sensor type="ray" name="lidar">
       <pose>0 0 0 0 0 0</pose>
@@ -35,7 +35,7 @@
       </ray>
       <plugin name="gazebo_ros_lds_lfcd_controller" filename="libgazebo_ros_laser.so">
         <topicName>scan</topicName>
-        <frameName>base_scan</frameName>
+        <frameName>base_laser_link</frameName>
       </plugin>
     </sensor>
   </gazebo>

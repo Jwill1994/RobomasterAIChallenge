@@ -1,0 +1,16 @@
+robomaster_ai:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50  
+
+  # Velocity Controllers ---------------------------------------
+  yaw_velocity_controller:
+    type: effort_controllers/JointVelocityController
+    joint: base_link_to_yaw_joint
+    pid: {p: 10.0, i: 0.1, d: 1.0}
+
+  pitch_velocity_controller:
+    type: effort_controllers/JointVelocityController
+    joint: base_link_to_pitch_joint
+    pid: {p: 10.0, i: 0.1, d: 1.0}

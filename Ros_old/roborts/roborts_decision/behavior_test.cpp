@@ -1,6 +1,7 @@
 #include <ros/ros.h>
 
 #include "executor/chassis_executor.h"
+#include "executor/gimbal_executor.h"
 
 #include "example_behavior/back_boot_area_behavior.h"
 #include "example_behavior/escape_behavior.h"
@@ -17,6 +18,7 @@ int main(int argc, char **argv) {
   std::string full_path = ros::package::getPath("roborts_decision") + "/config/decision.prototxt";
 
   auto chassis_executor = new roborts_decision::ChassisExecutor;
+  auto gimbal_executor = new roborts_decision::GimbalExecutor;
   auto blackboard = new roborts_decision::Blackboard(full_path);
 
   roborts_decision::BackBootAreaBehavior back_boot_area_behavior(chassis_executor, blackboard, full_path);
@@ -24,7 +26,7 @@ int main(int argc, char **argv) {
   roborts_decision::SearchBehavior       search_behavior(chassis_executor, blackboard, full_path);
   roborts_decision::EscapeBehavior       escape_behavior(chassis_executor, blackboard, full_path);
   roborts_decision::PatrolBehavior       patrol_behavior(chassis_executor, blackboard, full_path);
-  roborts_decision::GoalBehavior       goal_behavior(chassis_executor, blackboard);
+  roborts_decision::GoalBehavior       goal_behavior(chassis_executor, gimbal_executor, blackboard);
 
   auto command_thread= std::thread(Command);
   ros::Rate rate(10);

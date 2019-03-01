@@ -6,6 +6,7 @@
 
 #include "../blackboard/blackboard.h"
 #include "../executor/chassis_executor.h"
+#include "../executor/gimbal_executor.h"
 #include "../behavior_tree/behavior_state.h"
 
 
@@ -13,13 +14,28 @@ namespace roborts_decision {
 class GoalBehavior {
  public:
   GoalBehavior(ChassisExecutor* &chassis_executor,
+               GimbalExecutor* &gimbal_executor,
                Blackboard* &blackboard) :
       chassis_executor_(chassis_executor),
+      gimbal_executor_(gimbal_executor),
       blackboard_(blackboard) { }
 
   void Run() {
+    roborts_msgs::GimbalRate gimbal_rate_;
+
     if(blackboard_->IsNewGoal()){
       chassis_executor_->Execute(blackboard_->GetGoal());
+
+      gimbal_rate_.yaw_rate = 2.0;
+      gimbal_rate_.pitch_rate = 0.0;
+
+      gimbal_executor_->Execute(gimbal_rate_);
+    }
+    else {
+      gimbal_rate_.yaw_rate = 0.0;
+      gimbal_rate_.pitch_rate = 0.0;
+
+      gimbal_executor_->Execute(gimbal_rate_);
     }
   }
 
@@ -36,6 +52,7 @@ class GoalBehavior {
  private:
   //! executor
   ChassisExecutor* const chassis_executor_;
+  GimbalExecutor* const gimbal_executor_;
 
   //! perception information
   Blackboard* const blackboard_;
