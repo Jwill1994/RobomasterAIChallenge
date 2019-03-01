@@ -66,3 +66,7 @@ MADDPG Paper: https://arxiv.org/pdf/1706.02275.pdf
 ## DJI Developer Onboard SDK
 https://developer.dji.com/onboard-sdk/  
 https://github.com/dji-sdk/Onboard-SDK
+
+## roborts_decision 패키지의 blackboard 관련 레퍼런스
+> 개발에 참고하시라고 정리했습니다.
+> https://github.com/woong164/RobomasterAIChallenge/blob/rrts_behav/Ros/doc/README.md
