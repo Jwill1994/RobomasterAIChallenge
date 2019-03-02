@@ -14,6 +14,8 @@ add_service_files(
   FILES
   SetBehavior.srv
   BlackboardGeneralInfo.srv
+  BehaviorStyleSet.srv
+  BehaviorGoalSet.srv
 )
 
 generate_messages(

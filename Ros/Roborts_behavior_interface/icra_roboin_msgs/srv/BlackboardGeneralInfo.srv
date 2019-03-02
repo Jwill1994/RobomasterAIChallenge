@@ -8,10 +8,6 @@ geometry_msgs/PoseStamped goal_pose
 bool is_enemy_detected
 bool has_defense_bonus
 int32 defense_time_left
-string current_behavior_style
-string current_behavior_state
-string current_chassis_mode
-string current_chassis_state
-string current_gimbal_mode
-string current_gimbal_state
+uint8 current_behavior_style
+uint8 current_behavior_state
 

@@ -61,3 +61,14 @@ target_link_libraries(fake_enemy_pose_node
   PRIVATE
   ${catkin_LIBRARIES}
   )
+
+
+
+add_executable(new_behavior_test
+  src/new_behavior_test.cpp
+  )
+
+target_link_libraries(new_behavior_test
+  PRIVATE
+  ${catkin_LIBRARIES}
+  )
