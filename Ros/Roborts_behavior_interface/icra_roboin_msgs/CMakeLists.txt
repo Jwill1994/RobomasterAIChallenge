@@ -13,6 +13,7 @@ add_service_files(
   DIRECTORY srv
   FILES
   SetBehavior.srv
+  BlackboardGeneralInfo.srv
 )
 
 generate_messages(
