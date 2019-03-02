@@ -9,8 +9,8 @@ BehaviorInterface::BehaviorInterface(icra_roboin_behavior::ChassisExecutor*& cha
                                                                     chassis_executor_(chassis_executor),
                                                                     gimbal_executor_(gimbal_executor),
                                                                     blackboard_(blackboard),
-                                                                    behavior_factory_(behavior_factory),
-                                                                    behavior_style_(icra_roboin_behavior::BehaviorStyle::STAY)
+                                                                    behavior_factory_(behavior_factory)
+                                                                    
 {
   ros::NodeHandle nh("~");
   set_behavior_style_service_ = nh.advertiseService("behavior_select_service",&BehaviorInterface::SetBehaviorStyleCB,this);
@@ -24,10 +24,11 @@ bool BehaviorInterface::SetBehaviorStyleCB(icra_roboin_msgs::BehaviorStyleSet::R
     res.is_new = false;
   } else {
     res.is_new = true;
+    //ROS_INFO("req:%d,BB:%d",tmp,int(blackboard_->GetBehaviorStyle());
     chassis_executor_->Cancel();
     gimbal_executor_->Cancel();
   }
-  behavior_style_ = static_cast<icra_roboin_behavior::BehaviorStyle>(tmp);
+  blackboard_->SetBehaviorStyle(static_cast<icra_roboin_behavior::BehaviorStyle>(tmp));
   return true;
 }
 

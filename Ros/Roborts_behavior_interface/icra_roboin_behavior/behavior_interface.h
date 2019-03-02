@@ -43,7 +43,7 @@ class BehaviorInterface {
         ros::ServiceServer set_behavior_style_service_;
         ros::ServiceServer set_goal_service_;
         ros::ServiceServer general_info_server_;
-        icra_roboin_behavior::BehaviorStyle behavior_style_;
+        
 };
 
 
