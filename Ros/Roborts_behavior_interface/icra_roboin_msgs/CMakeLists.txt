@@ -12,7 +12,6 @@ find_package(catkin REQUIRED COMPONENTS
 add_service_files(
   DIRECTORY srv
   FILES
-  SetBehavior.srv
   BlackboardGeneralInfo.srv
   BehaviorStyleSet.srv
   BehaviorGoalSet.srv

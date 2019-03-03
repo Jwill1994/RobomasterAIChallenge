@@ -21,6 +21,7 @@
   <build_depend>roborts_common</build_depend>
   <build_depend>roborts_costmap</build_depend>
   <build_depend>roborts_decision</build_depend>
+  <build_depend>icra_roboin_msgs</build_depend>
   
 
   <export>

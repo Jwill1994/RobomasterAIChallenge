@@ -1,8 +1,8 @@
 #include <ros/ros.h>
 #include <iostream>
 #include <geometry_msgs/PoseStamped.h>
-#include <icra_roboin_msgs/BehaviorStyleSet.h>
-#include <icra_roboin_msgs/BehaviorGoalSet.h>
+#include "icra_roboin_msgs/BehaviorStyleSet.h"
+#include "icra_roboin_msgs/BehaviorGoalSet.h"
 #include <tf/transform_broadcaster.h>
 #include <memory>
 #include <signal.h>

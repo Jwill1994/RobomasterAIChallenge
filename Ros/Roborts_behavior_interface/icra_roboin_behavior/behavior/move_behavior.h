@@ -1,6 +1,7 @@
 #ifndef ICRA_ROBOIN_BEHAVIOR_MOVE_BEHAVIOR_H
 #define ICRA_ROBOIN_BEHAVIOR_MOVE_BEHAVIOR_H
 #include "behavior_base.h"
+#include <tf/tf.h>
 
 namespace icra_roboin_behavior {
 
@@ -27,11 +28,11 @@ class MoveBehavior: public BehaviorBase{
             chassis_executor_->Cancel();
         }
 
-        icra_roboin_behavior::BehaviorStyle GetBehaviorStyle() {return behavior_style_;}
-
         icra_roboin_behavior::BehaviorState Update() {
             return chassis_executor_->Update();
         }
+
+        icra_roboin_behavior::BehaviorStyle GetBehaviorStyle() {return behavior_style_;}
 
 
          
