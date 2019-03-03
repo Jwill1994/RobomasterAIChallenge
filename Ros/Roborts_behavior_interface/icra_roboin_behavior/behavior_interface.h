@@ -6,6 +6,7 @@
 #include "executor/gimbal_executor.h"
 #include "blackboard/blackboard.h"
 #include "behavior/move_behavior.h"
+#include "behavior/manual_speed_behavior.h"
 #include "icra_roboin_msgs/BehaviorStyleSet.h"
 #include "icra_roboin_msgs/BehaviorGoalSet.h"
 #include "icra_roboin_msgs/BlackboardGeneralInfo.h"

@@ -6,7 +6,7 @@ namespace icra_roboin_behavior{
 
 Blackboard::Blackboard(): is_enemy_detected_(false),
                             enemy_detection_action_client_("armor_detection_node_action",true),
-                            behavior_style_(icra_roboin_behavior::BehaviorStyle::STAY),behavior_state_(icra_roboin_behavior::BehaviorState::IDLE)
+                            behavior_style_(icra_roboin_behavior::BehaviorStyle::STOP),behavior_state_(icra_roboin_behavior::BehaviorState::IDLE)
 {
     tf_ptr_ = std::make_shared<tf::TransformListener>(ros::Duration(10));
     

@@ -15,14 +15,16 @@ class BehaviorBase {
                     icra_roboin_behavior::Blackboard*& blackboard): chassis_executor_(chassis_executor),
                                                                     gimbal_executor_(gimbal_executor),
                                                                     blackboard_(blackboard){}
-        
+        virtual ~BehaviorBase() =default;
+
+
 
         
-        virtual ~BehaviorBase() =default;
         virtual bool Run() = 0;
         virtual bool Cancel() = 0;
-        virtual icra_roboin_behavior::BehaviorStyle GetBehaviorStyle() = 0;
         virtual icra_roboin_behavior::BehaviorState Update() = 0;
+        virtual icra_roboin_behavior::BehaviorStyle GetBehaviorStyle() = 0;
+        
         
         
 

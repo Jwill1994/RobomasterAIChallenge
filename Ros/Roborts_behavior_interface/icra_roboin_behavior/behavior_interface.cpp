@@ -29,12 +29,14 @@ bool BehaviorInterface::SetBehaviorStyleCB(icra_roboin_msgs::BehaviorStyleSet::R
     gimbal_executor_->Cancel();
   }
   blackboard_->SetBehaviorStyle(static_cast<icra_roboin_behavior::BehaviorStyle>(tmp));
+  ROS_DEBUG("behavior interface: Behavior received: %d",req.behavior);
   return true;
 }
 
 bool BehaviorInterface::SetBehaviorGoalCB(icra_roboin_msgs::BehaviorGoalSet::Request &req, icra_roboin_msgs::BehaviorGoalSet::Response &res) {
   blackboard_ -> SetGoalPose(req.goal);
   res.is_new = true;
+  ROS_DEBUG("behavior interface: Goal received: %f,%f,%f",req.goal.pose.position.x,req.goal.pose.position.y,req.goal.pose.position.z);
   return true;
 }
 

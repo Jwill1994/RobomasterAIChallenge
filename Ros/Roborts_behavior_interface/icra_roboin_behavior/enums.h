@@ -24,7 +24,7 @@ enum class BehaviorStyle {
     BACKBOOT,
     MANUAL_SPEED,
     MANUAL_ACCEL,
-    STAY,
+    STOP,
 };
 
 enum class ChassisMode {
