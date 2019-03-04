@@ -15,14 +15,15 @@ class ManualSpeedBehavior : public BehaviorBase{
         virtual ~ManualSpeedBehavior() = default;
         
         bool Run(){
-            ROS_DEBUG("run manual_speed behavior");
+            
             geometry_msgs::Twist speed_msg;
             geometry_msgs::Pose tmp = blackboard_->GetGoalPose().pose;
             speed_msg.linear.x = tmp.position.x;
             speed_msg.linear.y = tmp.position.y;
             speed_msg.angular.z = tmp.position.z;
-
+            ROS_INFO("run manual_speed behavior x:%f, y:%f, yaw:%f",speed_msg.linear.x,speed_msg.linear.y,speed_msg.angular.z);
             chassis_executor_->Execute(speed_msg);
+            return true;
         }
         bool Cancel() {
             chassis_executor_->Cancel();

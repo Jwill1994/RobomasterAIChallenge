@@ -32,6 +32,8 @@ class Blackboard {
         const geometry_msgs::PoseStamped GetMyPose();
         geometry_msgs::PoseStamped GetEnemyPose() const;
         geometry_msgs::PoseStamped GetGoalPose() const;
+        geometry_msgs::PoseStamped GetGoalPoseQuaternion() const;
+
         bool IsNewGoalPose();
         bool IsEnemyDetected();
 

@@ -6,9 +6,10 @@
 #include "executor/gimbal_executor.h"
 #include "blackboard/blackboard.h"
 #include "behavior/move_behavior.h"
+#include "behavior/manual_accel_behavior.h"
 #include "behavior/manual_speed_behavior.h"
 #include "icra_roboin_msgs/BehaviorStyleSet.h"
-#include "icra_roboin_msgs/BehaviorGoalSet.h"
+#include "icra_roboin_msgs/SetGoal_2.h"
 #include "icra_roboin_msgs/BlackboardGeneralInfo.h"
 #include <memory>
 #include <vector>
@@ -30,7 +31,7 @@ class BehaviorInterface {
         
 
         bool SetBehaviorStyleCB(icra_roboin_msgs::BehaviorStyleSet::Request &req, icra_roboin_msgs::BehaviorStyleSet::Response &res);
-        bool SetBehaviorGoalCB(icra_roboin_msgs::BehaviorGoalSet::Request &req, icra_roboin_msgs::BehaviorGoalSet::Response &res);
+        bool SetBehaviorGoalCB(icra_roboin_msgs::SetGoal_2::Request &req, icra_roboin_msgs::SetGoal_2::Response &res);
         bool GetGeneralInfoServiceCB(icra_roboin_msgs::BlackboardGeneralInfo::Request& req, icra_roboin_msgs::BlackboardGeneralInfo::Response& resp);
         icra_roboin_behavior::ChassisExecutor* const chassis_executor_;
         icra_roboin_behavior::GimbalExecutor* const gimbal_executor_;

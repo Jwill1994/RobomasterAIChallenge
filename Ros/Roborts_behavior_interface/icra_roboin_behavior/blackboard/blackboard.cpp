@@ -56,6 +56,16 @@ geometry_msgs::PoseStamped Blackboard::GetGoalPose() const{
     return goal_pose_;
 }
 
+geometry_msgs::PoseStamped Blackboard::GetGoalPoseQuaternion() const{
+    geometry_msgs::PoseStamped goal_pose_q;
+    goal_pose_q.header=goal_pose_.header;
+    goal_pose_q.pose.position.x=goal_pose_.pose.position.x;
+    goal_pose_q.pose.position.y=goal_pose_.pose.position.y;
+    goal_pose_q.pose.position.z=1;
+    goal_pose_q.pose.orientation = tf::createQuaternionMsgFromYaw(goal_pose_.pose.position.z);
+    return goal_pose_q;
+}
+
 bool Blackboard::IsNewGoalPose() {
     if(is_new_goal_pose_){
         is_new_goal_pose_ = false;

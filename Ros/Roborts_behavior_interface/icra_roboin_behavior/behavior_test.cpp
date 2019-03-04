@@ -2,12 +2,16 @@
 #include <iostream>
 #include <geometry_msgs/PoseStamped.h>
 #include "icra_roboin_msgs/BehaviorStyleSet.h"
-#include "icra_roboin_msgs/BehaviorGoalSet.h"
+#include "icra_roboin_msgs/SetGoal_2.h"
+#include "roborts_msgs/TwistAccel.h"
 #include <tf/transform_broadcaster.h>
 #include <memory>
 #include <signal.h>
 #include <termios.h>
 #include <stdio.h>
+#include <string>
+#include <cstdlib>
+#include "enums.h"
 
 #define KEYCODE_R 0x43 
 #define KEYCODE_L 0x44
@@ -23,7 +27,10 @@ double x,y,w;
 int GetBehavior(ros::ServiceClient& client){
     int tmp;
     std::cout << "enter the index of behavior to select" << std::endl;
-    std::cout << "1: goal behavior, 10: manual_speed behavior" << std::endl;
+    std::cout << "stop: " + std::to_string(int(icra_roboin_behavior::BehaviorStyle::STOP)) <<std::endl;
+    std::cout << "move: " + std::to_string(int(icra_roboin_behavior::BehaviorStyle::MOVE)) <<std::endl; 
+    std::cout << "manual_accel: " + std::to_string(int(icra_roboin_behavior::BehaviorStyle::MANUAL_ACCEL)) <<std::endl;
+    std::cout << "manual_speed: " + std::to_string(int(icra_roboin_behavior::BehaviorStyle::MANUAL_SPEED)) <<std::endl;
     std::cout << ">";
     std::cin >> tmp;
     std::cout << std::endl;
@@ -58,19 +65,18 @@ void GoalBehavior(ros::ServiceClient& client) {
     std::cin >> w;
     std::cout << std::endl;
 
-    
-    icra_roboin_msgs::BehaviorGoalSet srv;
-    geometry_msgs::PoseStamped pose_;
 
-    pose_.header.frame_id  = "map";
-    pose_.header.stamp = ros::Time::now();
-    pose_.pose.position.x = x;
-    pose_.pose.position.y = y;
-    pose_.pose.position.z = 1;
-    pose_.pose.orientation = tf::createQuaternionMsgFromYaw(w);
 
-    
-    srv.request.goal = pose_;
+    icra_roboin_msgs::SetGoal_2 srv;
+    srv.request.header.frame_id  = "map";
+    srv.request.header.stamp = ros::Time::now();
+    srv.request.x = x;
+    srv.request.y = y;
+    srv.request.yaw = w;
+    srv.request.xa = 0;
+    srv.request.ya = 0;
+    srv.request.yawa =0;
+    srv.request.etc = 0;
 
     
 
@@ -83,7 +89,8 @@ void GoalBehavior(ros::ServiceClient& client) {
     }
 
 }
- 
+
+
 
 
 
@@ -94,7 +101,7 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "behavior_selector_node");
     ros::NodeHandle nh;
     ros::ServiceClient client1_ = nh.serviceClient<icra_roboin_msgs::BehaviorStyleSet>("behavior_node/behavior_select_service");
-    ros::ServiceClient client2_ = nh.serviceClient<icra_roboin_msgs::BehaviorGoalSet>("behavior_node/goal_select_service");
+    ros::ServiceClient client2_ = nh.serviceClient<icra_roboin_msgs::SetGoal_2>("behavior_node/goal_select_service");
     ros::Rate rate(10);
     ROS_INFO("Ros Ready!");
     
@@ -103,10 +110,13 @@ int main(int argc, char** argv)
     while(ros::ok()){
         behavior_=GetBehavior(client1_);
         switch(behavior_) {
-            case 1:
+            case int(icra_roboin_behavior::BehaviorStyle::STOP):
+                ROS_INFO("IDLE_BEHAVIOR");
+                break;
+            case int(icra_roboin_behavior::BehaviorStyle::MOVE):
                 GoalBehavior(client2_);
                 break;
-            case 10:
+            case int(icra_roboin_behavior::BehaviorStyle::MANUAL_ACCEL):
             {
                 char c;
                 bool dirty = false;
@@ -137,17 +147,18 @@ int main(int argc, char** argv)
                                 x=0;
                                 y=1;
                                 w=0;
-                                icra_roboin_msgs::BehaviorGoalSet srv;
-                                geometry_msgs::PoseStamped pose_;
-                                pose_.header.frame_id  = "map";
-                                pose_.header.stamp = ros::Time::now();
-                                pose_.pose.position.x = x;
-                                pose_.pose.position.y = y;
-                                pose_.pose.position.z = w;
-                                pose_.pose.orientation = tf::createQuaternionMsgFromYaw(0);
 
-                            
-                                srv.request.goal = pose_;
+                                icra_roboin_msgs::SetGoal_2 srv;
+                                srv.request.header.frame_id  = "map";
+                                srv.request.header.stamp = ros::Time::now();
+                                srv.request.x = x;
+                                srv.request.y = y;
+                                srv.request.yaw = w;
+                                srv.request.xa = 0;
+                                srv.request.ya = 0;
+                                srv.request.yawa =0;
+                                srv.request.etc = 0;
+                                
 
                                 if (client2_.call(srv))
                                 {
@@ -164,17 +175,17 @@ int main(int argc, char** argv)
                                 x=0;
                                 y=-1;
                                 w=0;
-                                icra_roboin_msgs::BehaviorGoalSet srv;
-                                geometry_msgs::PoseStamped pose_;
-                                pose_.header.frame_id  = "map";
-                                pose_.header.stamp = ros::Time::now();
-                                pose_.pose.position.x = x;
-                                pose_.pose.position.y = y;
-                                pose_.pose.position.z = w;
-                                pose_.pose.orientation = tf::createQuaternionMsgFromYaw(0);
-
-                            
-                                srv.request.goal = pose_;
+                                
+                                icra_roboin_msgs::SetGoal_2 srv;
+                                srv.request.header.frame_id  = "map";
+                                srv.request.header.stamp = ros::Time::now();
+                                srv.request.x = x;
+                                srv.request.y = y;
+                                srv.request.yaw = w;
+                                srv.request.xa = 0;
+                                srv.request.ya = 0;
+                                srv.request.yawa =0;
+                                srv.request.etc = 0;
 
                                 if (client2_.call(srv))
                                 {
@@ -191,17 +202,17 @@ int main(int argc, char** argv)
                                 x=1;
                                 y=0;
                                 w=0;
-                                icra_roboin_msgs::BehaviorGoalSet srv;
-                                geometry_msgs::PoseStamped pose_;
-                                pose_.header.frame_id  = "map";
-                                pose_.header.stamp = ros::Time::now();
-                                pose_.pose.position.x = x;
-                                pose_.pose.position.y = y;
-                                pose_.pose.position.z = w;
-                                pose_.pose.orientation = tf::createQuaternionMsgFromYaw(0);
-
-                            
-                                srv.request.goal = pose_;
+                                
+                                icra_roboin_msgs::SetGoal_2 srv;
+                                srv.request.header.frame_id  = "map";
+                                srv.request.header.stamp = ros::Time::now();
+                                srv.request.x = x;
+                                srv.request.y = y;
+                                srv.request.yaw = w;
+                                srv.request.xa = 0;
+                                srv.request.ya = 0;
+                                srv.request.yawa =0;
+                                srv.request.etc = 0;
 
                                 if (client2_.call(srv))
                                 {
@@ -218,17 +229,17 @@ int main(int argc, char** argv)
                                 x=-1;
                                 y=0;
                                 w=0;
-                                icra_roboin_msgs::BehaviorGoalSet srv;
-                                geometry_msgs::PoseStamped pose_;
-                                pose_.header.frame_id  = "map";
-                                pose_.header.stamp = ros::Time::now();
-                                pose_.pose.position.x = x;
-                                pose_.pose.position.y = y;
-                                pose_.pose.position.z = w;
-                                pose_.pose.orientation = tf::createQuaternionMsgFromYaw(0);
 
-                            
-                                srv.request.goal = pose_;
+                                icra_roboin_msgs::SetGoal_2 srv;
+                                srv.request.header.frame_id  = "map";
+                                srv.request.header.stamp = ros::Time::now();
+                                srv.request.x = x;
+                                srv.request.y = y;
+                                srv.request.yaw = w;
+                                srv.request.xa = 0;
+                                srv.request.ya = 0;
+                                srv.request.yawa =0;
+                                srv.request.etc = 0;
 
                                 if (client2_.call(srv))
                                 {

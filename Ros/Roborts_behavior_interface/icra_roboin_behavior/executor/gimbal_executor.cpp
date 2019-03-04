@@ -30,7 +30,7 @@ BehaviorState GimbalExecutor::Update(){
 void GimbalExecutor::Cancel(){
     switch (executor_mode_){
         case GimbalMode::IDLE:
-            ROS_WARN("gimbal executor cancle: nothing to be canceled");
+            ROS_INFO("gimbal executor cancle: nothing to be canceled");
             break;
         
         case GimbalMode::ANGLE:

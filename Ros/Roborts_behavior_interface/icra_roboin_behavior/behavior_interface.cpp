@@ -19,24 +19,40 @@ BehaviorInterface::BehaviorInterface(icra_roboin_behavior::ChassisExecutor*& cha
 }
 
 bool BehaviorInterface::SetBehaviorStyleCB(icra_roboin_msgs::BehaviorStyleSet::Request &req, icra_roboin_msgs::BehaviorStyleSet::Response &res) {
-  int tmp = req.behavior;
-  if (int(blackboard_->GetBehaviorStyle()) == tmp){
+  ROS_DEBUG("behavior interface: Behavior received: %d",req.behavior);
+  auto selected_behavior = static_cast<icra_roboin_behavior::BehaviorStyle>(req.behavior);
+  icra_roboin_behavior::BehaviorStyle current_style = blackboard_->GetBehaviorStyle();
+  if (current_style == selected_behavior){
     res.is_new = false;
   } else {
     res.is_new = true;
     //ROS_INFO("req:%d,BB:%d",tmp,int(blackboard_->GetBehaviorStyle());
-    chassis_executor_->Cancel();
-    gimbal_executor_->Cancel();
+    for(auto behav: behavior_factory_){
+      if(behav->GetBehaviorStyle() == current_style){
+        behav->Cancel();
+        break;
+      }
+    }
+    ROS_INFO("behavior_interface: cancel behaviors");
   }
-  blackboard_->SetBehaviorStyle(static_cast<icra_roboin_behavior::BehaviorStyle>(tmp));
-  ROS_DEBUG("behavior interface: Behavior received: %d",req.behavior);
+  blackboard_->SetBehaviorStyle(selected_behavior);
   return true;
 }
 
-bool BehaviorInterface::SetBehaviorGoalCB(icra_roboin_msgs::BehaviorGoalSet::Request &req, icra_roboin_msgs::BehaviorGoalSet::Response &res) {
-  blackboard_ -> SetGoalPose(req.goal);
-  res.is_new = true;
-  ROS_DEBUG("behavior interface: Goal received: %f,%f,%f",req.goal.pose.position.x,req.goal.pose.position.y,req.goal.pose.position.z);
+bool BehaviorInterface::SetBehaviorGoalCB(icra_roboin_msgs::SetGoal_2::Request &req, icra_roboin_msgs::SetGoal_2::Response &res) {
+  geometry_msgs::PoseStamped goal;
+  goal.header = req.header;
+  goal.pose.position.x=req.x;
+  goal.pose.position.y=req.y;
+  goal.pose.position.z=req.yaw;
+  goal.pose.orientation.x=req.xa;
+  goal.pose.orientation.y=req.ya;
+  goal.pose.orientation.z=req.yawa;
+  goal.pose.orientation.w=req.etc;
+  blackboard_ -> SetGoalPose(goal);
+  res.success = true;
+  res.info = 0;
+  ROS_DEBUG("behavior interface: Goal received: %f,%f,%f,%f,%f,%f,%f",req.x,req.y,req.yaw,req.xa,req.ya,req.yawa,req.etc);
   return true;
 }
 

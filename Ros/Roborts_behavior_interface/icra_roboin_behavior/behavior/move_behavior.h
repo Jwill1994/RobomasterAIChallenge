@@ -18,7 +18,7 @@ class MoveBehavior: public BehaviorBase{
 
         bool Run() {
             if(blackboard_->IsNewGoalPose()){
-                chassis_executor_->Execute(blackboard_->GetGoalPose());
+                chassis_executor_->Execute(blackboard_->GetGoalPoseQuaternion());
             }
             return true;
             //TODO: check whether goal is sent successfully

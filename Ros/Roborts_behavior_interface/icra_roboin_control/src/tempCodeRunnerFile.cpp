@@ -1,1 +1,0 @@
-rosrun icra_roboin_control navigation_control_node _x:=5 _y:=1 _yaw:=0

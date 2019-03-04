@@ -6,15 +6,16 @@ namespace icra_roboin_behavior
 {
 
 enum class BehaviorState {
+    IDLE=0,
     RUNNING=1,
     SUCCESS,
     FAILURE,
-    IDLE,
 };
 
 enum class BehaviorStyle {
+    STOP=0,
     MOVE=1,
-    FORCE_MOVE,
+    MANUAL_ACCEL,
     ATTACK,
     CHASE,
     PATROL,
@@ -23,19 +24,20 @@ enum class BehaviorStyle {
     RELOAD,
     BACKBOOT,
     MANUAL_SPEED,
-    MANUAL_ACCEL,
-    STOP,
+    END,
+    
 };
 
 enum class ChassisMode {
+    IDLE=0,
     NAVIGATION=1,
-    SPEED,
     ACCEL,
-    IDLE,
+    SPEED,
+    
 };
 enum class GimbalMode {
+    IDLE=0,
     ANGLE=1,
-    IDLE,
 };
 
 

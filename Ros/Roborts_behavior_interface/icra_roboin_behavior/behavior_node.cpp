@@ -10,11 +10,12 @@ int main(int argc, char** argv) {
 
     auto move_behavior = std::make_shared<icra_roboin_behavior::MoveBehavior>(chassis_executor,gimbal_executor,blackboard);
     auto manual_speed_behavior = std::make_shared<icra_roboin_behavior::ManualSpeedBehavior>(chassis_executor,gimbal_executor,blackboard);
-
+    auto manual_accel_behavior = std::make_shared<icra_roboin_behavior::ManualAccelBehavior>(chassis_executor,gimbal_executor,blackboard);
 
     std::vector<std::shared_ptr<icra_roboin_behavior::BehaviorBase>> behavior_factory;
     behavior_factory.push_back(std::dynamic_pointer_cast<icra_roboin_behavior::BehaviorBase>(move_behavior));
     behavior_factory.push_back(std::dynamic_pointer_cast<icra_roboin_behavior::BehaviorBase>(manual_speed_behavior));
+    behavior_factory.push_back(std::dynamic_pointer_cast<icra_roboin_behavior::BehaviorBase>(manual_accel_behavior));
 
     icra_roboin_behavior::BehaviorInterface behavior_interface(chassis_executor,gimbal_executor,blackboard,behavior_factory);
 

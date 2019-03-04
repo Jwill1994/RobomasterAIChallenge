@@ -32,9 +32,9 @@
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find icra_roboin_bringup)/rviz/rrts_behav.rviz" />
 
   <!-- behavior interface node -->
-  <node pkg="icra_roboin_behavior" type="behavior_node" name="behavior_node" respawn="false" output="screen"/>
+  <node pkg="icra_roboin_behavior" type="behavior_node" name="behavior_node" respawn="false" launch-prefix="xterm -e"/>
 
-  <node pkg="icra_roboin_behavior" type="behavior_test" name="behavior_test" respawn="false" launch-prefix="xterm -e" />
+  <node pkg="icra_roboin_control" type="new_behavior_test" name="new_behavior_test" respawn="false" launch-prefix="xterm -e" />
 
 
 </launch>
