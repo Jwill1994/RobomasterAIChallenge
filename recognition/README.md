@@ -4,14 +4,31 @@
 # 해더파일 설명
 
 allign.hpp : 화각 조정 합수 집합 (거리화면과 RGB화면의 일치화)
+
+
 Cfg_robot.hpp : 적을 식별하고, 로봇에게 고유 넘버를 부여할 함수 // 작성중
+
+
 cv-helper.hpp : realsense이미지와 opencv MAt이미지를 만들어 주는 함수 집합
+
+
 Data_Control.hpp : 구조체를 만들어서 총괄적인 데이터 관리를 위한 함수 집합
+
+
 detection.hpp : yolo를 사용해서 로봇을 디텍팅하는 코드를 모아둔 헤더
+
+
 KCFtraker.hpp : 트래킹을 하는 전반적인 함수 모음
+
+
 pch.hpp : 필요한 include파일을 통합 관리해주는 헤더
+
+
 SendData_contorl.hpp : 다른 장치에게 보낼 데이터를 만들어 주는 해더파일 모음
+
+
 Vision_main.cpp : 실제 실행용 메인함수가 들어있는 
+
 
 
 # 추후 수정사항
