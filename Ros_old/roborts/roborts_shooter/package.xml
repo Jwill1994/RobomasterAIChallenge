@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>roborts_gazebo</name>
+  <name>roborts_shooter</name>
   <version>0.0.0</version>
-  <description>The roborts_gazebo simulation package</description>
+  <description>The roborts_shooter package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
   <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
-  <maintainer email="woong16430@gmail.com">hw</maintainer>
+  <maintainer email="legendarypyunny@todo.todo">legendarypyunny</maintainer>
 
 
   <!-- One license tag required, multiple allowed, one license per tag -->
@@ -19,7 +19,7 @@
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/roboin_model_simulation</url> -->
+  <!-- <url type="website">http://wiki.ros.org/roborts_shooter</url> -->
 
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->
@@ -49,11 +49,12 @@
   <!-- Use doc_depend for packages you need only for building documentation: -->
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
-  <depend>roscpp</depend>
-  <depend>rospy</depend>
-  <depend>geometry_msgs</depend>
-  <depend>message_generation</depend>
-  <depend>std_msgs</depend>
+  <build_depend>gazebo_ros</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_export_depend>gazebo_ros</build_export_depend>
+  <build_export_depend>roscpp</build_export_depend>
+  <exec_depend>gazebo_ros</exec_depend>
+  <exec_depend>roscpp</exec_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->

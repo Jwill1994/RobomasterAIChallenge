@@ -1,6 +1,7 @@
 #ifndef ROBORTS_DECISION_GIMBAL_EXECUTOR_H
 #define ROBORTS_DECISION_GIMBAL_EXECUTOR_H
 #include "ros/ros.h"
+#include <math.h>
 
 #include "roborts_msgs/GimbalAngle.h"
 #include "roborts_msgs/GimbalRate.h"
@@ -34,6 +35,8 @@ class GimbalExecutor{
    * @brief Execute the gimbal rate task with publisher
    * @param gimbal_rate Given gimbal rate
    */
+  // void Execute();
+
   void Execute(const roborts_msgs::GimbalRate &gimbal_rate);
   /**
    * @brief Update the current gimbal executor state

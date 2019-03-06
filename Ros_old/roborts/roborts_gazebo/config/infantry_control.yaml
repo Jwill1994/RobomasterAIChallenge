@@ -5,12 +5,12 @@ robomaster_ai:
     publish_rate: 50  
 
   # Velocity Controllers ---------------------------------------
-  yaw_velocity_controller:
-    type: effort_controllers/JointVelocityController
+  yaw_position_controller:
+    type: effort_controllers/JointPositionController
     joint: base_link_to_yaw_joint
     pid: {p: 10.0, i: 0.1, d: 1.0}
 
-  pitch_velocity_controller:
-    type: effort_controllers/JointVelocityController
+  pitch_position_controller:
+    type: effort_controllers/JointPositionController
     joint: base_link_to_pitch_joint
     pid: {p: 10.0, i: 0.1, d: 1.0}

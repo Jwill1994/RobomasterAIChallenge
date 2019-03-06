@@ -8,6 +8,8 @@
 
   <node name="kill_gzserver" pkg="roborts_gazebo" type="kill_gzserver.sh"/>
 
+  <!--<node name="gzserver" pkg="gazebo_ros" type="gzserver"/>-->
+
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="$(find roborts_gazebo)/world/$(arg world).world"/>
     <arg name="paused" value="false"/>

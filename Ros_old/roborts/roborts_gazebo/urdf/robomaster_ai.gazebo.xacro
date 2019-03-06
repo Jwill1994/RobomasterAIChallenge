@@ -32,6 +32,11 @@
     <turnGravityOff>false</turnGravityOff>
   </gazebo>
 
+  <gazebo reference="yaw_Link">
+    <material>Gazebo/Red</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+
   <!-- hokuyo -->
   <gazebo reference="base_laser_link">
     <sensor type="ray" name="head_hokuyo_sensor">
@@ -131,6 +136,12 @@
     </plugin>
   </gazebo> 
 
+   <gazebo>
+    <plugin name="roborts_shooter" filename="libroborts_shooter_plugin.so">
+      <gimbal_link>pitch_Link</gimbal_link>
+      <reference_frame>map</reference_frame>
+    </plugin>
+  </gazebo>
 
 
 </robot>

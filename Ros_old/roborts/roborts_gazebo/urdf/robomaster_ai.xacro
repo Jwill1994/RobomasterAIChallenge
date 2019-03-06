@@ -2,7 +2,9 @@
 
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="robomaster_ai">
 
-  <xacro:include filename="$(find roborts_gazebo)/urdf/robomaster_ai_gazebo.xacro"/>
+  <xacro:include filename="$(find roborts_gazebo)/urdf/robomaster_ai.gazebo.xacro"/>
+  <xacro:include filename="$(find roborts_gazebo)/urdf/robomaster_ai.trans.xacro"/>
+  <xacro:include filename="$(find roborts_gazebo)/urdf/robomaster_ai.bullet.xacro"/>
 
   <link name="base_footprint"/>
 
@@ -338,15 +340,7 @@
           rgba="1 1 1 1" />
       </material>
     </visual>
-    <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://roborts_gazebo/meshes/pitch_Link.STL" />
-      </geometry>
-    </collision>
+
   </link>
 
   
@@ -545,30 +539,6 @@
     <axis
       xyz="0 0 0" />
   </joint>
-
-
-  <transmission name="base_link_to_yaw_joint_trans">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="base_link_to_yaw_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="base_link_to_yaw_joint_motor">
-      <mechanicalReduction>1</mechanicalReduction>
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
-    </actuator>
-  </transmission>
-
-
-  <transmission name="base_link_to_pitch_joint_trans">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="base_link_to_pitch_joint">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="base_link_to_pitch_joint_motor">
-      <mechanicalReduction>1</mechanicalReduction>
-      <hardwareInterface>EffortJointInterface</hardwareInterface>
-    </actuator>
-  </transmission>
 
 
 </robot>

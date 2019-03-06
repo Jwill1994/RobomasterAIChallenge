@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   roborts_msgs
   std_msgs
+  gazebo_msgs
 )
 
 find_package(OpenCV REQUIRED 
@@ -23,8 +24,8 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(vel_to_command src/vel_to_command.cpp)
-target_link_libraries(vel_to_command
+add_executable(angle_to_command src/angle_to_command.cpp)
+target_link_libraries(angle_to_command
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES})
 

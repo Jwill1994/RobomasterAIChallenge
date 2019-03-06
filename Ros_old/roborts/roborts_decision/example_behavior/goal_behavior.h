@@ -21,22 +21,12 @@ class GoalBehavior {
       blackboard_(blackboard) { }
 
   void Run() {
-    roborts_msgs::GimbalRate gimbal_rate_;
 
     if(blackboard_->IsNewGoal()){
       chassis_executor_->Execute(blackboard_->GetGoal());
-
-      gimbal_rate_.yaw_rate = 2.0;
-      gimbal_rate_.pitch_rate = 0.0;
-
-      gimbal_executor_->Execute(gimbal_rate_);
+      // gimbal_executor_->Execute();
     }
-    else {
-      gimbal_rate_.yaw_rate = 0.0;
-      gimbal_rate_.pitch_rate = 0.0;
 
-      gimbal_executor_->Execute(gimbal_rate_);
-    }
   }
 
   void Cancel() {

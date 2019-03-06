@@ -15,8 +15,8 @@
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
 	output="screen" ns="/robomaster_ai"
 	args="joint_state_controller
-	      yaw_velocity_controller
-	      pitch_velocity_controller" />   
+	      yaw_position_controller
+	      pitch_position_controller" />   
 
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find roborts_gimbal)/rviz/gimbal_control.rviz"/>
 
