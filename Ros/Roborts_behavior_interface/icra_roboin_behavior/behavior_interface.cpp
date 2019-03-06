@@ -62,7 +62,10 @@ bool BehaviorInterface::GetGeneralInfoServiceCB(icra_roboin_msgs::BlackboardGene
     UpdateBlackboardState();
     resp.stamp = ros::Time();
     resp.my_pose = blackboard_->GetMyPose();
-    resp.enemy_pose = blackboard_->GetEnemyPose();
+    resp.enemy_count = blackboard_ -> GetEnemyNumber();
+    auto tmp = blackboard_->GetEnemyPoses();
+    resp.enemy_pose1 = tmp[0];
+    resp.enemy_pose2 = tmp[1];
     resp.goal_pose = blackboard_->GetGoalPose();
     resp.is_enemy_detected = blackboard_-> IsEnemyDetected();
     resp.has_defense_bonus = blackboard_-> HasDefenseBonus();

@@ -5,20 +5,14 @@ namespace icra_roboin_behavior{
 
 
 Blackboard::Blackboard(): is_enemy_detected_(false),
-                            enemy_detection_action_client_("armor_detection_node_action",true),
-                            behavior_style_(icra_roboin_behavior::BehaviorStyle::STOP),behavior_state_(icra_roboin_behavior::BehaviorState::IDLE)
+                            behavior_style_(icra_roboin_behavior::BehaviorStyle::STOP),
+                            behavior_state_(icra_roboin_behavior::BehaviorState::IDLE)
 {
+    ros::NodeHandle nh;
+    sub_ = nh.subscribe("enemy_info",5,&Blackboard::EnemyDetectionCB,this);
     tf_ptr_ = std::make_shared<tf::TransformListener>(ros::Duration(10));
     
-    if(false){   //temporarily disable enemy detection for development
-        enemy_detection_action_client_.waitForServer();
-        ROS_INFO("enemy detection server connected");
-        enemy_detection_command_.command = 1; // 1: start    2: pause    3: stop
-        enemy_detection_action_client_.sendGoal(enemy_detection_command_,
-                                                actionlib::SimpleActionClient<roborts_msgs::ArmorDetectionAction>::SimpleDoneCallback(),
-                                                actionlib::SimpleActionClient<roborts_msgs::ArmorDetectionAction>::SimpleActiveCallback(),
-                                                boost::bind(&Blackboard::EnemyDetectionFeedbackCB, this, _1));
-    }
+    
     
 }
 
@@ -31,15 +25,43 @@ bool Blackboard::HasDefenseBonus() {return has_defense_bonus_;}
 
 
 
-void Blackboard::EnemyDetectionFeedbackCB(const roborts_msgs::ArmorDetectionFeedbackConstPtr& feedback){
-    if (feedback->detected){
+void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::ConstPtr& yolo){
+    if (yolo->number_of_detection != 0){
         is_enemy_detected_ = true;
         EnemyAlert();
         ROS_INFO("Enemy Detected!");
-        UpdateEnemyPose(feedback->enemy_pos);
+        enemy_poses_.clear();
+        number_of_enemy_=0;
+        for(int i=0;i>2;i++){
+            tf::Stamped<tf::Pose> enemy_cam_tf, enemy_global_tf;
+            geometry_msgs::PoseStamped enemy_cam_pose, enemy_global_pose;
+            enemy_cam_pose.header.frame_id="camera";
+            enemy_cam_pose.header.stamp = yolo->stamp;
+            enemy_cam_pose.pose.position.z = yolo->distance[i] * std::sin((float(yolo->angle_verti[i]) / 100)*3.141592/180);
+            double flat_d = yolo->distance[i] * std::cos((float(yolo->angle_verti[i]) / 100)*3.141592/180);
+            enemy_cam_pose.pose.position.x = flat_d * std::cos((float(yolo->angle_hori[i]) / 100)*3.141592/180);
+            enemy_cam_pose.pose.position.y = flat_d * std::sin((float(yolo->angle_hori[i]) / 100)*3.141592/180);
+            
+            //TODO: make code to classify ally and enemy with ally pose data 
+            // if (not_enemy) break;
+            number_of_enemy_++;
 
+            tf::poseStampedMsgToTF(enemy_cam_pose, enemy_cam_tf);
+            enemy_cam_tf.stamp_ = ros::Time(0);
+            try
+            {
+                tf_ptr_->transformPose("map",enemy_cam_tf,enemy_global_tf);
+                tf::poseStampedTFToMsg(enemy_global_tf,enemy_global_pose);
+                enemy_poses_.push_back(enemy_global_pose);
+            }
+            catch (tf::TransformException& ex) {
+                ROS_ERROR("blackboard enemy detection callback tf error");
+            }
+        }
+        enemy_poses_estimate_ = enemy_poses_;
     } else {
         is_enemy_detected_ = false;
+        number_of_enemy_ = 0;
     }
 }
 
@@ -48,8 +70,12 @@ const geometry_msgs::PoseStamped Blackboard::GetMyPose(){
     return my_pose_;
 }
 
-geometry_msgs::PoseStamped Blackboard::GetEnemyPose() const{
-    return enemy_pose_;
+std::vector<geometry_msgs::PoseStamped> Blackboard::GetEnemyPoses() const{
+    return enemy_poses_;
+}
+
+int Blackboard::GetEnemyNumber() const {
+    return number_of_enemy_;
 }
 
 geometry_msgs::PoseStamped Blackboard::GetGoalPose() const{
@@ -95,29 +121,7 @@ void Blackboard::UpdateMyPose() {
     }
 }
 
-void Blackboard::UpdateEnemyPose(geometry_msgs::PoseStamped enemy) {
-    tf::Stamped<tf::Pose> enemy_cam_tf, enemy_global_tf;
-    geometry_msgs::PoseStamped enemy_cam_pose, enemy_global_pose;
-    enemy_cam_pose = enemy;
-    double distance = std::sqrt(std::pow(enemy_cam_pose.pose.position.x,2) + std::pow(enemy_cam_pose.pose.position.y,2));
-    double yaw = std::atan(enemy_cam_pose.pose.position.y/enemy_cam_pose.pose.position.x);
-    tf::Quaternion _q = tf::createQuaternionFromRPY(0,0,yaw);
-    enemy_cam_pose.pose.orientation.w = _q.w();
-    enemy_cam_pose.pose.orientation.x = _q.x();
-    enemy_cam_pose.pose.orientation.y = _q.y();
-    enemy_cam_pose.pose.orientation.z = _q.z();
-    tf::poseStampedMsgToTF(enemy_cam_pose, enemy_cam_tf);
-    enemy_cam_tf.stamp_ = ros::Time(0);
-    try
-    {
-        tf_ptr_->transformPose("map",enemy_cam_tf,enemy_global_tf);
-        tf::poseStampedTFToMsg(enemy_global_tf,enemy_global_pose);
-        enemy_pose_ = enemy_global_pose;
-    }
-    catch (tf::TransformException& ex) {
-        ROS_ERROR("blackboard UpdateEnemyPose tf error");
-    }
-}
+
 
 void Blackboard::EnemyAlert(){
 //TODO

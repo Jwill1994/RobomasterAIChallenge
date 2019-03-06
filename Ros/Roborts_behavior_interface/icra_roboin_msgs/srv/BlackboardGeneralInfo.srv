@@ -3,7 +3,9 @@ string request_sender
 ---
 time stamp
 geometry_msgs/PoseStamped my_pose
-geometry_msgs/PoseStamped enemy_pose
+uint8 enemy_count
+geometry_msgs/PoseStamped enemy_pose1
+geometry_msgs/PoseStamped enemy_pose2
 geometry_msgs/PoseStamped goal_pose
 bool is_enemy_detected
 bool has_defense_bonus

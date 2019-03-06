@@ -11,15 +11,24 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
 )
 
-
+add_message_files(
+  DIRECTORY msg
+  FILES
+  YoloDetectionInfo.msg
+)
 
 add_service_files(
   DIRECTORY srv
   FILES
   BlackboardGeneralInfo.srv
   BehaviorStyleSet.srv
-  BehaviorGoalSet.srv
   SetGoal_2.srv
+)
+
+add_action_files(
+  DIRECTORY action
+  FILES
+  YoloDetection.action
 )
 
 generate_messages(
@@ -27,10 +36,11 @@ generate_messages(
   std_msgs
   geometry_msgs
   nav_msgs
+  actionlib_msgs
 )
 
 
-catkin_package(CATKIN_DEPENDS message_runtime)
+catkin_package(CATKIN_DEPENDS actionlib_msgs message_runtime)
 
 
 

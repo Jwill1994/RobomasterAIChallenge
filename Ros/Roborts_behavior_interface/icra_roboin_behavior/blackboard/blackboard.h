@@ -10,11 +10,10 @@
 #include "../enums.h"
 #include "roborts_msgs/ArmorDetectionAction.h"
 #include <memory>
-
+#include "icra_roboin_msgs/YoloDetectionInfo.h"
 
 
 namespace icra_roboin_behavior {
-
 
 
 
@@ -30,7 +29,9 @@ class Blackboard {
         bool HasDefenseBonus();
 
         const geometry_msgs::PoseStamped GetMyPose();
-        geometry_msgs::PoseStamped GetEnemyPose() const;
+        std::vector<geometry_msgs::PoseStamped> GetEnemyPoses() const;
+        int GetEnemyNumber() const;
+
         geometry_msgs::PoseStamped GetGoalPose() const;
         geometry_msgs::PoseStamped GetGoalPoseQuaternion() const;
 
@@ -44,7 +45,7 @@ class Blackboard {
         void SetBehaviorStyle(const icra_roboin_behavior::BehaviorStyle new_style);
         void SetBehaviorState(const icra_roboin_behavior::BehaviorState new_state);
         
-        void EnemyDetectionFeedbackCB(const roborts_msgs::ArmorDetectionFeedbackConstPtr& feedback);
+        void EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::ConstPtr& yolo);
         
 
     private:
@@ -52,19 +53,21 @@ class Blackboard {
         int game_start_timestamp_; 
         bool has_defense_bonus_;
         int defense_time_left_;
+        int number_of_enemy_;
 
         geometry_msgs::PoseStamped my_pose_;
         geometry_msgs::PoseStamped amcl_pose_;
         geometry_msgs::PoseStamped uwb_pose_;
         void UpdateMyPose();
 
-        geometry_msgs::PoseStamped enemy_pose_;
-        geometry_msgs::PoseStamped enemy_pose_estimate_;
+        std::vector<geometry_msgs::PoseStamped> enemy_poses_;
+        std::vector<geometry_msgs::PoseStamped> enemy_poses_estimate_;
+        
         bool is_enemy_detected_;
         bool is_enemy_new_;
         void EnemyAlert();
-        void UpdateEnemyPose(geometry_msgs::PoseStamped enemy);
-        roborts_msgs::ArmorDetectionGoal enemy_detection_command_;
+        
+        
 
         geometry_msgs::PoseStamped goal_pose_;
         bool is_new_goal_pose_;
@@ -73,7 +76,7 @@ class Blackboard {
         icra_roboin_behavior::BehaviorState behavior_state_;
 
         std::shared_ptr<tf::TransformListener> tf_ptr_;
-        actionlib::SimpleActionClient<roborts_msgs::ArmorDetectionAction> enemy_detection_action_client_;
+        ros::Subscriber sub_;
         
 
 };
