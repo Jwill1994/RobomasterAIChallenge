@@ -1,5 +1,5 @@
 <launch>
-    <include file="$(find roborts_navigation)/launch/gazebo_path_planning.launch" />
+    <include file="$(find roborts_gazebo)/launch/gazebo_path_planning.launch" />
 
     <rosparam file="$(find roborts_gazebo)/config/infantry_control.yaml" command="load" />
 
