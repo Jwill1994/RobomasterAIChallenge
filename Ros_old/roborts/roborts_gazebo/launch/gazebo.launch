@@ -1,0 +1,37 @@
+<launch>
+  <arg name="model" default="roborts"/>
+  <arg name="world" default="robomaster"/>
+  <arg name="x_pos" default="-3.55"/>
+  <arg name="y_pos" default="1"/>
+  <arg name="z_pos" default="2"/>
+  <arg name="R_pos" default="1.0"/>
+  <arg name="Y_pos" default="3.14"/>
+
+  <node
+    name="tf_footprint_base"
+    pkg="tf"
+    type="static_transform_publisher"
+    args="0 0 0 0 0 0 base_link base_footprint 40" />
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find roborts_gazebo)/world/$(arg world).world"/>
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find roborts_gazebo)/urdf/$(arg model).urdf" />
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
+  
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf" args="-urdf -model robomaster_ai -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -R $(arg R_pos) -Y $(arg Y_pos) -param robot_description" />
+
+  <node
+    name="fake_joint_calibration"
+    pkg="rostopic"
+    type="rostopic"
+    args="pub /calibrated std_msgs/Bool true" />
+
+</launch>

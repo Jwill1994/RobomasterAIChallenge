@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <robot>
   <!-- materials -->
-  <gazebo reference="base_link">
+  <!--<gazebo reference="base_link">
     <material>Gazebo/Black</material>
     <turnGravityOff>false</turnGravityOff>
-  </gazebo>
+  </gazebo>-->
 
   <gazebo reference="fr_wheel_Link">
     <material>Gazebo/Black</material>
@@ -41,7 +41,7 @@
   <gazebo reference="base_laser_link">
     <sensor type="ray" name="head_hokuyo_sensor">
       <pose>2000 2000 2000 0 0 0</pose>
-      <visualize>true</visualize>
+      <visualize>false</visualize>
       <update_rate>40</update_rate>
       <ray>
         <scan>
@@ -139,7 +139,9 @@
    <gazebo>
     <plugin name="roborts_shooter" filename="libroborts_shooter_plugin.so">
       <gimbal_link>pitch_Link</gimbal_link>
+      <fake_link>fake_link</fake_link>
       <reference_frame>map</reference_frame>
+      <force>2000.0</force>
     </plugin>
   </gazebo>
 

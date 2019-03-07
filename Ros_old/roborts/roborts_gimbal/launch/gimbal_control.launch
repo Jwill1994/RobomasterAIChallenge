@@ -8,7 +8,7 @@
   <rosparam file="$(find roborts_gazebo)/config/infantry_control.yaml" command="load" />
 
   <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher">
-    <param name="use_gui" value="True" />
+    <param name="use_gui" value="False" />
   </node>
 
   <!-- load the controllers -->
@@ -18,6 +18,6 @@
 	      yaw_position_controller
 	      pitch_position_controller" />   
 
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find roborts_gimbal)/rviz/gimbal_control.rviz"/>
+  <!--<node name="rviz" pkg="rviz" type="rviz" args="-d $(find roborts_gimbal)/rviz/gimbal_control.rviz"/>-->
 
 </launch>

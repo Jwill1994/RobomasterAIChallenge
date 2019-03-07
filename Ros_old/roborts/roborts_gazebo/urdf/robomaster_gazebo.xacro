@@ -95,11 +95,12 @@
    </plugin>
  </gazebo>
 
- <gazebo>
+ <!--<gazebo>
   <plugin name="roborts_shooter" filename="libroborts_shooter_plugin.so">
     <gimbal_link>pitch_Link</gimbal_link>
+    <fake_link>fake_link</fake_link>
     <reference_frame>map</reference_frame>
   </plugin>
- </gazebo>
+ </gazebo>-->
 
 </robot>
