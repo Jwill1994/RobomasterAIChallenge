@@ -334,43 +334,43 @@ int main(int argc, char** argv) try
 			ros_msg.number_of_detection= send_.number_of_detection;
 
 
-			ros_msg.infochecker[1] = send_.data_1.infochecker;
-			ros_msg.enemy[1] = send_.data_1.enemy;
-			ros_msg.angle_hori[1] = send_.data_1.angle_hori;
-			ros_msg.angle_verti[1] = send_.data_1.angle_verti;
-			ros_msg.Pixel_X[1] = send_.data_1.Pixel_X;
-			ros_msg.Pixel_Y[1] = send_.data_1.Pixel_Y;
-			ros_msg.Pixel_width[1] = send_.data_1.Pixel_width;
-			ros_msg.Pixel_height[1] = send_.data_1.Pixel_height;
-			ros_msg.real_width[1] = send_.data_1.real_width;
-			ros_msg.real_height[1] = send_.data_1.real_height;
-			ros_msg.distance[1] = send_.data_1.distance;
+			ros_msg.infochecker[0] = send_.data_1.infochecker;
+			ros_msg.enemy[0] = send_.data_1.enemy;
+			ros_msg.angle_hori[0] = send_.data_1.angle_hori;
+			ros_msg.angle_verti[0] = send_.data_1.angle_verti;
+			ros_msg.Pixel_X[0] = send_.data_1.Pixel_X;
+			ros_msg.Pixel_Y[0] = send_.data_1.Pixel_Y;
+			ros_msg.Pixel_width[0] = send_.data_1.Pixel_width;
+			ros_msg.Pixel_height[0] = send_.data_1.Pixel_height;
+			ros_msg.real_width[0] = send_.data_1.real_width;
+			ros_msg.real_height[0] = send_.data_1.real_height;
+			ros_msg.distance[0] = send_.data_1.distance;
 
 
-			ros_msg.infochecker[2] = send_.data_2.infochecker;
-			ros_msg.enemy[2] = send_.data_2.enemy;
-			ros_msg.angle_hori[2] = send_.data_2.angle_hori;
-			ros_msg.angle_verti[2] = send_.data_2.angle_verti;
-			ros_msg.Pixel_X[2] = send_.data_2.Pixel_X;
-			ros_msg.Pixel_Y[2] = send_.data_2.Pixel_Y;
-			ros_msg.Pixel_width[2] = send_.data_2.Pixel_width;
-			ros_msg.Pixel_height[2] = send_.data_2.Pixel_height;
-			ros_msg.real_width[2] = send_.data_2.real_width;
-			ros_msg.real_height[2] = send_.data_2.real_height;
-			ros_msg.distance[2] = send_.data_2.distance;
+			ros_msg.infochecker[1] = send_.data_2.infochecker;
+			ros_msg.enemy[1] = send_.data_2.enemy;
+			ros_msg.angle_hori[1] = send_.data_2.angle_hori;
+			ros_msg.angle_verti[1] = send_.data_2.angle_verti;
+			ros_msg.Pixel_X[1] = send_.data_2.Pixel_X;
+			ros_msg.Pixel_Y[1] = send_.data_2.Pixel_Y;
+			ros_msg.Pixel_width[1] = send_.data_2.Pixel_width;
+			ros_msg.Pixel_height[1] = send_.data_2.Pixel_height;
+			ros_msg.real_width[1] = send_.data_2.real_width;
+			ros_msg.real_height[1] = send_.data_2.real_height;
+			ros_msg.distance[1] = send_.data_2.distance;
 
 
-			ros_msg.infochecker[3] = send_.data_3.infochecker;
-			ros_msg.enemy[3] = send_.data_3.enemy;
-			ros_msg.angle_hori[3] = send_.data_3.angle_hori;
-			ros_msg.angle_verti[3] = send_.data_3.angle_verti;
-			ros_msg.Pixel_X[3] = send_.data_3.Pixel_X;
-			ros_msg.Pixel_Y[3] = send_.data_3.Pixel_Y;
-			ros_msg.Pixel_width[3] = send_.data_3.Pixel_width;
-			ros_msg.Pixel_height[3] = send_.data_3.Pixel_height;
-			ros_msg.real_width[3] = send_.data_3.real_width;
-			ros_msg.real_height[3] = send_.data_3.real_height;
-			ros_msg.distance[3] = send_.data_3.distance;
+			ros_msg.infochecker[2] = send_.data_3.infochecker;
+			ros_msg.enemy[2] = send_.data_3.enemy;
+			ros_msg.angle_hori[2] = send_.data_3.angle_hori;
+			ros_msg.angle_verti[2] = send_.data_3.angle_verti;
+			ros_msg.Pixel_X[2] = send_.data_3.Pixel_X;
+			ros_msg.Pixel_Y[2] = send_.data_3.Pixel_Y;
+			ros_msg.Pixel_width[2] = send_.data_3.Pixel_width;
+			ros_msg.Pixel_height[2] = send_.data_3.Pixel_height;
+			ros_msg.real_width[2] = send_.data_3.real_width;
+			ros_msg.real_height[2] = send_.data_3.real_height;
+			ros_msg.distance[2] = send_.data_3.distance;
 			
 
 
