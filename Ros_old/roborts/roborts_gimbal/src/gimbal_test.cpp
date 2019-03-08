@@ -5,6 +5,8 @@
 
 #include "ros/ros.h"
 
+#include <thread>
+
 
 void commandGimbalAngle(ros::Publisher cmd_gimbal_angle_pub_, roborts_msgs::GimbalAngle &gimbal_angle_);
 void setGimbalMode(ros::ServiceClient gimbal_mode_client_, roborts_msgs::GimbalMode &gimbal_mode_);
@@ -31,7 +33,7 @@ int main(int argc, char **argv) {
     ros::ServiceClient cmd_shoot_client = nh.serviceClient<roborts_msgs::ShootCmd>("cmd_shoot");
     roborts_msgs::ShootCmd shoot_cmd;
     
-    int selection;
+    char selection;
 
     std::cout << "**************************************************************************************" << std::endl;
     std::cout << "**********************************Select Action***************************************" << std::endl;
@@ -43,8 +45,10 @@ int main(int argc, char **argv) {
     std::cout << "> ";
     std::cin >> selection;
 
-    // ros::Rate rate(10);
-    // while(ros::ok()){
+    // auto command_thread= std::thread(commandGimbalAngle);
+
+    ros::Rate rate(10);
+    while(ros::ok()){
         
         switch (selection) {
         //back to boot area
@@ -67,9 +71,12 @@ int main(int argc, char **argv) {
         default:
             break;
         }
-    //     ros::spinOnce();
-    //     rate.sleep();
-    // }
+
+        ros::spinOnce();
+        rate.sleep();
+    }
+
+    
     return 0;
     
 }
@@ -86,6 +93,8 @@ void commandGimbalAngle(ros::Publisher cmd_gimbal_angle_pub_, roborts_msgs::Gimb
     gimbal_angle_.pitch_mode = true;
 
     cmd_gimbal_angle_pub_.publish(gimbal_angle_);
+
+    // ros::spin();
 }
 
 void setGimbalMode(ros::ServiceClient gimbal_mode_client_, roborts_msgs::GimbalMode &gimbal_mode_) {
