@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>icra_roboin_decision</name>
+  <name>icra_roboin_simulation</name>
   <version>0.0.0</version>
-  <description>The icra_roboin_decision package</description>
+  <description>The icra_roboin_simulation package</description>
   <maintainer email="hw@todo.todo">hw</maintainer>
 
   <license>TODO</license>
@@ -16,7 +16,6 @@
   <build_depend>roborts_common</build_depend>
   <build_depend>roborts_msgs</build_depend>
   <build_depend>icra_roboin_msgs</build_depend>
-  <build_depend>icra_roboin_behavior</build_depend>
 
 
   

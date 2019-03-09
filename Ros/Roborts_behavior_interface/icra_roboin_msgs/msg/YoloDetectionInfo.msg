@@ -1,7 +1,7 @@
 time stamp
 int16 number_of_detection
-uint8[3] infochecker
-uint8[3] enemy
+int8[3] reserved
+int8[3] enemy_detected
 int16[3] angle_hori
 int16[3] angle_verti
 int16[3] Pixel_X

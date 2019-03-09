@@ -9,10 +9,10 @@ define block model
 define frontcamera camera
 (
   size [ 0.0 0.0 0.0 ]
-  range [ 0.1 8.0 ]
+  range [ 0.3 8.0 ]
   resolution [ 64 48 ]
   fov [ 80 60 ]
-  pantilt [ 0 10 ]
+  pantilt [ 0 0 ]
   alwayson 1
 )
 
@@ -35,7 +35,7 @@ define rmcar position
   origin [0 0 0 0]
   gui_nose 1
   drive "omni"
-  frontcamera(pose [ 0.2 0 0.3 0 ])
+  frontcamera(pose [ 0 0 0.3 0 ])
   rplidar(pose [ 0 0 0 0 ])
   
   odom_error [0.03 0.03 0.00 0.05]

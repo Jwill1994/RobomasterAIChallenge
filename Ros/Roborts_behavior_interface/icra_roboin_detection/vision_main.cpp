@@ -334,8 +334,8 @@ int main(int argc, char** argv) try
 			ros_msg.number_of_detection= send_.number_of_detection;
 
 
-			ros_msg.infochecker[0] = send_.data_1.infochecker;
-			ros_msg.enemy[0] = send_.data_1.enemy;
+			
+			ros_msg.enemy_detected[0] = send_.data_1.infochecker;
 			ros_msg.angle_hori[0] = send_.data_1.angle_hori;
 			ros_msg.angle_verti[0] = send_.data_1.angle_verti;
 			ros_msg.Pixel_X[0] = send_.data_1.Pixel_X;
@@ -347,8 +347,8 @@ int main(int argc, char** argv) try
 			ros_msg.distance[0] = send_.data_1.distance;
 
 
-			ros_msg.infochecker[1] = send_.data_2.infochecker;
-			ros_msg.enemy[1] = send_.data_2.enemy;
+			
+			ros_msg.enemy_detected[1] = send_.data_2.infochecker;
 			ros_msg.angle_hori[1] = send_.data_2.angle_hori;
 			ros_msg.angle_verti[1] = send_.data_2.angle_verti;
 			ros_msg.Pixel_X[1] = send_.data_2.Pixel_X;
@@ -360,8 +360,8 @@ int main(int argc, char** argv) try
 			ros_msg.distance[1] = send_.data_2.distance;
 
 
-			ros_msg.infochecker[2] = send_.data_3.infochecker;
-			ros_msg.enemy[2] = send_.data_3.enemy;
+			
+			ros_msg.enemy_detected[2] = send_.data_3.infochecker;
 			ros_msg.angle_hori[2] = send_.data_3.angle_hori;
 			ros_msg.angle_verti[2] = send_.data_3.angle_verti;
 			ros_msg.Pixel_X[2] = send_.data_3.Pixel_X;

@@ -11,7 +11,7 @@
 #include "roborts_msgs/ArmorDetectionAction.h"
 #include <memory>
 #include "icra_roboin_msgs/YoloDetectionInfo.h"
-
+#include <vector>
 
 namespace icra_roboin_behavior {
 
@@ -29,14 +29,14 @@ class Blackboard {
         bool HasDefenseBonus();
 
         const geometry_msgs::PoseStamped GetMyPose();
-        std::vector<geometry_msgs::PoseStamped> GetEnemyPoses() const;
-        int GetEnemyNumber() const;
+        geometry_msgs::PoseStamped GetEnemyPose(int enemy_index) const;  //index 0 : ally  index 1: enemy 1   index 2: enemy 2
+        int GetEnemyNumber() const; //number of detected enemies
 
         geometry_msgs::PoseStamped GetGoalPose() const;
         geometry_msgs::PoseStamped GetGoalPoseQuaternion() const;
 
         bool IsNewGoalPose();
-        bool IsEnemyDetected();
+        bool IsEnemyDetected(int enemy_index);
 
         icra_roboin_behavior::BehaviorStyle GetBehaviorStyle();
         icra_roboin_behavior::BehaviorState GetBehaviorState();
@@ -53,17 +53,25 @@ class Blackboard {
         int game_start_timestamp_; 
         bool has_defense_bonus_;
         int defense_time_left_;
-        int number_of_enemy_;
+        
 
         geometry_msgs::PoseStamped my_pose_;
         geometry_msgs::PoseStamped amcl_pose_;
         geometry_msgs::PoseStamped uwb_pose_;
         void UpdateMyPose();
 
-        std::vector<geometry_msgs::PoseStamped> enemy_poses_;
-        std::vector<geometry_msgs::PoseStamped> enemy_poses_estimate_;
-        
+        geometry_msgs::PoseStamped enemy_pose_1_;
+        geometry_msgs::PoseStamped enemy_pose_2_;
+        geometry_msgs::PoseStamped enemy_pose_1_ghost_;
+        geometry_msgs::PoseStamped enemy_pose_2_ghost_;
+        geometry_msgs::PoseStamped enemy_pose_1_estim_;
+        geometry_msgs::PoseStamped enemy_pose_2_estim_;
+        geometry_msgs::PoseStamped ally_pose_from_vision_;
+
+        int number_of_enemy_;
         bool is_enemy_detected_;
+        bool is_enemy_1_detected_;
+        bool is_enemy_2_detected_;
         bool is_enemy_new_;
         void EnemyAlert();
         

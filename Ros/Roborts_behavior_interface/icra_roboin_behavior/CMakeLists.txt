@@ -43,7 +43,8 @@ target_link_libraries(behavior_node
 
 add_dependencies(behavior_node
   roborts_msgs_generate_messages
-  icra_roboin_msgs_generate_messages)
+  icra_roboin_msgs_generate_messages
+  )
 
 
 
@@ -61,7 +62,8 @@ target_link_libraries(behavior_test
   )
 add_dependencies(behavior_test
   roborts_msgs_generate_messages
-  icra_roboin_msgs_generate_messages)
+  icra_roboin_msgs_generate_messages
+  )
 
 
 
