@@ -1,0 +1,72 @@
+
+DWAPlannerROS:
+
+
+
+  acc_lim_x: 5.0
+  acc_lim_y: 5.0
+  acc_lim_theta: 5.0
+  acc_lim_trans: 5.0
+  
+  max_vel_trans: 2.0
+  min_vel_trans: 0
+  max_vel_x: 2.0
+  min_vel_x: -2.0
+  max_vel_y: 2.0
+  min_vel_y: -2.0
+  max_vel_theta: 3
+  min_vel_theta: 0
+
+  prune_plan: false
+
+  xy_goal_tolerance: 0.3
+  yaw_goal_tolerance: 100
+  latch_xy_goal_tolerance: false
+  
+
+  trans_stopped_vel: 0.1
+  theta_stopped_vel: 0.1
+
+  sim_time: 0.5
+  sim_granularity: 0.025
+  angular_sim_granularity: 0.1
+
+  vx_samples: 3
+  vy_samples: 3
+  vth_samples: 5
+  controller_frequency: 10.0
+
+  path_distance_bias: 32
+  goal_distance_bias: 24
+  occdist_scale: 0.01
+  forward_point_distance: 0.4
+  stop_time_buffer: 0.2
+  scaling_speed: 0.25
+  max_scaling_factor: 0.2
+
+  twirling_scale: 0
+
+  oscillation_reset_dist: 0.05
+  penalize_negative_x: false
+
+  publish_traj_pc : true
+  publish_cost_grid_pc: true
+
+
+
+TrajectoryPlannerROS:
+  max_vel_x: 2
+  min_vel_x: 0
+  max_vel_theta: 0
+  min_in_place_vel_theta: 0
+
+  acc_lim_theta: 0
+  acc_lim_x: 4
+  acc_lim_y: 4
+
+  escape_vel: -0.5
+
+  holonomic_robot: true
+
+
+
