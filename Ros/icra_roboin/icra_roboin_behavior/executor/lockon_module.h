@@ -21,8 +21,8 @@ class LockonModule {
         void SetTargetAngle(double target){
             target_angle_ = target;
             ROS_INFO("target angle: %f",target);
-            if(target > 0.2){
-                SetTargetAngularVelocity(-1 * icra_roboin_behavior::tools::Clip(target_angle_,-3.0,3.0) );
+            if(target > 0.1 | target < -0.1){
+                SetTargetAngularVelocity( icra_roboin_behavior::tools::Clip(3*target_angle_,-3.0,3.0) );
             } else {
                 SetTargetAngularVelocity(0);
             }

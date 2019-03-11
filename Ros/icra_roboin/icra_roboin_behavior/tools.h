@@ -15,7 +15,7 @@ inline double GetDistance(const geometry_msgs::PoseStamped &pose1,
     const double dy = point1.y - point2.y;
     return std::sqrt(dx * dx + dy * dy);
 }
-/*
+
 inline double GetAngle(const geometry_msgs::PoseStamped &pose1,
                   const geometry_msgs::PoseStamped &pose2) {
     const geometry_msgs::Quaternion quaternion1 = pose1.pose.orientation;
@@ -24,10 +24,17 @@ inline double GetAngle(const geometry_msgs::PoseStamped &pose1,
     tf::quaternionMsgToTF(quaternion1, rot1);
     tf::quaternionMsgToTF(quaternion2, rot2);
     double r,p,y;
-    tf::Matrix3x3 mat(rot1.angleShortestPath(rot2));
-    mat.getEulerYPR(y,p,r);
+    double yaw;
+    tf::Matrix3x3 mat1(rot1);
+    tf::Matrix3x3 mat2(rot2);
+    mat1.getEulerYPR(y,p,r);
+    yaw = y;
+    mat2.getEulerYPR(y,p,r);
+    yaw -= y;
+    return yaw;
 }
-*/
+
+/*
 inline double GetAngle(const geometry_msgs::PoseStamped &pose1,
                   const geometry_msgs::PoseStamped &pose2) {
     const geometry_msgs::Quaternion quaternion1 = pose1.pose.orientation;
@@ -35,9 +42,10 @@ inline double GetAngle(const geometry_msgs::PoseStamped &pose1,
     tf::Quaternion rot1, rot2;
     tf::quaternionMsgToTF(quaternion1, rot1);
     tf::quaternionMsgToTF(quaternion2, rot2);
-    return rot1.angleShortestPath(rot2);
+    //return rot1.angleShortestPath(rot2);
+    return rot1.angle(rot2);
 }
-
+*/
 template <class T>
 inline T Clip(T n, T lower, T upper) {
   return std::max(lower, std::min(n, upper));

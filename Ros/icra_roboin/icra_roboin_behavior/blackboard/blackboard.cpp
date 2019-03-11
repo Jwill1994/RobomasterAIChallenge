@@ -7,7 +7,7 @@ namespace icra_roboin_behavior{
 
 
 
-Blackboard::Blackboard(): is_enemy_detected_(false),
+Blackboard::Blackboard(): is_enemy_detected_(false), enemy_priority_(3),
                             behavior_style_(icra_roboin_behavior::BehaviorStyle::STOP),
                             behavior_state_(icra_roboin_behavior::BehaviorState::IDLE)
 {
@@ -243,7 +243,7 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
             catch (tf::TransformException& ex) {
                 ROS_ERROR("blackboard enemy detection callback tf error");
             }
-            if(GetEnemyPriority() != 2) {
+            if(GetEnemyPriority() == 1 | GetEnemyPriority() == 3) {
                 SetLockedOnEnemy(1);
             }
         } else {
@@ -288,7 +288,7 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
             catch (tf::TransformException& ex) {
                 ROS_ERROR("blackboard enemy detection callback tf error");
             }
-            if(GetEnemyPriority() != 1) {
+            if(GetEnemyPriority() == 2 | GetEnemyPriority() == 3) {
                 SetLockedOnEnemy(2);
             }
 
