@@ -30,9 +30,10 @@ bool LocalizationNode::Init() {
   LocalizationConfig localization_config;
   localization_config.GetParam(&nh_);
 
-  odom_frame_   = std::move(localization_config.odom_frame_id);
-  global_frame_ = std::move(localization_config.global_frame_id);
-  base_frame_   = std::move(localization_config.base_frame_id);
+  
+  odom_frame_   =  std::move(localization_config.odom_frame_id);
+  global_frame_ =  std::move(localization_config.global_frame_id);
+  base_frame_   =  std::move(localization_config.base_frame_id);
 
   laser_topic_ = std::move(localization_config.laser_topic_name);
 

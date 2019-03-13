@@ -15,6 +15,8 @@ add_message_files(
   DIRECTORY msg
   FILES
   YoloDetectionInfo.msg
+  GoalDescription.msg
+  LockonSpeedControl.msg
 )
 
 add_service_files(
@@ -24,6 +26,12 @@ add_service_files(
   BehaviorStyleSet.srv
   SetGoal_2.srv
   SetEnemyPriority.srv
+  RefereeHit.srv
+  RefereeGameState.srv
+  RefereeShoot.srv
+  RefereeTag.srv
+  RefereeBuff.srv
+  RefereePenalty.srv
 )
 
 add_action_files(

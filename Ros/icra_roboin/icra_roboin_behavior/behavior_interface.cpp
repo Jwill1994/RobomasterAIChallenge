@@ -2,10 +2,10 @@
 
 namespace icra_roboin_behavior {
 
-BehaviorInterface::BehaviorInterface(icra_roboin_behavior::ChassisExecutor*& chassis_executor,
-                    icra_roboin_behavior::GimbalExecutor*& gimbal_executor,
-                    icra_roboin_behavior::LockonModule*& lockon_module,
-                    icra_roboin_behavior::Blackboard*& blackboard,
+BehaviorInterface::BehaviorInterface(ChassisExecutor*& chassis_executor,
+                    GimbalExecutor*& gimbal_executor,
+                    LockonModule*& lockon_module,
+                    Blackboard*& blackboard,
                     std::vector<std::shared_ptr<icra_roboin_behavior::BehaviorBase>>& behavior_factory): 
                                                                     chassis_executor_(chassis_executor),
                                                                     gimbal_executor_(gimbal_executor),
@@ -15,30 +15,53 @@ BehaviorInterface::BehaviorInterface(icra_roboin_behavior::ChassisExecutor*& cha
                                                                     
 {
   ros::NodeHandle nh("~");
+
+  
   set_behavior_style_service_ = nh.advertiseService("behavior_select_service",&BehaviorInterface::SetBehaviorStyleCB,this);
   set_goal_service_ = nh.advertiseService("goal_select_service",&BehaviorInterface::SetBehaviorGoalCB,this);
-  set_enemy_priority_service_ = nh.advertiseService("enemy_priority_select_service",&BehaviorInterface::SetEnemyPriorityCB,this);
+  set_enemy_priority_service_ = nh.advertiseService("set_enemy_priority_service",&BehaviorInterface::SetEnemyPriorityCB,this);
   general_info_server_ = nh.advertiseService("blackboard/general_info_service",&BehaviorInterface::GetGeneralInfoServiceCB,this);
+
+
+  //referee_shoot_service_ = nh.advertiseService("referee_shoot_service",&BehaviorInterface::RefereeShootCB,this);
+  //referee_tag_service_ = nh.advertiseService("referee_tag_service",&BehaviorInterface::RefereeTagCB,this);
 }
 
-bool BehaviorInterface::SetBehaviorStyleCB(icra_roboin_msgs::BehaviorStyleSet::Request &req, icra_roboin_msgs::BehaviorStyleSet::Response &res) {
-  ROS_DEBUG("behavior interface: Behavior received: %d",req.behavior);
-  auto selected_behavior = static_cast<icra_roboin_behavior::BehaviorStyle>(req.behavior);
-  icra_roboin_behavior::BehaviorStyle current_style = blackboard_->GetBehaviorStyle();
-  if (current_style == selected_behavior){
-    res.is_new = false;
+bool BehaviorInterface::SetBehaviorStyleCB(icra_roboin_msgs::BehaviorStyleSet::Request &req,
+                                           icra_roboin_msgs::BehaviorStyleSet::Response &res) 
+{
+  auto new_behavior = static_cast<BehaviorStyle>(req.behavior);
+  BehaviorStyle current_behavior = blackboard_->GetBehaviorStyle();
+  if (current_behavior == new_behavior){
+    res.success = true;
+    res.info = int(SetBehaviorServiceInfo::ALREADY_THAT_BEHAVIOR);
   } else {
-    res.is_new = true;
-    //ROS_INFO("req:%d,BB:%d",tmp,int(blackboard_->GetBehaviorStyle());
     for(auto behav: behavior_factory_){
-      if(behav->GetBehaviorStyle() == current_style){
-        behav->Cancel();
-        break;
+      if(behav->GetBehaviorStyle() == current_behavior){
+        if( behav->Cancel() ){  // cancel current behavior
+          res.success = true;
+          res.info = int(SetBehaviorServiceInfo::SUCCESS);
+          ROS_INFO("Behavior Interface Set Behavior : successfully canceled behavior");
+          break;
+        } else {
+          if(behav->Update()==BehaviorProcess::BUSY){
+            res.success = false;
+            res.info = int(SetBehaviorServiceInfo::FAIL_BEHAVIOR_BUSY);
+            ROS_INFO("Behavior Interface Set Behavior fail : behavior busy");
+          } else {
+            res.success = false;
+            res.info = int(SetBehaviorServiceInfo::FAIL_UNKNOWN);
+            ROS_INFO("Behavior Interface Set Behavior fail : behavior busy");
+          }
+          return true;
+        }
       }
+    
+
     }
-    ROS_INFO("behavior_interface: cancel behaviors");
   }
-  blackboard_->SetBehaviorStyle(selected_behavior);
+  blackboard_->SetBehaviorStyle(new_behavior); //sets new behavior
+  ROS_INFO("Behavior Interface Set Behavior : successfully set new behavior");
   return true;
 }
 
@@ -49,25 +72,14 @@ bool BehaviorInterface::SetBehaviorGoalCB(icra_roboin_msgs::SetGoal_2::Request &
         break;
       }
   }
-  geometry_msgs::PoseStamped goal;
-  goal.header = req.header;
-  goal.pose.position.x=req.x;
-  goal.pose.position.y=req.y;
-  goal.pose.position.z=req.yaw;
-  goal.pose.orientation.x=req.xa;
-  goal.pose.orientation.y=req.ya;
-  goal.pose.orientation.z=req.yawa;
-  goal.pose.orientation.w=req.etc;
-  blackboard_ -> SetGoalPose(goal);
+  blackboard_ -> SetGoal(req.goal);
   res.success = true;
   res.info = 0;
-  ROS_DEBUG("behavior interface: Goal received: %f,%f,%f,%f,%f,%f,%f",req.x,req.y,req.yaw,req.xa,req.ya,req.yawa,req.etc);
   return true;
 }
 
 bool BehaviorInterface::SetEnemyPriorityCB(icra_roboin_msgs::SetEnemyPriority::Request &req, icra_roboin_msgs::SetEnemyPriority::Response &res) {
-  blackboard_-> SetEnemyPriority(req.enemy_priority);
-  //blackboard_-> SetLockedOnEnemy(req.enemy_priority);
+  blackboard_-> SetEnemyPriority( static_cast<PlayerType>(req.enemy_priority) );
   res.success = true;
   res.info = 0; 
   return true;
@@ -77,23 +89,32 @@ bool BehaviorInterface::SetEnemyPriorityCB(icra_roboin_msgs::SetEnemyPriority::R
 bool BehaviorInterface::GetGeneralInfoServiceCB(icra_roboin_msgs::BlackboardGeneralInfo::Request& req, 
                                         icra_roboin_msgs::BlackboardGeneralInfo::Response& resp)
 {
-    UpdateBlackboardState();
-    resp.stamp = ros::Time();
+    UpdateBehaviorProcess();
+    resp.stamp = ros::Time::now();
+    resp.game_start_time = blackboard_->GetTimeGameStarted();
+    resp.time_passed_from_start = blackboard_->GetTimePassedFromGameStart();
+    resp.game_state = int(blackboard_->GetGameState()); //0,1,2,3 : dead, ready, play, end
+    resp.buff_zone_cooltime = blackboard_->GetTimeLeftForBuffZoneToOnline();
+    resp.reload_zone_cooltime = blackboard_->GetTimeLeftForReloadZoneToOnline();
+    resp.my_health = blackboard_->GetMyHealth();
+    resp.is_hit = blackboard_->GetIsHitSmartResponse();
+    blackboard_->ConfirmHitSmartResponse();
+    resp.which_armor_hit = int(blackboard_->GetWhichArmorHit()); // 0,1,2,3 : front left rear right (counterclockwise)
+    resp.last_hit_time = blackboard_->GetTimeLastHit();
+    resp.has_buff = blackboard_->GetHasBuff();
+    resp.buff_left = blackboard_->GetTimeBuffLeft();
+    resp.ammo = blackboard_->GetAmmo();
     resp.my_pose = blackboard_->GetMyPose();
-    resp.enemy_count = blackboard_ -> GetEnemyNumber();
-    resp.enemy_pose1 = blackboard_ -> GetEnemyPose(1);
-    resp.enemy_pose2 = blackboard_ -> GetEnemyPose(2);
-    resp.goal_pose = blackboard_->GetGoalPose();
-    resp.is_enemy_detected = blackboard_-> IsEnemyDetected(0);
-    resp.is_enemy_1_detected = blackboard_-> IsEnemyDetected(1);
-    resp.is_enemy_2_detected = blackboard_-> IsEnemyDetected(2);
-    resp.has_defense_bonus = blackboard_-> HasDefenseBonus();
-    resp.defense_time_left = blackboard_-> GetDefenseTimeLeft();
-    resp.current_behavior_state = int(blackboard_->GetBehaviorState());
-    resp.current_behavior_style = int(blackboard_->GetBehaviorStyle());
-    resp.locked_on_enemy = blackboard_->GetLockedOnEnemy();
-    resp.enemy_priority = blackboard_->GetEnemyPriority();
-
+    resp.how_many_enemies_detected = blackboard_->GetNumberOfDetectedEnemies();
+    resp.enemy_pose1 = blackboard_->GetEnemyPose(PlayerType::ENEMY_ONE);
+    resp.enemy_pose2 = blackboard_->GetEnemyPose(PlayerType::ENEMY_TWO);
+    resp.is_enemy_1_detected = blackboard_->GetIsEnemyDetected(PlayerType::ENEMY_ONE);
+    resp.is_enemy_2_detected = blackboard_->GetIsEnemyDetected(PlayerType::ENEMY_TWO);
+    resp.locked_on_enemy = int(blackboard_->GetLockedOnEnemy()); // 0,1,2 : no lockon, enemy1, enemy2
+    resp.enemy_priority = int(blackboard_->GetEnemyPriority()); // 0,1,2,3,4 : no priority, enemy1, enemy2, any enemym, reserved slot
+    resp.goal = blackboard_->GetGoal();
+    resp.current_behavior_style = int(blackboard_->GetBehaviorStyle()); 
+    resp.current_behavior_process = int(blackboard_->GetBehaviorProcess()); //0,1,2,3 : idle, running, success, failure
     return true;
 }
 
@@ -112,20 +133,14 @@ void BehaviorInterface::Run(){
 }
 
 
-void BehaviorInterface::UpdateBlackboardState(){
+void BehaviorInterface::UpdateBehaviorProcess(){
   for(auto behav: behavior_factory_){
     if(behav->GetBehaviorStyle()==blackboard_->GetBehaviorStyle()){
-      blackboard_->SetBehaviorState(behav->Update());
+      blackboard_->SetBehaviorProcess(behav->Update());
       break;
     }
   }
 }
-
-
-
-
-
-
 
 
 

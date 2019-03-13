@@ -14,13 +14,13 @@ class GimbalExecutor{
         ~GimbalExecutor() = default;
 
         void Execute(const roborts_msgs::GimbalAngle& gimbal_angle);
-        BehaviorState Update();
+        BehaviorProcess Update();
         void Cancel();
 
     private:
 
         GimbalMode executor_mode_;
-        BehaviorState executor_state_;
+        BehaviorProcess executor_state_;
         ros::Publisher gimbal_pub_;
 
 };

@@ -1,3 +1,4 @@
 uint8 behavior
 ---
-bool is_new
+bool success
+int16 info

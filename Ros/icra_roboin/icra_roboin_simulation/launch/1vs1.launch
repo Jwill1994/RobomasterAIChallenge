@@ -1,0 +1,110 @@
+<launch>
+  <arg name="map" value="icra2019"/>
+  <arg name="world" value="1vs1"/>
+  <master auto="start"/>
+  <param name="/use_sim_time" value="true"/>
+
+
+
+
+
+  <!-- Run the stage simulator -->
+  <node pkg="stage_ros" type="stageros" name="stageros" args="$(find icra_roboin_simulation)/worlds/$(arg world).world" respawn="false" >
+    <param name="base_watchdog_timeout" value="0.05" />
+  </node>
+
+  <node pkg="icra_roboin_simulation" type="stage_laser_transcriber.py" name="stage_laser_transcriber" respawn="false"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="tf0" args="0 0 0 0 0 0 1 robot_0/base_footprint robot_0/base_link 100" respawn="false"/>
+  <node pkg="tf" type="static_transform_publisher" name="tf1" args="0 0 0 0 0 0 1 robot_1/base_footprint robot_1/base_link 100" respawn="false"/>
+
+
+
+
+
+  <group ns="robot_0">
+   	  <param name="tf_prefix" value="robot_0" />
+
+	  <!-- Run the map server -->
+	  <node name="map_server" pkg="map_server" type="map_server" args="$(find icra_roboin_simulation)/maps/$(arg map).yaml" respawn="false" />
+
+
+  	  <!--Load parameters for localization node  -->
+	  <rosparam command="load" file="$(find roborts_localization)/config/localization.yaml" />
+  	  <rosparam command="load" file="$(find roborts_localization)/amcl/config/amcl.yaml" />
+	  <param name="odom_frame_id" value="robot_0/odom"/>
+	  <param name="base_frame_id" value="robot_0/base_link"/>
+	  <param name="global_frame_id" value="robot_0/map"/>
+
+
+
+	  <!-- Run the localization node -->
+	  <node pkg="roborts_localization" type="localization_node" name="localization_node" respawn="false" />
+
+	  <include file="$(find icra_roboin_navigation)/launch/navigation_base.launch">
+	    <arg name="namespace" value="robot_0/"/>
+          </include>
+
+	  <!-- detection simulator node -->
+	  <node pkg="icra_roboin_simulation" type="stage_blob_detector.py" name="yolo_simulator" respawn="false">
+            <param name="my_color" value="blue"/>
+            <param name="ally_color" value="none"/>
+            <param name="enemy1_color" value="red"/>
+            <param name="enemy2_color" value="none"/>
+          </node>
+
+
+
+	  <!-- behavior interface node -->
+	  <node pkg="icra_roboin_behavior" type="behavior_node" name="behavior_node" respawn="false" output="screen">
+            <param name="team" value="blue_team"/>
+            <param name="rule" value="1vs1"/>
+          </node>
+
+  </group>
+
+  <group ns="robot_1">
+   	  <param name="tf_prefix" value="robot_0" />
+
+	  <!-- Run the map server -->
+	  <node name="map_server" pkg="map_server" type="map_server" args="$(find icra_roboin_simulation)/maps/$(arg map).yaml" respawn="false" />
+
+
+  	  <!--Load parameters for localization node  -->
+	  <rosparam command="load" file="$(find roborts_localization)/config/localization.yaml" />
+  	  <rosparam command="load" file="$(find roborts_localization)/amcl/config/amcl.yaml" />
+	  <param name="odom_frame_id" value="robot_1/odom"/>
+	  <param name="base_frame_id" value="robot_1/base_link"/>
+	  <param name="global_frame_id" value="robot_1/map"/>
+
+
+
+	  <!-- Run the localization node -->
+	  <node pkg="roborts_localization" type="localization_node" name="localization_node" respawn="false" />
+
+	  <include file="$(find icra_roboin_navigation)/launch/navigation_base.launch">
+	    <arg name="namespace" value="robot_1/"/>
+          </include>
+
+	  <!-- detection simulator node -->
+	  <node pkg="icra_roboin_simulation" type="stage_blob_detector.py" name="yolo_simulator" respawn="false">
+            <param name="my_color" value="red"/>
+            <param name="ally_color" value="none"/>
+            <param name="enemy1_color" value="blue"/>
+            <param name="enemy2_color" value="none"/>
+          </node>
+
+	  <!-- behavior interface node -->
+	  <node pkg="icra_roboin_behavior" type="behavior_node" name="behavior_node" respawn="false" output="screen">
+            <param name="team" value="red_team"/>
+            <param name="rule" value="1vs1"/>
+          </node>
+
+  </group>
+
+
+  <!-- Run the rviz -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find icra_roboin_simulation)/rviz/1vs1.rviz" />
+
+
+</launch>

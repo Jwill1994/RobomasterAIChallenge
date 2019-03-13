@@ -21,6 +21,7 @@
 
   <!-- Run the localization node -->
   <node pkg="roborts_localization" type="localization_node" name="localization_node" respawn="false" />
+  <!--include file="$(find icra_roboin_navigation)/launch/roboin_amcl.launch"/-->
 
   <include file="$(find icra_roboin_navigation)/launch/navigation_base.launch"/>
 

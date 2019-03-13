@@ -2,7 +2,7 @@
 namespace icra_roboin_behavior {
 
 GimbalExecutor::GimbalExecutor():executor_mode_(GimbalMode::IDLE),
-                                executor_state_(BehaviorState::IDLE)
+                                executor_state_(BehaviorProcess::IDLE)
 {
     ros::NodeHandle nh;
     gimbal_pub_ = nh.advertise<roborts_msgs::GimbalAngle>("cmd_gimbal_angle",1);
@@ -13,13 +13,13 @@ void GimbalExecutor::Execute(const roborts_msgs::GimbalAngle& gimbal_angle){
     gimbal_pub_.publish(gimbal_angle);
 }
 
-BehaviorState GimbalExecutor::Update(){
+BehaviorProcess GimbalExecutor::Update(){
     switch (executor_mode_){
         case GimbalMode::IDLE:
-            executor_state_ = BehaviorState::IDLE;
+            executor_state_ = BehaviorProcess::IDLE;
             break;
         case GimbalMode::ANGLE:
-            executor_state_ = BehaviorState::RUNNING;
+            executor_state_ = BehaviorProcess::RUNNING;
             break;
         default:
             ROS_ERROR("gimbal executor update error: wrong executor mode");

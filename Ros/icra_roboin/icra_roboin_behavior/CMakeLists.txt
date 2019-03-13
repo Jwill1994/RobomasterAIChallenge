@@ -19,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 include_directories(
   include
+  behavior
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -26,11 +27,9 @@ catkin_package()
 
 add_executable(behavior_node
   enums.h
-  behavior/move_behavior.h
-  behavior/manual_speed_behavior.h
-  behavior/manual_accel_behavior.h
   executor/chassis_executor.cpp
   executor/gimbal_executor.cpp
+  executor/lockon_module.h
   blackboard/blackboard.cpp
   behavior_interface.cpp
   behavior_node.cpp
@@ -50,20 +49,6 @@ add_dependencies(behavior_node
 
 
 
-
-
-add_executable(behavior_test
-  behavior_test.cpp
-  )
-
-target_link_libraries(behavior_test
-  PRIVATE
-  ${catkin_LIBRARIES}
-  )
-add_dependencies(behavior_test
-  roborts_msgs_generate_messages
-  icra_roboin_msgs_generate_messages
-  )
 
 
 

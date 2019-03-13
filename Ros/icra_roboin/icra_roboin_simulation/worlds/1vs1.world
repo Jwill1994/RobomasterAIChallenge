@@ -36,7 +36,7 @@ define rmcar position
   gui_nose 1
   drive "omni"
   frontcamera(pose [ 0 0 0.3 0 ])
-  rplidar(pose [ 0 0 0 0 ])
+  rplidar(pose [ 0 0 -0.1 0 ])
   
   odom_error [0.03 0.03 0.00 0.05]
   # [ xmin xmax ymin ymax zmin zmax amin amax ]				
@@ -86,6 +86,6 @@ floorplan
 
 # throw in a robot
  rmcar(pose [ 1 1 0 0 ] name "blue robot" color "blue" )
- rmcar(pose [ 7 4 0 -3.141592 ] name "red robot" color "red" )
+ rmcar(pose [ 7 4 0 180 ] name "red robot" color "red" )
 # throw in a block for test
 

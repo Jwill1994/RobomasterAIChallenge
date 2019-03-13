@@ -7,7 +7,7 @@
 namespace icra_roboin_behavior { namespace tools
 {
 
-inline double GetDistance(const geometry_msgs::PoseStamped &pose1,
+inline double GetPlanarDistance(const geometry_msgs::PoseStamped &pose1,
                      const geometry_msgs::PoseStamped &pose2) {
     const geometry_msgs::Point point1 = pose1.pose.position;
     const geometry_msgs::Point point2 = pose2.pose.position;
@@ -33,6 +33,18 @@ inline double GetAngle(const geometry_msgs::PoseStamped &pose1,
     yaw -= y;
     return yaw;
 }
+
+inline double GetYaw(const geometry_msgs::PoseStamped &pose) {
+    const geometry_msgs::Quaternion quaternion = pose.pose.orientation;
+    tf::Quaternion q;
+    tf::quaternionMsgToTF(quaternion, q);
+    double r,p,y;
+    tf::Matrix3x3 mat(q);
+    mat.getEulerYPR(y,p,r);
+    return y;
+}
+
+
 
 /*
 inline double GetAngle(const geometry_msgs::PoseStamped &pose1,
