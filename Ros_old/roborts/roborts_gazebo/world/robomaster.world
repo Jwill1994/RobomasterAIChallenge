@@ -1,8 +1,6 @@
 <sdf version='1.6'>
   <world name='default'>
 
-
-
     <light name='sun' type='directional'>
       <cast_shadows>1</cast_shadows>
       <pose frame=''>0 0 10 0 -0 0</pose>
@@ -34,20 +32,6 @@
       <name>bullet_3</name>
       <pose>0 0 0 0 0 0</pose>
     </include>
-
-    <include>
-      <uri>model://particle_sphere</uri>
-      <name>bullet_4</name>
-      <pose>0 0 0 0 0 0</pose>
-    </include>
-
-    <include>
-      <uri>model://particle_sphere</uri>
-      <name>bullet_5</name>
-      <pose>0 0 0 0 0 0</pose>
-    </include>
-
-
 
     <model name='ground_plane'>
       <static>1</static>
@@ -707,8 +691,56 @@
 
 
 
-      <link name='start_zone'>
-        <visual name='visual'>
+      <link name='start_zone_red1'>
+        <visual name='start_zone_red1_visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>1 1</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Red</name>
+            </script>
+          </material>
+        </visual>
+
+        <pose frame=''>-3.5 2 0.001 0 -0 0</pose>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        
+      </link>
+
+      <link name='start_zone_red2'>
+        <visual name='start_zone_red2_visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>1 1</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Red</name>
+            </script>
+          </material>
+        </visual>
+
+        <pose frame=''>3.5 2 0.001 0 -0 0</pose>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        
+      </link>
+
+      <link name='start_zone_blue1'>
+        <visual name='start_zone_blue1_visual'>
           <cast_shadows>0</cast_shadows>
           <geometry>
             <plane>
@@ -724,18 +756,36 @@
           </material>
         </visual>
 
-        <pose frame=''>-3.5 2 0.001 0 -0 0</pose>
+        <pose frame=''>-3.5 -2 0.001 0 -0 0</pose>
         <self_collide>0</self_collide>
         <enable_wind>0</enable_wind>
         <kinematic>0</kinematic>
         
       </link>
 
+      <link name='start_zone_blue2'>
+        <visual name='start_zone_blue2_visual'>
+          <cast_shadows>0</cast_shadows>
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>1 1</size>
+            </plane>
+          </geometry>
+          <material>
+            <script>
+              <uri>file://media/materials/scripts/gazebo.material</uri>
+              <name>Gazebo/Blue</name>
+            </script>
+          </material>
+        </visual>
 
-
-
-
-
+        <pose frame=''>3.5 -2 0.001 0 -0 0</pose>
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        
+      </link>
 
       <static>1</static>
     </model>

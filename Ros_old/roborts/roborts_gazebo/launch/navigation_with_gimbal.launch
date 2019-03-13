@@ -9,7 +9,7 @@
 
     <!-- load the controllers -->
     <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
-        output="screen" ns="/robomaster_ai"
+        output="screen" ns="/roborts"
         args="joint_state_controller
             yaw_position_controller
             pitch_position_controller" />

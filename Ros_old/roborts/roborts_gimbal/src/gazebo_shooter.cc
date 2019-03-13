@@ -48,6 +48,12 @@ namespace gazebo
             this->fake_link = _sdf->Get<std::string>("fake_link");
             this->reference_frame_ = _sdf->Get<std::string>("reference_frame");
             this->force = _sdf->Get<double>("force");
+            this->default_freq = _sdf->Get<double>("default_freq");
+
+            if (this->default_freq != 0.0)
+            {
+                max_delta = 1.0 / this->default_freq;
+            }
             
             // Initialize ros, if it has not already bee initialized.
             if (!ros::isInitialized())
@@ -65,9 +71,9 @@ namespace gazebo
             //ros service
             this->gazebo_ros_link_state = this->ros_nh_.serviceClient<gazebo_msgs::GetLinkState>("/gazebo/get_link_state");
             
-            
-
-            
+            //ros service
+            this->ros_ctrl_fric_wheel_srv_ = this->ros_nh_.advertiseService("cmd_fric_wheel", &RobortsShooterPlugin::CtrlFricWheelService, this);
+            this->ros_ctrl_shoot_srv_ = this->ros_nh_.advertiseService("cmd_shoot", &RobortsShooterPlugin::CtrlShootService, this);
 
             // ros::SubscribeOptions so =
             //     ros::SubscribeOptions::create<std_msgs::Float32>(
@@ -80,13 +86,6 @@ namespace gazebo
             // // Spin up the queue helper thread.
             // this->rosQueueThread =
             //     std::thread(std::bind(&RobortsShooterPlugin::QueueThread, this));
-
-            // ros::Publisher pub = ros_nh_.advertise<geometry_msgs::Pose>("gimbal_pose", 1);
-            // pub.publish(this->gimbal_pose);
-            
-
-            // this->ros_ctrl_fric_wheel_srv_ = ros_nh_.advertiseService("cmd_fric_wheel", &RobortsShooterPlugin::CtrlFricWheelService, this);
-            // this->ros_ctrl_shoot_srv_ = ros_nh_.advertiseService("cmd_shoot", &RobortsShooterPlugin::CtrlShootService, this);
 
             // this->ros_shoot_state_pub_ = ros_nh_.advertise<roborts_msgs::ShootState>("shoot_state",1);
             // this->ros_shoot_info_pub_ = ros_nh_.advertise<roborts_msgs::ShootInfo>("shoot_info",1);
@@ -102,93 +101,12 @@ namespace gazebo
             OutputBulletList();
 
             ROS_INFO("Roborts Shooter Ready....");
-
         }
-
-        // // need to be fixed!
-        // bool RobortsShooterPlugin::CtrlFricWheelService(roborts_msgs::FricWhl::Request &req,
-        //                                 roborts_msgs::FricWhl::Response &res){
-        //     roborts_sdk::cmd_fric_wheel_speed fric_speed;
-        //     if(req.open){
-        //         fric_speed.left = 1200;
-        //         fric_speed.right = 1200;
-        //     } else{
-        //         fric_speed.left = 1000;
-        //         fric_speed.right = 1000;
-        //     }
-        //     fric_wheel_pub_->Publish(fric_speed);
-        //     res.received = true;
-        //     return true;
-        // }
-
-        // // need to be fixed!
-        // bool RobortsShooterPlugin::CtrlShootService(roborts_msgs::ShootCmd::Request &req,
-        //                             roborts_msgs::ShootCmd::Response &res){
-        //     roborts_sdk::cmd_shoot_info gimbal_shoot;
-        //     uint16_t default_freq = 1500;
-        //     switch(static_cast<roborts_sdk::shoot_cmd_e>(req.mode)){
-        //         case roborts_sdk::SHOOT_STOP:
-        //         gimbal_shoot.shoot_cmd = roborts_sdk::SHOOT_STOP;
-        //         gimbal_shoot.shoot_add_num = 0;
-        //         gimbal_shoot.shoot_freq = 0;
-        //         break;
-        //         case roborts_sdk::SHOOT_ONCE:
-        //         if(req.number!=0){
-        //             gimbal_shoot.shoot_cmd = roborts_sdk::SHOOT_ONCE;
-        //             gimbal_shoot.shoot_add_num = req.number;
-        //             gimbal_shoot.shoot_freq = default_freq;
-        //         }
-        //         else{
-        //             gimbal_shoot.shoot_cmd = roborts_sdk::SHOOT_ONCE;
-        //             gimbal_shoot.shoot_add_num = 1;
-        //             gimbal_shoot.shoot_freq = default_freq;
-        //         }
-        //         break;
-        //         case roborts_sdk::SHOOT_CONTINUOUS:
-        //         gimbal_shoot.shoot_cmd = roborts_sdk::SHOOT_CONTINUOUS;
-        //         gimbal_shoot.shoot_add_num = req.number;
-        //         gimbal_shoot.shoot_freq = default_freq;
-        //         break;
-        //         default:
-        //         return  false;
-        //     }
-        //     gimbal_shoot_pub_->Publish(gimbal_shoot);
-
-        //     res.received = true;
-        //     return true;
-        // }
 
         // Called by the world update start event
         public: void OnUpdate()
         {
-
-
-            srv_.request.link_name = this->fake_link;
-            srv_.request.reference_frame = this->reference_frame_;
-
-            if(gazebo_ros_link_state.call(srv_)  && srv.response.success){
-                // ROS_WARN("%d", srv_.response.success);
-
-                // ROS_WARN("RESPONSE : %f, %f, %f", srv_.response.link_state.pose.position.x,srv_.response.link_state.pose.position.y,srv_.response.link_state.pose.position.z);
-                // ROS_WARN("GIMBAL_POSE : %f, %f, %f", this->gimbal_pose.position.x,this->gimbal_pose.position.y,this->gimbal_pose.position.z);
-
-                this->x_dir = srv_.response.link_state.pose.position.x - this->gimbal_pose.position.x;
-                this->y_dir = srv_.response.link_state.pose.position.y - this->gimbal_pose.position.y;
-                this->z_dir = srv_.response.link_state.pose.position.z - this->gimbal_pose.position.z;
-
-                // ROS_WARN("BEFORE NORMALIZE : X_DIR, Y_DIR, Z_DIR = %f, %f, %f", this->x_dir, this->y_dir, this->z_dir);
-
-                ignition::math::Vector3d vec = ignition::math::Vector3d(this->x_dir, this->y_dir, this->z_dir).Normalize();
-
-
-                this->x_dir = vec.X();
-                this->y_dir = vec.Y();
-                this->z_dir = vec.Z();
-
-                // ROS_WARN("AFTER NORMALIZE : X_DIR, Y_DIR, Z_DIR = %f, %f, %f", this->x_dir, this->y_dir, this->z_dir);
-            }
-
-
+            // Get current gimbal pose by get link state service call
             srv.request.link_name = this->gimbal_link;
             srv.request.reference_frame = this->reference_frame_;
 
@@ -201,72 +119,82 @@ namespace gazebo
                 this->gimbal_pose.orientation.y = srv.response.link_state.pose.orientation.y;
                 this->gimbal_pose.orientation.z = srv.response.link_state.pose.orientation.z;
                 this->gimbal_pose.orientation.w = srv.response.link_state.pose.orientation.w;
-
-
-
-                // this->q_ = new ignition::math::Quaternion<double>( \
-                //     this->gimbal_pose.orientation.w, this->gimbal_pose.orientation.x, \
-                //     this->gimbal_pose.orientation.y, this->gimbal_pose.orientation.z \
-                // );
-                // // q_.qx = this->gimbal_pose.orientation.x;
-                // // q_.qy = this->gimbal_pose.orientation.y;
-                // // q_.qz = this->gimbal_pose.orientation.z;
-                // // q_.qw = this->gimbal_pose.orientation.w;
-
-                // if(this->gimbal_pose.orientation.w > 1) {this->q_->Normalize();}
-                // double angle = 2 * std::acos(this->gimbal_pose.orientation.w);
-                // double s = std::sqrt(1 - std::pow(this->gimbal_pose.orientation.w,2));
-                // if(s < 0.001) {
-                //     this->x_dir = this->gimbal_pose.orientation.x;
-                //     this->y_dir = this->gimbal_pose.orientation.y;
-                //     this->z_dir = this->gimbal_pose.orientation.z;
-                // } else {
-                //     this->x_dir = this->gimbal_pose.orientation.x / s;
-                //     this->y_dir = this->gimbal_pose.orientation.y / s;
-                //     this->z_dir = this->gimbal_pose.orientation.z / s;
-                // }
-
-                // this->gimbal_roll = this->q_->Euler().X();
-                // this->gimbal_pitch = this->q_->Euler().Y();
-                // this->gimbal_yaw = this->q_->Euler().Z();
-
-                
-
-                // ROS_INFO("%f", this->gimbal_pose.position.x);
-                // ROS_INFO("%f", this->gimbal_pose.position.y);
-                // ROS_INFO("%f", this->gimbal_pose.position.z);
             }
 
+            // Get current fake link pose. Diffrence between gimbal position and fake link position is force direction vector.
+            srv_.request.link_name = this->fake_link;
+            srv_.request.reference_frame = this->reference_frame_;
+
+            if(gazebo_ros_link_state.call(srv_)  && srv.response.success){
+
+                this->x_dir = srv_.response.link_state.pose.position.x - this->gimbal_pose.position.x;
+                this->y_dir = srv_.response.link_state.pose.position.y - this->gimbal_pose.position.y;
+                this->z_dir = srv_.response.link_state.pose.position.z - this->gimbal_pose.position.z;
+
+                ignition::math::Vector3d vec = ignition::math::Vector3d(this->x_dir, this->y_dir, this->z_dir).Normalize();
 
 
-
-
-            // TODO: Check what is necessary now here
-            double new_secs =this->model_->GetWorld()->GetSimTime().Float();
-            double delta = new_secs - this->old_secs;
-
-            double max_delta = 0.0;
-
-            if (this->reset_frequency != 0.0)
-            {
-            max_delta = 1.0 / this->reset_frequency;
+                this->x_dir = vec.X();
+                this->y_dir = vec.Y();
+                this->z_dir = vec.Z();
             }
 
-            if (delta > max_delta && delta != 0.0)
+            if (this->link_to_update_index_now >= this->linkIDToName_size)
             {
-                // We update the Old Time variable.
-                this->old_secs = new_secs;
-                
-                
-                if (this->link_to_update_index_now >= this->linkIDToName_size)
-                {
-                    this->link_to_update_index_now = 0;
+                this->link_to_update_index_now = 0;
+            }
+
+            if(this->fric_whl_open) {
+                switch(this->shoot_mode) {
+                    // SHOOT_STOP
+                    case 0:
+                    break;
+                    // SHOOT_ONCE
+                    case 1:
+                    UpdateBullets(this->link_to_update_index_now);
+                    this->link_to_update_index_now++;
+                    this->shoot_mode = 0;
+                    break;
+                    // SHOOT_CONTINUOS
+                    case 2:
+                    while(this->shoot_add_num > 0) {
+                        UpdateBullets(this->link_to_update_index_now);
+                        this->link_to_update_index_now++;
+                        this->shoot_add_num--;
+                    }
+                    this->shoot_mode = 0;
+                    break;
                 }
-            
-                // Update the Particles
-                UpdateBullets(this->link_to_update_index_now);
-                this->link_to_update_index_now ++;
             }
+            
+
+
+            // // TODO: Check what is necessary now here
+            // double new_secs =this->model_->GetWorld()->GetSimTime().Float();
+            // double delta = new_secs - this->old_secs;
+
+            // double max_delta = 0.0;
+
+            // if (this->reset_frequency != 0.0)
+            // {
+            // max_delta = 1.0 / this->reset_frequency;
+            // }
+
+            // if (delta > max_delta && delta != 0.0)
+            // {
+            //     // We update the Old Time variable.
+            //     this->old_secs = new_secs;
+                
+                
+            //     if (this->link_to_update_index_now >= this->linkIDToName_size)
+            //     {
+            //         this->link_to_update_index_now = 0;
+            //     }
+            
+            //     // Update the Particles
+            //     UpdateBullets(this->link_to_update_index_now);
+            //     this->link_to_update_index_now ++;
+            // }
             
         }
 
@@ -280,21 +208,21 @@ namespace gazebo
 
         }
 
-        void UpdateBullets(int link_to_update_index_now)
+        void UpdateBullets(int link_to_update_index)
         {
-            for (auto model : this->model_->GetWorld()->GetModels())
+            double new_secs =this->model_->GetWorld()->GetSimTime().Float();
+            double delta = new_secs - this->old_secs;
+
+            if (delta > this->max_delta && delta != 0.0)
             {
-                std::string model_name = model->GetName();
-                if (this->linkIDToName[link_to_update_index_now] == model_name)
-                {
-                    if(link_to_update_index_now==2){
-                    this->MoveBullet(model);
-                    this->SetForceBullet(model);
-                    }
-                }
-                
+                // We update the Old Time variable.
+                this->old_secs = new_secs;
+
+                auto bullet = this->model_->GetWorld()->GetModel(this->linkIDToName[link_to_update_index]);
+
+                this->MoveBullet(bullet);
+                this->SetForceBullet(bullet);
             }
-            // delete this->q_;
         }
         
         
@@ -362,8 +290,6 @@ namespace gazebo
 
             }
 
-            
-
         }
 
         
@@ -388,36 +314,28 @@ namespace gazebo
             }
         }
 
+        bool CtrlFricWheelService(roborts_msgs::FricWhl::Request &req,
+                                                        roborts_msgs::FricWhl::Response &res){
+            ROS_INFO("Fric Wheel Open : %d", req.open);
 
-        // public: void SetFrequency(const double &_freq)
-        // {
-        // this->x_axis_freq = _freq;
-        // ROS_WARN("x_axis_freq >> %f", this->x_axis_freq);
-        // }
-        
-        // public: void SetMagnitude(const double &_magn)
-        // {
-        // this->x_axis_magn = _magn;
-        // ROS_WARN("x_axis_magn >> %f", this->x_axis_magn);
-        // }
-        
-        
-        // public: void OnRosMsg(const std_msgs::Float32ConstPtr &_msg)
-        // {
-        // this->SetFrequency(_msg->data);
-        // }
-        
-        // /// \brief ROS helper function that processes messages
-        // private: void QueueThread()
-        // {
-        // static const double timeout = 0.01;
-        // while (this->rosNode->ok())
-        // {
-        //     this->rosQueue.callAvailable(ros::WallDuration(timeout));
-        // }
-        // }
-        
-        
+            this->fric_whl_open = req.open;
+
+            res.received = true;
+            return true;
+        }
+
+        bool CtrlShootService(roborts_msgs::ShootCmd::Request &req,
+                                                    roborts_msgs::ShootCmd::Response &res){
+            ROS_INFO("Cmd Shoot Mode : %d", req.mode);
+            ROS_INFO("Cmd Shoot Number : %d", req.number);
+
+            this->shoot_mode = req.mode;
+            this->shoot_add_num = req.number;
+
+        res.received = true;
+        return true;
+        }
+
         // Pointer to the update event connection
         private: event::ConnectionPtr updateConnection;
         
@@ -468,15 +386,16 @@ namespace gazebo
         
         
         // Update Loop frequency, rate at which we restart the positions and apply force to particles
-        double reset_frequency = 2.0;
+        double default_freq;
         // Time Memory
         double old_secs;
+        double max_delta;
 
         double force;
 
-        // double gimbal_roll;
-        // double gimbal_pitch;
-        // double gimbal_yaw;
+        bool fric_whl_open;
+        int shoot_mode;
+        int shoot_add_num;
 
         double gimbal_length = 0.2;
 

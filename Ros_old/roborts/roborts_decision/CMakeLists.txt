@@ -46,7 +46,6 @@ add_executable(behavior_test_node
   behavior_test.cpp
   executor/chassis_executor.cpp
   executor/gimbal_executor.cpp
-  executor/gimbal_executor.h
   )
 
 target_link_libraries(behavior_test_node

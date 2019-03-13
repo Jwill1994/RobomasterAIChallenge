@@ -5,13 +5,10 @@
 
 #include "ros/ros.h"
 
-#include <thread>
-
-
-void commandGimbalAngle(ros::Publisher cmd_gimbal_angle_pub_, roborts_msgs::GimbalAngle &gimbal_angle_);
-void setGimbalMode(ros::ServiceClient gimbal_mode_client_, roborts_msgs::GimbalMode &gimbal_mode_);
-void setFricWhl(ros::ServiceClient cmd_fric_whl_client_, roborts_msgs::FricWhl &fric_whl_);
-void commandShoot(ros::ServiceClient cmd_shoot_client, roborts_msgs::ShootCmd &shoot_cmd_);
+void commandGimbalAngle(ros::Publisher &cmd_gimbal_angle_pub_, roborts_msgs::GimbalAngle &gimbal_angle_);
+void setGimbalMode(ros::ServiceClient &gimbal_mode_client_, roborts_msgs::GimbalMode &gimbal_mode_);
+void setFricWhl(ros::ServiceClient &cmd_fric_whl_client_, roborts_msgs::FricWhl &fric_whl_);
+void commandShoot(ros::ServiceClient &cmd_shoot_client, roborts_msgs::ShootCmd &shoot_cmd_);
 
 
 
@@ -35,20 +32,18 @@ int main(int argc, char **argv) {
     
     char selection;
 
-    std::cout << "**************************************************************************************" << std::endl;
-    std::cout << "**********************************Select Action***************************************" << std::endl;
-    std::cout << "1: Command Gimbal Action" << std::endl
-              << "2: Set Gimbal Mode" << std::endl
-              << "3: Set Fric Whl" << std::endl
-              << "4: Commnad Shoot" << std::endl;
-    std::cout << "**************************************************************************************" << std::endl;
-    std::cout << "> ";
-    std::cin >> selection;
-
-    // auto command_thread= std::thread(commandGimbalAngle);
-
     ros::Rate rate(10);
     while(ros::ok()){
+
+        std::cout << "**************************************************************************************" << std::endl;
+        std::cout << "**********************************Select Action***************************************" << std::endl;
+        std::cout << "1: Command Gimbal Angle" << std::endl
+                << "2: Set Gimbal Mode" << std::endl
+                << "3: Set Fric Whl" << std::endl
+                << "4: Commnad Shoot" << std::endl;
+        std::cout << "**************************************************************************************" << std::endl;
+        std::cout << "> ";
+        std::cin >> selection;
         
         switch (selection) {
         //back to boot area
@@ -81,7 +76,7 @@ int main(int argc, char **argv) {
     
 }
 
-void commandGimbalAngle(ros::Publisher cmd_gimbal_angle_pub_, roborts_msgs::GimbalAngle &gimbal_angle_) {
+void commandGimbalAngle(ros::Publisher &cmd_gimbal_angle_pub_, roborts_msgs::GimbalAngle &gimbal_angle_) {
     std::cout << "**************************************************************************************" << std::endl;
     std::cout << "*********************************Command Gimbal Angle*********************************" << std::endl;
     std::cout << "Yaw Angle : ";
@@ -97,7 +92,7 @@ void commandGimbalAngle(ros::Publisher cmd_gimbal_angle_pub_, roborts_msgs::Gimb
     // ros::spin();
 }
 
-void setGimbalMode(ros::ServiceClient gimbal_mode_client_, roborts_msgs::GimbalMode &gimbal_mode_) {
+void setGimbalMode(ros::ServiceClient &gimbal_mode_client_, roborts_msgs::GimbalMode &gimbal_mode_) {
     std::cout << "**************************************************************************************" << std::endl;
     std::cout << "*********************************Set Gimbal Mode*********************************" << std::endl;
     std::cout << "Gimbal Mode(uint8) : ";
@@ -116,7 +111,7 @@ void setGimbalMode(ros::ServiceClient gimbal_mode_client_, roborts_msgs::GimbalM
 }
 
 
-void setFricWhl(ros::ServiceClient cmd_fric_whl_client_, roborts_msgs::FricWhl &fric_whl_) {
+void setFricWhl(ros::ServiceClient &cmd_fric_whl_client_, roborts_msgs::FricWhl &fric_whl_) {
     std::cout << "**************************************************************************************" << std::endl;
     std::cout << "*********************************Set Fric whl*********************************" << std::endl;
     std::cout << "Fric Whl(bool) : ";
@@ -134,7 +129,7 @@ void setFricWhl(ros::ServiceClient cmd_fric_whl_client_, roborts_msgs::FricWhl &
     }
 }
 
-void commandShoot(ros::ServiceClient cmd_shoot_client_, roborts_msgs::ShootCmd &shoot_cmd_){
+void commandShoot(ros::ServiceClient &cmd_shoot_client_, roborts_msgs::ShootCmd &shoot_cmd_){
     std::cout << "**************************************************************************************" << std::endl;
     std::cout << "*********************************Command Shoot*********************************" << std::endl;
     std::cout << "Shoot Mode(uint8) : ";

@@ -87,12 +87,14 @@ bool Gimbal::SetGimbalModeService(roborts_msgs::GimbalMode::Request &req,
                                   roborts_msgs::GimbalMode::Response &res){
   roborts_sdk::gimbal_mode_e gimbal_mode = static_cast<roborts_sdk::gimbal_mode_e>(req.gimbal_mode);
   gimbal_mode_pub_->Publish(gimbal_mode);
+  ROS_INFO("Gimbal Mode : %d", req.gimbal_mode);
   res.received = true;
   return true;
 }
 bool Gimbal::CtrlFricWheelService(roborts_msgs::FricWhl::Request &req,
                                   roborts_msgs::FricWhl::Response &res){
   roborts_sdk::cmd_fric_wheel_speed fric_speed;
+  ROS_INFO("Fric Wheel Open : %d", req.open);
   if(req.open){
     fric_speed.left = 1200;
     fric_speed.right = 1200;
@@ -108,6 +110,8 @@ bool Gimbal::CtrlShootService(roborts_msgs::ShootCmd::Request &req,
                               roborts_msgs::ShootCmd::Response &res){
   roborts_sdk::cmd_shoot_info gimbal_shoot;
   uint16_t default_freq = 1500;
+  ROS_INFO("Cmd Shoot Mode : %d", req.mode);
+  ROS_INFO("Cmd Shoot Number : %d", req.number);
   switch(static_cast<roborts_sdk::shoot_cmd_e>(req.mode)){
     case roborts_sdk::SHOOT_STOP:
       gimbal_shoot.shoot_cmd = roborts_sdk::SHOOT_STOP;
