@@ -85,11 +85,11 @@
     </sensor>
   </gazebo>
 
- <!-- <gazebo>
+  <gazebo>
     <plugin name="realsense_plugin" filename="libRealSensePlugin.so"/>
   </gazebo>
 
-  <gazebo reference="camera_Link">
+  <!--<gazebo reference="camera_Link">
     <sensor type="camera" name="camera1">
       <update_rate>30.0</update_rate>
       <camera name="head">

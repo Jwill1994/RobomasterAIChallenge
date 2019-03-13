@@ -25,6 +25,11 @@
 #include <gazebo/sensors/sensors.hh>
 #include <sdf/sdf.hh>
 #include <string>
+#include <thread>
+#include "ros/ros.h"
+#include "ros/callback_queue.h"
+#include "ros/subscribe_options.h"
+#include <sensor_msgs/Image.h>
 
 namespace gazebo
 {
@@ -60,9 +65,21 @@ namespace gazebo
     public:
     virtual void OnNewFrame(const rendering::CameraPtr cam,
                             const transport::PublisherPtr pub) const;
-
+    public:
+    virtual void OnNewColorFrame(const rendering::CameraPtr cam,
+                            const transport::PublisherPtr pub) const;
     /// \brief Private data pointer.
     private: std::unique_ptr<RealSensePluginPrivate> dataPtr;
+
+
+    /// \brief A node use for ROS transport
+    private: std::unique_ptr<ros::NodeHandle> rosNh_;
+
+    /// \brief A ROS subscriber
+    private: ros::Publisher rosPub_;
+    private: ros::Publisher rosPub_depth;
+
+
   };
 }
 #endif

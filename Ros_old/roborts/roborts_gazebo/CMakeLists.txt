@@ -8,8 +8,9 @@ find_package(catkin REQUIRED COMPONENTS
 	roscpp
 	rospy
 	message_generation 
-  geometry_msgs 
-  std_msgs 
+	geometry_msgs 
+	std_msgs 
+	sensor_msgs
 )
 
 find_package(Boost REQUIRED COMPONENTS system)
@@ -23,6 +24,7 @@ catkin_package(
 )
 
 include_directories(
+  include
   ${catkin_INCLUDE_DIRS} 
   ${Boost_INCLUDE_DIRS}
   ${GAZEBO_INCLUDE_DIRS}
@@ -32,8 +34,8 @@ link_directories(${GAZEBO_LIBRARY_DIRS})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
 
 
-# add_library(RealSensePlugin SHARED 
-#    src/RealSensePlugin.cc
-#  )
+add_library(RealSensePlugin SHARED 
+   src/RealSensePlugin.cc
+ )
 
-# target_link_libraries(RealSensePlugin ${GAZEBO_libraries})
+target_link_libraries(RealSensePlugin ${GAZEBO_libraries})
