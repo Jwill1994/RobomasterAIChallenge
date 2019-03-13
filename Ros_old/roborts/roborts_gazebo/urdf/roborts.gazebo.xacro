@@ -23,14 +23,26 @@
     <turnGravityOff>false</turnGravityOff>
   </gazebo>
   
-  <!--<gazebo reference="base_laser_link">
-    <material>Gazebo/Orange</material>
+  <gazebo reference="base_laser_link">
+    <material>Gazebo/Gray</material>
     <turnGravityOff>false</turnGravityOff>
   </gazebo>
-  <gazebo reference="led_Link">
+  <gazebo reference="front_led_Link">
     <material>Gazebo/Red</material>
     <turnGravityOff>false</turnGravityOff>
-  </gazebo>-->
+  </gazebo>
+  <gazebo reference="right_led_Link">
+    <material>Gazebo/Red</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+  <gazebo reference="left_led_Link">
+    <material>Gazebo/Red</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+  <gazebo reference="hp_led_Link">
+    <material>Gazebo/Red</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
 
   <gazebo reference="yaw_Link">
     <material>Gazebo/Red</material>
@@ -41,7 +53,7 @@
             <!-- Noise is sampled independently per pixel on each frame.  
                That pixel's noise value is added to each of its color
                channels, which at that point lie in the range [0,1]. -->
-  <!--<gazebo reference="base_laser_link">
+  <gazebo reference="base_laser_link">
     <sensor type="ray" name="head_hokuyo_sensor">
       <pose>2000 2000 2000 0 0 0</pose>
       <visualize>false</visualize>
@@ -73,7 +85,7 @@
     </sensor>
   </gazebo>
 
-  <gazebo>
+ <!-- <gazebo>
     <plugin name="realsense_plugin" filename="libRealSensePlugin.so"/>
   </gazebo>
 

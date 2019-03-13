@@ -19,9 +19,9 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(gazebo REQUIRED)
 
-find_package(OpenCV REQUIRED 
-    COMPONENTS
-    opencv_highgui)
+# find_package(OpenCV REQUIRED 
+#     COMPONENTS
+#     opencv_highgui)
 
 catkin_package(
   DEPENDS
@@ -40,8 +40,7 @@ add_library(gazebo_shooter_plugin src/gazebo_shooter.cc)
 
 add_executable(angle_to_command src/angle_to_command.cpp)
 target_link_libraries(angle_to_command
-  ${catkin_LIBRARIES}
-  ${OpenCV_LIBRARIES})
+  ${catkin_LIBRARIES})
 
 add_executable(gimbal_test_node src/gimbal_test.cpp)
 target_link_libraries(gimbal_test_node
