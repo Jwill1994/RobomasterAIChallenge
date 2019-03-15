@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(roborts_gazebo)
 
+add_definitions(-std=c++11)
 
 find_package(gazebo REQUIRED)
 
@@ -11,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
 	geometry_msgs 
 	std_msgs 
 	sensor_msgs
+  gazebo_ros
 )
 
 find_package(Boost REQUIRED COMPONENTS system)
@@ -20,7 +22,7 @@ catkin_package(
   roscpp 
   geometry_msgs 
   rospy
-  DEPENDS Boost
+  DEPENDS Boost gazebo_ros
 )
 
 include_directories(

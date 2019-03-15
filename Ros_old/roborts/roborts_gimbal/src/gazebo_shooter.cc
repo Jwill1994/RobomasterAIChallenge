@@ -106,38 +106,7 @@ namespace gazebo
         // Called by the world update start event
         public: void OnUpdate()
         {
-            // Get current gimbal pose by get link state service call
-            srv.request.link_name = this->gimbal_link;
-            srv.request.reference_frame = this->reference_frame_;
-
-            if(gazebo_ros_link_state.call(srv) && srv.response.success){
-                this->gimbal_pose.position.x = srv.response.link_state.pose.position.x;
-                this->gimbal_pose.position.y = srv.response.link_state.pose.position.y;
-                this->gimbal_pose.position.z = srv.response.link_state.pose.position.z;
-
-                this->gimbal_pose.orientation.x = srv.response.link_state.pose.orientation.x;
-                this->gimbal_pose.orientation.y = srv.response.link_state.pose.orientation.y;
-                this->gimbal_pose.orientation.z = srv.response.link_state.pose.orientation.z;
-                this->gimbal_pose.orientation.w = srv.response.link_state.pose.orientation.w;
-            }
-
-            // Get current fake link pose. Diffrence between gimbal position and fake link position is force direction vector.
-            srv_.request.link_name = this->fake_link;
-            srv_.request.reference_frame = this->reference_frame_;
-
-            if(gazebo_ros_link_state.call(srv_)  && srv.response.success){
-
-                this->x_dir = srv_.response.link_state.pose.position.x - this->gimbal_pose.position.x;
-                this->y_dir = srv_.response.link_state.pose.position.y - this->gimbal_pose.position.y;
-                this->z_dir = srv_.response.link_state.pose.position.z - this->gimbal_pose.position.z;
-
-                ignition::math::Vector3d vec = ignition::math::Vector3d(this->x_dir, this->y_dir, this->z_dir).Normalize();
-
-
-                this->x_dir = vec.X();
-                this->y_dir = vec.Y();
-                this->z_dir = vec.Z();
-            }
+           
 
             if (this->link_to_update_index_now >= this->linkIDToName_size)
             {
@@ -315,7 +284,7 @@ namespace gazebo
         }
 
         bool CtrlFricWheelService(roborts_msgs::FricWhl::Request &req,
-                                                        roborts_msgs::FricWhl::Response &res){
+                                  roborts_msgs::FricWhl::Response &res) {
             ROS_INFO("Fric Wheel Open : %d", req.open);
 
             this->fric_whl_open = req.open;
@@ -325,15 +294,49 @@ namespace gazebo
         }
 
         bool CtrlShootService(roborts_msgs::ShootCmd::Request &req,
-                                                    roborts_msgs::ShootCmd::Response &res){
+                              roborts_msgs::ShootCmd::Response &res) {
+                            
+            // Get current gimbal pose by get link state service call
+            srv.request.link_name = this->gimbal_link;
+            srv.request.reference_frame = this->reference_frame_;
+
+            if(gazebo_ros_link_state.call(srv) && srv.response.success){
+                this->gimbal_pose.position.x = srv.response.link_state.pose.position.x;
+                this->gimbal_pose.position.y = srv.response.link_state.pose.position.y;
+                this->gimbal_pose.position.z = srv.response.link_state.pose.position.z;
+
+                this->gimbal_pose.orientation.x = srv.response.link_state.pose.orientation.x;
+                this->gimbal_pose.orientation.y = srv.response.link_state.pose.orientation.y;
+                this->gimbal_pose.orientation.z = srv.response.link_state.pose.orientation.z;
+                this->gimbal_pose.orientation.w = srv.response.link_state.pose.orientation.w;
+            }
+
+            // Get current fake link pose. Diffrence between gimbal position and fake link position is force direction vector.
+            srv_.request.link_name = this->fake_link;
+            srv_.request.reference_frame = this->reference_frame_;
+
+            if(gazebo_ros_link_state.call(srv_)  && srv.response.success){
+
+                this->x_dir = srv_.response.link_state.pose.position.x - this->gimbal_pose.position.x;
+                this->y_dir = srv_.response.link_state.pose.position.y - this->gimbal_pose.position.y;
+                this->z_dir = srv_.response.link_state.pose.position.z - this->gimbal_pose.position.z;
+
+                ignition::math::Vector3d vec = ignition::math::Vector3d(this->x_dir, this->y_dir, this->z_dir).Normalize();
+
+
+                this->x_dir = vec.X();
+                this->y_dir = vec.Y();
+                this->z_dir = vec.Z();
+            }
+
             ROS_INFO("Cmd Shoot Mode : %d", req.mode);
             ROS_INFO("Cmd Shoot Number : %d", req.number);
 
             this->shoot_mode = req.mode;
             this->shoot_add_num = req.number;
 
-        res.received = true;
-        return true;
+            res.received = true;
+            return true;
         }
 
         // Pointer to the update event connection
@@ -393,9 +396,9 @@ namespace gazebo
 
         double force;
 
-        bool fric_whl_open;
-        int shoot_mode;
-        int shoot_add_num;
+        bool fric_whl_open = false;
+        int shoot_mode = 0;
+        int shoot_add_num = 0;
 
         double gimbal_length = 0.2;
 

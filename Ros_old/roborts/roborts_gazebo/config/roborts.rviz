@@ -64,7 +64,7 @@ Visualization Manager:
         base_laser_link:
           Value: false
         base_link:
-          Value: false
+          Value: true
         bl_wheel_Link:
           Value: false
         br_wheel_Link:
@@ -259,10 +259,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.349797368
+      Pitch: 0.85979712
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.195208982
+      Yaw: 6.11336327
     Saved: ~
 Window Geometry:
   Displays:

@@ -81,12 +81,13 @@
         <color rgba="0.79216 0.81961 0.93333 1" />
       </material>
     </visual>
+
     <collision>
       <origin
-        xyz="0 0 0"
-        rpy="1.5708 0 1.5708"/>
+        xyz="0 0.01 0"
+        rpy="1.5708 0 0" />
       <geometry>
-        <mesh filename="package://roborts_gazebo/meshes/Front_Left_Wheel.STL" />
+        <cylinder radius="0.075" length="0.04"/>
       </geometry>
     </collision>
   </link>
@@ -133,10 +134,10 @@
 
     <collision>
       <origin
-        xyz="0 0 0"
-        rpy="1.5708 0 1.5708" />
+        xyz="0 -0.01 0"
+        rpy="1.5708 0 0" />
       <geometry>
-        <mesh filename="package://roborts_gazebo/meshes/Front_Right_Wheel.STL" />
+        <cylinder radius="0.075" length="0.04"/>
       </geometry>
     </collision>
   </link>
@@ -180,10 +181,10 @@
 
     <collision>
       <origin
-        xyz="0 0 0"
-        rpy="1.5708 0 1.5708"/>
+        xyz="0 -0.01 0"
+        rpy="1.5708 0 0" />
       <geometry>
-        <mesh filename="package://roborts_gazebo/meshes/Rear_Right_Wheel.STL" />
+        <cylinder radius="0.075" length="0.04"/>
       </geometry>
     </collision>
   </link>
@@ -225,13 +226,13 @@
           rgba="0.75294 0.75294 0.75294 1" />
       </material>
     </visual>
+
     <collision>
       <origin
-        xyz="0 0 0"
-        rpy="1.5708 0 1.5708"/>
+        xyz="0 0.01 0"
+        rpy="1.5708 0 0" />
       <geometry>
-        <mesh
-          filename="package://roborts_gazebo/meshes/Rear_Left_Wheel.STL" />
+        <cylinder radius="0.075" length="0.04"/>
       </geometry>
     </collision>
   </link>
@@ -249,7 +250,7 @@
       link="bl_wheel_Link" />
   </joint>
 
-    <link
+  <link
     name="Projector_Bottom">
     <inertial>
       <origin
@@ -279,15 +280,7 @@
           rgba="0.79216 0.81961 0.93333 1" />
       </material>
     </visual>
-    <!--<collision>
-      <origin
-        xyz="0 0 0"
-        rpy="1.5708 0 1.5708" />
-      <geometry>
-        <mesh
-          filename="package://roborts_gazebo/meshes/Projector_Bottom.STL" />
-      </geometry>
-    </collision>-->
+
   </link>
 
   <joint
@@ -335,15 +328,7 @@
           rgba="0.89412 0.91373 0.92941 1" />
       </material>
     </visual>
-    <!--<collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://roborts_gazebo/meshes/Projector_Middle.STL" />
-      </geometry>
-    </collision>-->
+
   </link>
 
 
@@ -432,7 +417,7 @@
       <inertia ixx="0.0004"  ixy="0"  ixz="0" iyy="0.0004" iyz="0" izz="0.0004" />
     </inertial>
  
-    <visual>
+    <!--<visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <sphere radius="0.02"/>
@@ -440,7 +425,7 @@
       <material name="white">
         <color rgba="1.0 1.0 1.0 1.0"/>
       </material>
-    </visual>
+    </visual>-->
   </link>
 
 
@@ -515,8 +500,8 @@
     </inertial>
     <visual>
       <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
+      xyz="0 -0.08 -0.03"
+      rpy="1.57 0 3.14" />
       <geometry>
         <mesh
           filename="package://roborts_gazebo/meshes/test_a2.stl" scale="0.001 0.001 0.001"/>
@@ -527,15 +512,7 @@
           rgba="0.75294 0.75294 0.75294 1" />
       </material>
     </visual>
-    <!--<collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://roborts_gazebo/meshes/rplidar-a2m4-r1.STL" scale="0.001 0.001 0.001"/>
-      </geometry>
-    </collision>-->
+
   </link>
 
 
@@ -543,8 +520,8 @@
     name="base_link_to_laser_joint"
     type="fixed">
     <origin
-      xyz="0.16 -0.08 0.1"
-      rpy="1.57 0 3.14" />
+      xyz="0.16 0 0.12"
+      rpy="0 0 0" />
     <parent
       link="base_link" />
     <child
@@ -585,16 +562,6 @@
           rgba="1 0 0 1" />
       </material>
     </visual>
-
-    <!--<collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://roborts_gazebo/meshes/led_Link.STL" />
-      </geometry>
-    </collision>-->
     
   </link>
 
@@ -645,17 +612,6 @@
           rgba="1 0 0 1" />
       </material>
     </visual>
-
-    <!--<collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://roborts_gazebo/meshes/left_led_Link.STL" />
-      </geometry>
-    </collision>-->
-    
   </link>
 
 
@@ -705,16 +661,6 @@
           rgba="1 0 0 1" />
       </material>
     </visual>
-
-    <!--<collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://roborts_gazebo/meshes/left_led_Link.STL" />
-      </geometry>
-    </collision>-->
     
   </link>
 
@@ -765,17 +711,6 @@
           rgba="1 0 0 1" />
       </material>
     </visual>
-
-    <!--<collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <mesh
-          filename="package://roborts_gazebo/meshes/left_led_Link.STL" />
-      </geometry>
-    </collision>-->
-    
   </link>
 
 

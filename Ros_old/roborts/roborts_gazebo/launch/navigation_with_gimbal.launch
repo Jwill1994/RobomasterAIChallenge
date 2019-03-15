@@ -1,7 +1,9 @@
 <launch>
+    <param name="/use_sim_time" value="true"/>
+
     <include file="$(find roborts_gazebo)/launch/gazebo_path_planning.launch" />
 
-    <rosparam file="$(find roborts_gazebo)/config/infantry_control.yaml" command="load" />
+    <rosparam file="$(find roborts_gimbal)/config/joint_controller.yaml" command="load" />
 
     <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher">
         <param name="use_gui" value="True" />
@@ -14,6 +16,6 @@
             yaw_position_controller
             pitch_position_controller" />
 
-    <node name="angle_to_command" pkg="roborts_gimbal" type="vel_to_command" />
+    <node name="angle_to_command" pkg="roborts_gimbal" type="angle_to_command" />
 
 </launch>

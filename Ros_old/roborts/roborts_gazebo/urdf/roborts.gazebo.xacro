@@ -2,7 +2,7 @@
 <robot>
   <!-- materials -->
   <gazebo reference="base_link">
-    <material>Gazebo/Black</material>
+    <material>Gazebo/Grey</material>
     <turnGravityOff>false</turnGravityOff>
   </gazebo>
 
@@ -23,8 +23,9 @@
     <turnGravityOff>false</turnGravityOff>
   </gazebo>
   
+  
   <gazebo reference="base_laser_link">
-    <material>Gazebo/Gray</material>
+    <material>Gazebo/Blue</material>
     <turnGravityOff>false</turnGravityOff>
   </gazebo>
   <gazebo reference="front_led_Link">
@@ -45,7 +46,11 @@
   </gazebo>
 
   <gazebo reference="yaw_Link">
-    <material>Gazebo/Red</material>
+    <material>Gazebo/Orange</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+  <gazebo reference="pitch_Link">
+    <material>Gazebo/Orange</material>
     <turnGravityOff>false</turnGravityOff>
   </gazebo>
 
@@ -63,13 +68,13 @@
           <horizontal>
             <samples>720</samples>
             <resolution>1</resolution>
-            <min_angle>-1.570796</min_angle>
-            <max_angle>1.570796</max_angle>
+            <min_angle>-2.3</min_angle>
+            <max_angle>2.3</max_angle>
           </horizontal>
         </scan>
         <range>
           <min>0.10</min>
-          <max>30.0</max>
+          <max>10.0</max>
           <resolution>0.01</resolution>
         </range>
         <noise>
@@ -85,46 +90,10 @@
     </sensor>
   </gazebo>
 
-  <gazebo>
+  <!--<gazebo>
     <plugin name="realsense_plugin" filename="libRealSensePlugin.so"/>
-  </gazebo>
+  </gazebo>-->
 
-  <!--<gazebo reference="camera_Link">
-    <sensor type="camera" name="camera1">
-      <update_rate>30.0</update_rate>
-      <camera name="head">
-        <horizontal_fov>1.3962634</horizontal_fov>
-        <image>
-          <width>800</width>
-          <height>800</height>
-          <format>R8G8B8</format>
-        </image>
-        <clip>
-          <near>0.02</near>
-          <far>300</far>
-        </clip>
-        <noise>
-          <type>gaussian</type>
-          <mean>0.0</mean>
-          <stddev>0.007</stddev>
-        </noise>
-      </camera>
-      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
-        <alwaysOn>true</alwaysOn>
-        <updateRate>0.0</updateRate>
-        <cameraName>robot/camera1</cameraName>
-        <imageTopicName>image_raw</imageTopicName>
-        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-        <frameName>camera_Link</frameName>
-        <hackBaseline>0.07</hackBaseline>
-        <distortionK1>0.0</distortionK1>
-        <distortionK2>0.0</distortionK2>
-        <distortionK3>0.0</distortionK3>
-        <distortionT1>0.0</distortionT1>
-        <distortionT2>0.0</distortionT2>
-      </plugin>
-    </sensor>
-  </gazebo>  -->
 
   <!-- position controller plugin-->
   <gazebo>
@@ -153,7 +122,7 @@
       <fake_link>fake_link</fake_link>
       <reference_frame>map</reference_frame>
       <force>4000.0</force>
-      <default_freq>10</default_freq>
+      <default_freq>30</default_freq>
     </plugin>
   </gazebo>
 

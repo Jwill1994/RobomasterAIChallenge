@@ -8,7 +8,7 @@
   <arg name="P_pos" default="0.0"/>
   <arg name="Y_pos" default="0.0"/>
 
-  <node name="kill_gzserver" pkg="roborts_gazebo" type="kill_gzserver.sh"/>
+  <!--<node name="kill_gzserver" pkg="roborts_gazebo" type="kill_gzserver.sh"/>-->
 
   <!--<node name="gzserver" pkg="gazebo_ros" type="gzserver"/>-->
 
