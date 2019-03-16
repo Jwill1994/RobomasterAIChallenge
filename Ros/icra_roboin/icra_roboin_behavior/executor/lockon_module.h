@@ -51,7 +51,30 @@ class LockonModule {
         }
 
         void LockonInterface(const LockonMode mode, const PlayerType who){
-            SetTargetEnemy(who);
+            if(mode != LockonMode::TARGET_ENEMY_LOCKON){
+                    throw std::invalid_argument( "wrong lockon parameter" );
+                    ROS_ERROR("LockonModule error: wrong lockon parameter with TARGET_ENEMY_LOCKON mode");
+            } else {
+                SetTargetEnemy(who);
+            }
+        }
+
+        void LockonInterface(const LockonMode mode, const double x, const double y){
+            if(mode != LockonMode::TARGET_POSITION_LOCKON){
+                    throw std::invalid_argument( "wrong lockon parameter" );
+                    ROS_ERROR("LockonModule error: wrong lockon parameter with TARGET_POSITION_LOCKON mode");
+            } else {
+                SetTargetPosition(x,y);
+            }
+        }
+
+        void LockonInterface(const LockonMode mode){
+            if(mode != LockonMode::TARGET_GOAL_LOCKON){
+                    throw std::invalid_argument( "wrong lockon parameter" );
+                    ROS_ERROR("LockonModule error: wrong lockon parameter with TARGET_GOAL_LOCKON mode");
+            } else {
+                SetTargetGoal();
+            }
         }
 
         LockonMode GetLockonMode() const {
@@ -61,6 +84,7 @@ class LockonModule {
 
     private:
         void SetTargetAngularVelocity(double target) {
+            ROS_INFO("target_ang_vel: %f",target);
             target_angular_velocity_ = target;
         }
         void SetTargetAngle(double target){
@@ -81,9 +105,9 @@ class LockonModule {
             if(target_angle_ < sentinel_angle_ && target_angle_ > -1* sentinel_angle_){
                 if(target/sentinel_angle_ > 0.9  )
                 {
-                    sentinel_flag_ = -1;
-                } else if ( target/sentinel_angle_ < -0.9 ) {
                     sentinel_flag_ = 1;
+                } else if ( target/sentinel_angle_ < -0.9 ) {
+                    sentinel_flag_ = -1;
                 }
                 ROS_INFO("%f, %f, %f, %f,%f,%d",sentinel_flag_ * cos( 1.570796 * (target/sentinel_angle_) ),target/sentinel_angle_, target,sentinel_angle_,target_angle_,sentinel_flag_ );
                 SetTargetAngularVelocity(sentinel_flag_ * cos( 1.570796 * (target/sentinel_angle_) ));
@@ -94,11 +118,12 @@ class LockonModule {
         }
 
         void SetTargetGlobalYaw(double yaw) {
-            SetTargetAngle( yaw - (tools::GetYaw(blackboard_->GetMyPose())) );
+            SetTargetAngle( tools::GetShortestYawSigned(yaw,tools::GetYaw(blackboard_->GetMyPose())) );
         }
 
         void SetTargetGlobalYawSentinelMode(double yaw) {
-            SetTargetAngleSentinelMode( yaw - (tools::GetYaw(blackboard_->GetMyPose())) );
+            ROS_INFO("global_yaw_sentinel: %f %f",yaw,tools::GetYaw(blackboard_->GetMyPose()));
+            SetTargetAngleSentinelMode( tools::GetShortestYawSigned(yaw,tools::GetYaw(blackboard_->GetMyPose())) );
         }
 
         void SetTargetEnemy(PlayerType who){
@@ -113,6 +138,19 @@ class LockonModule {
             }
         }
 
+        void SetTargetPosition(double x, double y){
+                auto my_pose = blackboard_->GetMyPose();
+                SetTargetGlobalYaw( atan2((y - my_pose.pose.position.y), 
+                                (x - my_pose.pose.position.x)) );
+        }
+
+        void SetTargetGoal(){
+                auto goal = blackboard_ -> GetGoal();
+                auto my_pose = blackboard_->GetMyPose();
+                SetTargetGlobalYaw( atan2((goal.y - my_pose.pose.position.y), 
+                                (goal.x - my_pose.pose.position.x)) );
+        }
+
 
 
 
@@ -123,35 +161,19 @@ class LockonModule {
         ros::Subscriber sub_;
         ros::Publisher pub_;
         void CB(const geometry_msgs::Twist::ConstPtr& msg) {
-            double xo = msg->linear.x;
-            double yo = msg->linear.y;
-            double wo = msg->angular.z;
-            double w = target_angular_velocity_;
-            double dx,dy,vx,vy;
-
-            if (wo < 0.01 && wo > -0.01){
-                dx = dt_*xo;
-                dy = dt_*yo;
-            } else {
-                dx = dt_*xo +( ( std::sin((wo)*dt_) / wo) - dt_);
-                dy = dt_*yo + ( (1/(wo)) * (std::cos(dt_*(wo))-1));
-            }
-
-            if (w < 0.01 && w > -0.01){
-                vx = dx / dt_;
-                vy = dy / dt_;
-            } else {
-                vx=( dx+ dt_ - ( std::sin(dt_*w) / w ) )/dt_;
-                vy=( dy - ( ( std::cos(dt_*w)-1 ) / w ) )/dt_;    
-            }
-
-            
-
 
             geometry_msgs::Twist cmd;
-            cmd.linear.x = vx;
-            cmd.linear.y = vy;
-            cmd.angular.z = w;
+            cmd.angular.z = target_angular_velocity_;
+
+            double det = pow(dt_ * cmd.angular.z , 2) + 4;
+            double alpha = ( dt_ * dt_ * cmd.angular.z * (msg->angular.z) ) + 4;
+            double beta = 2*dt_*(cmd.angular.z - (msg->angular.z));
+
+            
+            cmd.linear.x = ( (alpha * (msg->linear.x)) + (beta * (msg->linear.y)) ) / det;
+            cmd.linear.y = ( (alpha * (msg->linear.y)) - (beta * (msg->linear.x)) ) / det;
+
+
             pub_.publish(cmd);
         }
         LockonMode lockon_mode_;

@@ -3,6 +3,7 @@
 #include <ros/ros.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <tf/tf.h>
+#include <algorithm>
 
 namespace icra_roboin_behavior { namespace tools
 {
@@ -42,6 +43,21 @@ inline double GetYaw(const geometry_msgs::PoseStamped &pose) {
     tf::Matrix3x3 mat(q);
     mat.getEulerYPR(y,p,r);
     return y;
+}
+
+inline double GetShortestYawSigned(const double yaw2, const double yaw1) {
+    if(yaw2 == yaw1){
+        return 0.01;
+    } else {
+      double x = remainder(yaw2 - yaw1,6.283184);
+      if(-3.141592 <= x && x <= 3.141592){
+        return x;
+      } else if(x > 3.141592){
+        return x - 6.283184;
+      } else {
+        return 6.283184 - x; 
+      }
+    }
 }
 
 

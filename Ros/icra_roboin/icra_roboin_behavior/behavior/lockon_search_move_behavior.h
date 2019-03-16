@@ -20,7 +20,7 @@ class LockonSearchMoveBehavior: public MoveBehaviorBase{
         ~LockonSearchMoveBehavior() = default;
 
         void NoEngage() override{
-            lockon_module_->LockonInterface(LockonMode::ANGULAR_VEL,2);
+            lockon_module_->LockonInterface(LockonMode::TARGET_GOAL_LOCKON);
         }
 };
 

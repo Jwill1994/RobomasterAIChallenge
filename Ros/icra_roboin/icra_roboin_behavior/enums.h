@@ -112,6 +112,8 @@ enum class LockonMode {
     GLOBAL_YAW=3,
     GLOBAL_YAW_SENTINEL=4,
     TARGET_ENEMY_LOCKON=5,
+    TARGET_POSITION_LOCKON=6,
+    TARGET_GOAL_LOCKON=7,
 };
 /////////////////////////////////////////// 
 /////////////////////////////////////////// 

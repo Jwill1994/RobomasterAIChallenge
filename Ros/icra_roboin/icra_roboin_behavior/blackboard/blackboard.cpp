@@ -354,6 +354,8 @@ void Blackboard::EnemyAlert(){
 
 bool Blackboard::RefereeHitCB(icra_roboin_msgs::RefereeHit::Request& req, 
                     icra_roboin_msgs::RefereeHit::Response& resp){
+    is_hit_fast_response_ = true;
+    is_hit_smart_response_ = true;
     time_last_hit_ = req.header.stamp;
     my_health_ -= req.damage;
     if(my_health_ != req.your_hp) ROS_WARN("blackboard: referee hp and blackboard hp is different!");

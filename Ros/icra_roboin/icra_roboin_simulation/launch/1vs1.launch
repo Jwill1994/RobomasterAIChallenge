@@ -1,7 +1,7 @@
 <launch>
   <arg name="map" value="icra2019"/>
   <arg name="world" value="1vs1"/>
-  <master auto="start"/>
+  <master auto="restart"/>
   <param name="/use_sim_time" value="true"/>
 
 
@@ -11,16 +11,17 @@
   <!-- Run the stage simulator -->
   <node pkg="stage_ros" type="stageros" name="stageros" args="$(find icra_roboin_simulation)/worlds/$(arg world).world" respawn="false" >
     <param name="base_watchdog_timeout" value="0.05" />
+    <remap from="robot_0/odom" to="robot_0/base_odom"/>
+    <remap from="robot_1/odom" to="robot_1/base_odom"/>
+    <remap from="robot_2/odom" to="robot_2/base_odom"/>
+    <remap from="robot_3/odom" to="robot_3/base_odom"/>
+
   </node>
 
-  <node pkg="icra_roboin_simulation" type="stage_laser_transcriber.py" name="stage_laser_transcriber" respawn="false"/>
 
-  <node pkg="tf" type="static_transform_publisher" name="tf0" args="0 0 0 0 0 0 1 robot_0/base_footprint robot_0/base_link 100" respawn="false"/>
-  <node pkg="tf" type="static_transform_publisher" name="tf1" args="0 0 0 0 0 0 1 robot_1/base_footprint robot_1/base_link 100" respawn="false"/>
-
-
-
-
+  <node pkg="icra_roboin_simulation" type="stage_tf_remap" name="stage_tf_remap" respawn="false">
+    <param name="robot_count" value="2"/>
+  </node>
 
   <group ns="robot_0">
    	  <param name="tf_prefix" value="robot_0" />
