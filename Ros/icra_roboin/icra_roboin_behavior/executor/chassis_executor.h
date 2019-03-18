@@ -3,6 +3,7 @@
 
 #include <ros/ros.h>
 #include <actionlib/client/simple_action_client.h>
+#include <actionlib_msgs/GoalID.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/Twist.h>
 #include "roborts_msgs/LocalPlannerAction.h"
@@ -37,6 +38,7 @@ class ChassisExecutor{
         //actionlib::SimpleActionClient<roborts_msgs::LocalPlannerAction> local_planner_client_;
         //actionlib::SimpleActionClient<roborts_msgs::GlobalPlannerAction> global_planner_client_;
         actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> planner_client_;
+        ros::Publisher planner_cancel_pub_;
         ros::Publisher speed_pub_;
         ros::Publisher accel_pub_;
         ros::Publisher speed_with_lockon_pub_;
@@ -46,6 +48,7 @@ class ChassisExecutor{
 
         geometry_msgs::Twist zero_vel_;
         roborts_msgs::TwistAccel zero_acc_;
+        actionlib_msgs::GoalID nav_cancel_msg_;
         
 
 

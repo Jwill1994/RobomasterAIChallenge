@@ -10,6 +10,6 @@
 #define BUFF_DURATION 30
 
 #define DT 0.1 //param for lockon control
-#define SENTINEL_ANGLE 0.8 // param for lockon control 
+#define SENTRY_ANGLE 0.8 // param for lockon control 
 
 #endif

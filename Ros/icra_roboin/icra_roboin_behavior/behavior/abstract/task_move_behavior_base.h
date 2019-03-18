@@ -17,20 +17,27 @@ class TaskMoveBehaviorBase: public MoveBehaviorBase{
         virtual ~TaskMoveBehaviorBase() = default;
 
         virtual bool Run() override{
-            switch(CheckDistance()){
-                case TaskCheck::NOT_YET:
-                    RunNavigation();
-                    RunLockon();
-                    break;
-                case TaskCheck::GET_READY:
-                    RunNavigation();
-                    lockon_module_->LockonInterface(LockonMode::GLOBAL_YAW,(blackboard_->GetGoal()).yaw);
-                    break;
-                case TaskCheck::EXECUTE:
-                    ExecuteTask();
-                    break;
-
-
+            if(current_state_ != TaskCheck::BUSY && current_state_ != TaskCheck::FINISHED && current_state_ != TaskCheck::FAIL){
+                switch(CheckDistance()){
+                    case TaskCheck::NOT_YET:
+                        RunNavigation();
+                        RunLockon();
+                        //ROS_INFO("task behavior: not yet :: %d",int(current_state_));
+                        break;
+                    case TaskCheck::GET_READY:
+                        RunNavigation();
+                        //ROS_INFO("task behavior: get ready :: %d",int(current_state_));
+                        lockon_module_->LockonInterface(LockonMode::GLOBAL_YAW,(blackboard_->GetGoal()).yaw);
+                        break;
+                    case TaskCheck::EXECUTE:
+                        //ROS_INFO("task behavior: execute :: %d",int(current_state_));
+                        lockon_module_->LockonInterface(LockonMode::GLOBAL_YAW,(blackboard_->GetGoal()).yaw);
+                        ExecuteTask();
+                        
+                        break;
+                }
+            } else {
+                ExecuteTask();
             }
 
             return true;
@@ -44,7 +51,7 @@ class TaskMoveBehaviorBase: public MoveBehaviorBase{
             } else if(distance_ < 2 && distance_ > 0.3) {
                 current_state_ = TaskCheck::GET_READY;
                 return TaskCheck::GET_READY;
-            } else if(distance_ < 0.2) {
+            } else if(distance_ < 0.3) {
                 current_state_ = TaskCheck::EXECUTE;
                 return TaskCheck::EXECUTE;
             }
@@ -52,20 +59,26 @@ class TaskMoveBehaviorBase: public MoveBehaviorBase{
         virtual void ExecuteTask() = 0;
 
         virtual bool Cancel() override{
-            if(current_state_ == TaskCheck::EXECUTE | current_state_ == TaskCheck::BUSY){
+            if(current_state_ == TaskCheck::BUSY){
                 ROS_INFO("%s cannont be canceled. it's busy",behavior_class_name_.c_str());
                 return false;
             } else {
                 chassis_executor_->Cancel();
                 ROS_INFO("%s : canceld",behavior_class_name_.c_str());
+                current_state_ = TaskCheck::NOT_YET;
                 return true;
             }
         }
 
         virtual BehaviorProcess Update() override{
-            if(current_state_ == TaskCheck::EXECUTE | current_state_ == TaskCheck::BUSY){
-                ROS_INFO("%s cannont be canceled. it's busy",behavior_class_name_.c_str());
+            if(current_state_ == TaskCheck::FAIL){
+                return BehaviorProcess::FAILURE;
+            } else if(current_state_ == TaskCheck::BUSY){
                 return BehaviorProcess::BUSY;
+            } else if(current_state_ == TaskCheck::EXECUTE){
+                return BehaviorProcess::RUNNING;
+            } else if(current_state_ == TaskCheck::FINISHED){
+                return BehaviorProcess::SUCCESS;
             } else {
                 return chassis_executor_->Update();
             }
@@ -74,7 +87,8 @@ class TaskMoveBehaviorBase: public MoveBehaviorBase{
     protected:
         TaskCheck current_state_;
         double distance_;
-
+        ros::Time execution_time_;
+        ros::Duration timeout_;
 };
 
 

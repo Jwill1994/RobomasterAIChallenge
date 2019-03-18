@@ -19,11 +19,13 @@ Blackboard::Blackboard(TeamType team = TeamType::BLUE_TEAM, RuleType rule = Rule
     enemy_detection_sub_ = nh.subscribe("enemy_info",5,&Blackboard::EnemyDetectionCB,this);
     tf_ptr_ = std::make_shared<tf::TransformListener>(ros::Duration(10));
     namespace_ = ros::this_node::getNamespace();
+    namespace_.erase(0,namespace_.find_first_not_of("/"));
 
     referee_hit_service_ = nh.advertiseService("referee_hit_service",&Blackboard::RefereeHitCB,this);
     referee_game_state_service_ = nh.advertiseService("referee_game_state_service",&Blackboard::RefereeGameStateCB,this);
     referee_penalty_service_ = nh.advertiseService("referee_penalty_service",&Blackboard::RefereePenaltyCB,this);
     referee_buff_service_ = nh.advertiseService("referee_buff_service",&Blackboard::RefereeBuffCB,this);
+    referee_reload_service_ = nh.advertiseService("referee_reload_service",&Blackboard::RefereeReloadCB,this);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,6 +111,9 @@ const ros::Duration Blackboard::GetTimeBuffLeft() {
 //Ammunition Info
 int Blackboard::GetAmmo() const{
     return ammo_;
+}
+bool Blackboard::GetIsReloading() const{
+    return is_reloading_;
 }
 
 /*   Team Info Interface   */
@@ -290,6 +295,13 @@ void Blackboard::SetLockedOnEnemy(const PlayerType who) {
     locked_on_enemy_ = who;
 }
 
+void Blackboard::AmmoMinusOne() {
+    ammo_ --;
+}
+
+void Blackboard::SetIsReloading(const bool flag) {
+    is_reloading_ = flag;
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -369,9 +381,13 @@ bool Blackboard::RefereeGameStateCB(icra_roboin_msgs::RefereeGameState::Request&
                             icra_roboin_msgs::RefereeGameState::Response& resp){
     GameState tmp = game_state_;
     game_state_ = static_cast<GameState>(req.game_state);
+    //ROS_WARN("%d, %d",int(tmp),int(game_state_));
     if( tmp == GameState::READY && game_state_ == GameState::PLAY ){
+        //ROS_WARN("called!!");
         time_game_started_ = req.header.stamp;
         time_passed_from_game_start_ = ros::Duration(0);
+        my_health_=START_HEALTH;
+        ammo_=START_AMMO;
     }
     resp.success = true;
     return true;
@@ -390,6 +406,15 @@ bool Blackboard::RefereeBuffCB(icra_roboin_msgs::RefereeBuff::Request& req,
     if(req.buff_type == 0){
         time_last_buffed_ = req.header.stamp;
     }
+    resp.success = true;
+    return true;
+}
+
+bool Blackboard::RefereeReloadCB(icra_roboin_msgs::RefereeReload::Request& req,
+                            icra_roboin_msgs::RefereeReload::Response& resp){
+    is_reloading_ = false;
+    ammo_ = START_AMMO;
+    time_last_reloaded_ = req.header.stamp;
     resp.success = true;
     return true;
 }
@@ -454,7 +479,7 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
             time_enemy_last_seen_ = yolo->stamp;
             time_enemy_1_last_seen_ = yolo->stamp;
             EnemyAlert();
-            ROS_INFO("Enemy 1 Detected!");
+            //ROS_INFO("Enemy 1 Detected!");
             number_of_detected_enemies_++;
             //tf transform code
             tf::Stamped<tf::Pose> enemy1_cam_tf, enemy1_global_tf;
@@ -507,7 +532,7 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
             time_enemy_last_seen_ = yolo->stamp;
             time_enemy_2_last_seen_ = yolo->stamp;
             EnemyAlert();
-            ROS_INFO("Enemy 2 Detected!");
+            //ROS_INFO("Enemy 2 Detected!");
             number_of_detected_enemies_++;
             //tf transform code
             tf::Stamped<tf::Pose> enemy2_cam_tf, enemy2_global_tf;

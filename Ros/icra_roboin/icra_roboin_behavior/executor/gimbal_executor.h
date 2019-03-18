@@ -3,6 +3,7 @@
 
 #include <ros/ros.h>
 #include "roborts_msgs/GimbalAngle.h"
+#include "roborts_msgs/ShootCmd.h"
 #include "../enums.h"
 
 
@@ -22,6 +23,7 @@ class GimbalExecutor{
         GimbalMode executor_mode_;
         BehaviorProcess executor_state_;
         ros::Publisher gimbal_pub_;
+        
 
 };
 

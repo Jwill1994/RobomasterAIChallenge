@@ -1,5 +1,5 @@
-std_msgs/Header header
 ---
+#0 nothing happened      1 reload zone
 int16 info
 bool success
 

@@ -66,7 +66,7 @@ enum class BehaviorStyle {
     LOCKON_SEARCH_MOVE=1,
     MANUAL_SPEED_CONTROL=2,
     HOLD_ROTATE=3,
-    HOLD_SENTINEL=4,
+    HOLD_SENTRY=4,
     RELOAD=5,
     GET_BUFF=6,
     BACKBOOT=7,
@@ -82,6 +82,7 @@ enum class TaskCheck {
     EXECUTE=2,
     BUSY=3,
     FINISHED=4,
+    FAIL=5,
 };
 enum class SetBehaviorServiceInfo {
     SUCCESS=0,
@@ -108,9 +109,9 @@ enum class GimbalMode {
 enum class LockonMode {
     ANGULAR_VEL=0,
     RELATIVE_ANGLE=1,
-    RELATIVE_ANGLE_SENTINEL=2,
+    RELATIVE_ANGLE_SENTRY=2,
     GLOBAL_YAW=3,
-    GLOBAL_YAW_SENTINEL=4,
+    GLOBAL_YAW_SENTRY=4,
     TARGET_ENEMY_LOCKON=5,
     TARGET_POSITION_LOCKON=6,
     TARGET_GOAL_LOCKON=7,

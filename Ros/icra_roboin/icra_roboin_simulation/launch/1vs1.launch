@@ -65,7 +65,7 @@
   </group>
 
   <group ns="robot_1">
-   	  <param name="tf_prefix" value="robot_0" />
+   	  <param name="tf_prefix" value="robot_1" />
 
 	  <!-- Run the map server -->
 	  <node name="map_server" pkg="map_server" type="map_server" args="$(find icra_roboin_simulation)/maps/$(arg map).yaml" respawn="false" />
@@ -84,21 +84,26 @@
 	  <node pkg="roborts_localization" type="localization_node" name="localization_node" respawn="false" />
 
 	  <include file="$(find icra_roboin_navigation)/launch/navigation_base.launch">
-	    <arg name="namespace" value="robot_1/"/>
+
+		<arg name="cmd_vel_topic" default="omni_cmd_vel" />
+		<arg name="odom_topic" default="odom" />
+		<arg name="map_topic" default="map" />
+		<arg name="local_planner_algorithm" default="dwa_local_planner/DWAPlannerROS"/>
+
           </include>
 
 	  <!-- detection simulator node -->
 	  <node pkg="icra_roboin_simulation" type="stage_blob_detector.py" name="yolo_simulator" respawn="false">
-            <param name="my_color" value="red"/>
+            <param name="my_color" value="blue"/>
             <param name="ally_color" value="none"/>
-            <param name="enemy1_color" value="blue"/>
+            <param name="enemy1_color" value="red"/>
             <param name="enemy2_color" value="none"/>
           </node>
 
 	  <!-- behavior interface node -->
 	  <node pkg="icra_roboin_behavior" type="behavior_node" name="behavior_node" respawn="false" output="screen">
-            <param name="team" value="red_team"/>
-            <param name="rule" value="1vs1"/>
+            <param name="team" value="blue_team"/>
+            <param name="rule" value="solo"/>
           </node>
 
   </group>

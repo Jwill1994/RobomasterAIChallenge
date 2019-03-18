@@ -12,18 +12,21 @@
 
 #include "behavior/abstract/behavior_base.h"
 #include "behavior/hold_rotate_behavior.h"
-#include "behavior/hold_sentinel_behavior.h"
+#include "behavior/hold_sentry_behavior.h"
 #include "behavior/lockon_search_move_behavior.h"
 #include "behavior/manual_speed_control_behavior.h"
 #include "behavior/reload_behavior.h"
 #include "behavior/get_buff_behavior.h"
 #include "behavior/ready_behavior.h"
+#include "behavior/backboot_behavior.h"
 #include "icra_roboin_msgs/BehaviorStyleSet.h"
 #include "icra_roboin_msgs/SetGoal_2.h"
 #include "icra_roboin_msgs/SetEnemyPriority.h"
 #include "icra_roboin_msgs/BlackboardGeneralInfo.h"
 #include "icra_roboin_msgs/RefereeShoot.h"
 #include "icra_roboin_msgs/RefereeTag.h"
+#include "icra_roboin_msgs/ConfirmHit.h"
+#include "icra_roboin_msgs/AmmoConsume.h"
 
 
 
@@ -56,7 +59,10 @@ class BehaviorInterface {
         // callback for general_info_service_  Service name: "blackboard/general_info_service" 
         bool GetGeneralInfoServiceCB(icra_roboin_msgs::BlackboardGeneralInfo::Request& req, 
                                 icra_roboin_msgs::BlackboardGeneralInfo::Response& resp); 
-
+        bool ConfirmHitServiceCB(icra_roboin_msgs::ConfirmHit::Request& req, 
+                                icra_roboin_msgs::ConfirmHit::Response& resp); 
+        bool AmmoConsumeServiceCB(icra_roboin_msgs::AmmoConsume::Request& req, 
+                                icra_roboin_msgs::AmmoConsume::Response& resp); 
 
         
 
@@ -83,7 +89,8 @@ class BehaviorInterface {
         ros::ServiceServer set_goal_service_; //Service name: "goal_select_service"
         ros::ServiceServer set_enemy_priority_service_; //set enemy priority. Service name: "set_enemy_priority_service"
         ros::ServiceServer general_info_server_; // Service name: "blackboard/general_info_service"
-                
+        ros::ServiceServer confirm_hit_server_; // Service name: "confirm_hit_service"
+        ros::ServiceServer ammo_consume_server_; // Service name: "ammo_consume_service"
 
 
         //ros::ServiceServer referee_shoot_service_; // request referee for hitscan judgement.    Service name: "referee_shoot_service"

@@ -35,7 +35,8 @@ class HoldBehaviorBase : public BehaviorBase{
 
         virtual void RunLockon() {
             if(blackboard_->GetLockedOnEnemy() == PlayerType::ENEMY_ONE | blackboard_->GetLockedOnEnemy() == PlayerType::ENEMY_TWO){
-                if( (ros::Time::now() - (blackboard_->GetTimeLastSeen(blackboard_->GetLockedOnEnemy()))).toSec() > 3 ){
+                if( (ros::Time::now() - (blackboard_->GetTimeLastSeen(blackboard_->GetLockedOnEnemy()))).toSec() > 2 ){
+                    blackboard_->ConfirmHitFastResponse();
                     blackboard_->SetLockedOnEnemy(PlayerType::ALLY);
                     NoLockonTargetBehavior();
                 } else{
@@ -58,6 +59,9 @@ class HoldBehaviorBase : public BehaviorBase{
         }
         virtual void OnHit() {
             switch(blackboard_->GetWhichArmorHit()){
+                case ArmorType::FRONT:
+                  blackboard_->ConfirmHitFastResponse();
+                  break;
                 case ArmorType::LEFT:
                   lockon_module_->LockonInterface(LockonMode::ANGULAR_VEL,4);
                   break;

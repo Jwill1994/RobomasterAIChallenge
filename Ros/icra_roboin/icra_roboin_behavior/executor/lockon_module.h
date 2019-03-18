@@ -12,8 +12,8 @@ namespace icra_roboin_behavior {
 class LockonModule {
     public:
         LockonModule(Blackboard*& blackboard,
-                    double dt = 0.1,double sentinel_angle=0.7854): 
-                                                            dt_(dt),blackboard_(blackboard),sentinel_angle_(sentinel_angle)
+                    double dt = 0.1,double sentry_angle=0.7854): 
+                                                            dt_(dt),blackboard_(blackboard),sentry_angle_(sentry_angle)
         {
             ros::NodeHandle nh;
             sub_ = nh.subscribe("omni_cmd_vel",1,&LockonModule::CB,this);
@@ -24,23 +24,28 @@ class LockonModule {
         void LockonInterface(const LockonMode mode, const double target){
             switch(mode){
                 case LockonMode::ANGULAR_VEL:
+                  //ROS_INFO("ANGVEL");
                   SetTargetAngularVelocity(target);
                   lockon_mode_ = mode;
                   break;
                 case LockonMode::RELATIVE_ANGLE:
+                  //ROS_INFO("RELANG");
                   SetTargetAngle(target);
                   lockon_mode_ = mode;
                   break;
-                case LockonMode::RELATIVE_ANGLE_SENTINEL:
-                  SetTargetAngleSentinelMode(target);
+                case LockonMode::RELATIVE_ANGLE_SENTRY:
+                  //ROS_INFO("RELANGSEN");
+                  SetTargetAngleSentryMode(target);
                   lockon_mode_ = mode;
                   break;              
                 case LockonMode::GLOBAL_YAW:
+                  //ROS_INFO("GLOYAW");
                   SetTargetGlobalYaw(target);
                   lockon_mode_ = mode;
                   break;
-                case LockonMode::GLOBAL_YAW_SENTINEL:
-                  SetTargetGlobalYawSentinelMode(target);
+                case LockonMode::GLOBAL_YAW_SENTRY:
+                  //ROS_INFO("GLOYAWSEN");
+                  SetTargetGlobalYawSentryMode(target);
                   lockon_mode_ = mode;
                   break;
                 default:
@@ -51,6 +56,7 @@ class LockonModule {
         }
 
         void LockonInterface(const LockonMode mode, const PlayerType who){
+            //ROS_INFO("TARGETENEM");
             if(mode != LockonMode::TARGET_ENEMY_LOCKON){
                     throw std::invalid_argument( "wrong lockon parameter" );
                     ROS_ERROR("LockonModule error: wrong lockon parameter with TARGET_ENEMY_LOCKON mode");
@@ -60,6 +66,7 @@ class LockonModule {
         }
 
         void LockonInterface(const LockonMode mode, const double x, const double y){
+            //ROS_INFO("TARGETPOS");
             if(mode != LockonMode::TARGET_POSITION_LOCKON){
                     throw std::invalid_argument( "wrong lockon parameter" );
                     ROS_ERROR("LockonModule error: wrong lockon parameter with TARGET_POSITION_LOCKON mode");
@@ -69,6 +76,7 @@ class LockonModule {
         }
 
         void LockonInterface(const LockonMode mode){
+            //ROS_INFO("TARGETGOAL");
             if(mode != LockonMode::TARGET_GOAL_LOCKON){
                     throw std::invalid_argument( "wrong lockon parameter" );
                     ROS_ERROR("LockonModule error: wrong lockon parameter with TARGET_GOAL_LOCKON mode");
@@ -84,12 +92,12 @@ class LockonModule {
 
     private:
         void SetTargetAngularVelocity(double target) {
-            ROS_INFO("target_ang_vel: %f",target);
+            //ROS_INFO("target_ang_vel: %f",target);
             target_angular_velocity_ = target;
         }
         void SetTargetAngle(double target){
             target_angle_ = target;
-            ROS_INFO("target angle: %f",target);
+            //ROS_INFO("target angle: %f",target);
             if(target > 0.1 | target < -0.1){
                 SetTargetAngularVelocity( tools::Clip(2*target_angle_,-3.0,3.0) );
             } else {
@@ -98,19 +106,19 @@ class LockonModule {
             ///need PID control
         }
 
-        void SetTargetAngleSentinelMode(double target){
+        void SetTargetAngleSentryMode(double target){
             target_angle_ = target;
-            ROS_INFO("sentinel target angle: %f",target);
+            //ROS_INFO("sentry target angle: %f",target);
 
-            if(target_angle_ < sentinel_angle_ && target_angle_ > -1* sentinel_angle_){
-                if(target/sentinel_angle_ > 0.9  )
+            if(target_angle_ < sentry_angle_ && target_angle_ > -1* sentry_angle_){
+                if(target/sentry_angle_ > 0.9  )
                 {
-                    sentinel_flag_ = 1;
-                } else if ( target/sentinel_angle_ < -0.9 ) {
-                    sentinel_flag_ = -1;
+                    sentry_flag_ = 1;
+                } else if ( target/sentry_angle_ < -0.9 ) {
+                    sentry_flag_ = -1;
                 }
-                ROS_INFO("%f, %f, %f, %f,%f,%d",sentinel_flag_ * cos( 1.570796 * (target/sentinel_angle_) ),target/sentinel_angle_, target,sentinel_angle_,target_angle_,sentinel_flag_ );
-                SetTargetAngularVelocity(sentinel_flag_ * cos( 1.570796 * (target/sentinel_angle_) ));
+                //ROS_INFO("%f, %f, %f, %f,%f,%d",sentry_flag_ * (0.3 + cos( 1.570796 * (target/sentry_angle_) )),target/sentry_angle_, target,sentry_angle_,target_angle_,sentry_flag_ );
+                SetTargetAngularVelocity(sentry_flag_ * (0.3 + cos( 1.570796 * (target/sentry_angle_)) ));
             } else {
                 SetTargetAngularVelocity( tools::Clip(2*target_angle_,-3.0,3.0) );
             }
@@ -121,9 +129,9 @@ class LockonModule {
             SetTargetAngle( tools::GetShortestYawSigned(yaw,tools::GetYaw(blackboard_->GetMyPose())) );
         }
 
-        void SetTargetGlobalYawSentinelMode(double yaw) {
-            ROS_INFO("global_yaw_sentinel: %f %f",yaw,tools::GetYaw(blackboard_->GetMyPose()));
-            SetTargetAngleSentinelMode( tools::GetShortestYawSigned(yaw,tools::GetYaw(blackboard_->GetMyPose())) );
+        void SetTargetGlobalYawSentryMode(double yaw) {
+            //ROS_INFO("global_yaw_sentry: %f %f",yaw,tools::GetYaw(blackboard_->GetMyPose()));
+            SetTargetAngleSentryMode( tools::GetShortestYawSigned(yaw,tools::GetYaw(blackboard_->GetMyPose())) );
         }
 
         void SetTargetEnemy(PlayerType who){
@@ -161,10 +169,10 @@ class LockonModule {
         ros::Subscriber sub_;
         ros::Publisher pub_;
         void CB(const geometry_msgs::Twist::ConstPtr& msg) {
-
+            
             geometry_msgs::Twist cmd;
             cmd.angular.z = target_angular_velocity_;
-
+            //ROS_INFO("%f",cmd.angular.z);
             double det = pow(dt_ * cmd.angular.z , 2) + 4;
             double alpha = ( dt_ * dt_ * cmd.angular.z * (msg->angular.z) ) + 4;
             double beta = 2*dt_*(cmd.angular.z - (msg->angular.z));
@@ -173,15 +181,14 @@ class LockonModule {
             cmd.linear.x = ( (alpha * (msg->linear.x)) + (beta * (msg->linear.y)) ) / det;
             cmd.linear.y = ( (alpha * (msg->linear.y)) - (beta * (msg->linear.x)) ) / det;
 
-
             pub_.publish(cmd);
         }
         LockonMode lockon_mode_;
-        double target_angle_;
-        double target_angular_velocity_; //rad/sec
+        double target_angle_=0;
+        double target_angular_velocity_=0; //rad/sec
         const double dt_;
-        const double sentinel_angle_;
-        int sentinel_flag_ = 1;
+        const double sentry_angle_;
+        int sentry_flag_ = 1;
 };
         
 

@@ -32,6 +32,9 @@ add_service_files(
   RefereeTag.srv
   RefereeBuff.srv
   RefereePenalty.srv
+  RefereeReload.srv
+  ConfirmHit.srv
+  AmmoConsume.srv
 )
 
 add_action_files(

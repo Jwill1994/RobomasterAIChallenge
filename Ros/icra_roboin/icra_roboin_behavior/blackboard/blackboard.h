@@ -19,6 +19,7 @@
 #include "icra_roboin_msgs/RefereeHit.h"
 #include "icra_roboin_msgs/RefereePenalty.h"
 #include "icra_roboin_msgs/RefereeBuff.h"
+#include "icra_roboin_msgs/RefereeReload.h"
 
 
 
@@ -62,6 +63,7 @@ class Blackboard {
         const ros::Duration GetTimeBuffLeft(); 
         //Ammunition Info
         int GetAmmo() const;
+        bool GetIsReloading() const;
 
         /*   Team Info Interface   */
         geometry_msgs::PoseStamped GetAllyPose() const;
@@ -102,7 +104,8 @@ class Blackboard {
         void SetBehaviorProcess(const BehaviorProcess process);
         void SetEnemyPriority(const PlayerType who);
         void SetLockedOnEnemy(const PlayerType who); //who: ALLY, ENEMY_ONE ENEMY_TWO       ALLY means do not lock on
-        
+        void AmmoMinusOne();
+        void SetIsReloading(const bool flag);
 
 
     private: // Referee Info
@@ -115,36 +118,37 @@ class Blackboard {
         PenaltyType penalty_received_;
 
         //Zone Info
-        bool is_buff_zone_online_;
+        bool is_buff_zone_online_=true;
         ros::Time time_last_buffed_; 
         ros::Duration time_left_for_buff_zone_to_online_;  
-        bool is_reload_zone_online_;  
+        bool is_reload_zone_online_=true;
         ros::Time time_last_reloaded_;  
         ros::Duration time_left_for_reload_zone_to_online_;  
 
         //HP Info
         int my_health_;
-        bool is_hit_fast_response_;
-        bool is_hit_smart_response_;
-        bool hit_confirmed_fast_response_;
-        bool hit_confirmed_smart_response_;
+        bool is_hit_fast_response_=false;
+        bool is_hit_smart_response_=false;
+        bool hit_confirmed_fast_response_=false;
+        bool hit_confirmed_smart_response_=false;
         ArmorType which_armor_hit_;
         ros::Time time_last_hit_; 
 
         //Defense Buff Info
-        bool has_buff_;
+        bool has_buff_=false;
         ros::Duration time_buff_left_;
-        bool has_enemy_buff_;
+        bool has_enemy_buff_=false;
         ros::Duration time_enemy_buff_left_;
         std::array<double,3> enemy_buff_time_estimation_moments_; //variance, skewness, kurtosis
 
         //Ammunition Info
         int ammo_;
+        bool is_reloading_ = false;
 
     private: //Team Info
         geometry_msgs::PoseStamped ally_pose_;
         TeamType my_team_;
-        bool is_ally_alive_;
+        bool is_ally_alive_=false;
         
     private: // Perception Info
 
@@ -179,19 +183,19 @@ class Blackboard {
         int number_of_detection_;
         int number_of_detected_enemies_;
 
-        bool is_ally_detected_;
-        bool is_enemy_1_detected_;
-        bool is_enemy_2_detected_;
-        bool is_enemy_detected_;
-        bool is_unknown_detected_;
+        bool is_ally_detected_=false;
+        bool is_enemy_1_detected_=false;
+        bool is_enemy_2_detected_=false;
+        bool is_enemy_detected_=false;
+        bool is_unknown_detected_=false;
 
-        bool is_new_enemy_;
+        bool is_new_enemy_=false;
 
     private: // Behavior Info
 
         PlayerType locked_on_enemy_; // who: ALLY, ENEMY_ONE ENEMY_TWO       ALLY means do not lock on
-        bool is_new_lockon_target_;
-        bool is_new_goal_;
+        bool is_new_lockon_target_=false;
+        bool is_new_goal_=false;
         icra_roboin_msgs::GoalDescription goal_;
         geometry_msgs::PoseStamped goal_pose_quaternion_;
         BehaviorStyle behavior_style_;
@@ -221,6 +225,8 @@ class Blackboard {
         ros::ServiceServer referee_penalty_service_; 
         // service for getting buffstate from referee.   Service name: "referee_buff_service"
         ros::ServiceServer referee_buff_service_;
+        // service for getting reload state from referee.   Service name: "referee_reload_service"
+        ros::ServiceServer referee_reload_service_;
 
     
     public: // Callback functions
@@ -247,7 +253,9 @@ class Blackboard {
         // callback for referee_buff_service_ Service name: "referee_buff_service"                      
         bool RefereeBuffCB(icra_roboin_msgs::RefereeBuff::Request& req,
                                  icra_roboin_msgs::RefereeBuff::Response& resp); 
-
+        // callback for referee_reload_service_ Service name: "referee_reload_service"                      
+        bool RefereeReloadCB(icra_roboin_msgs::RefereeReload::Request& req,
+                                 icra_roboin_msgs::RefereeReload::Response& resp);
 };
 
 

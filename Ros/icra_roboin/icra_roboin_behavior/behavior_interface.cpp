@@ -21,7 +21,8 @@ BehaviorInterface::BehaviorInterface(ChassisExecutor*& chassis_executor,
   set_goal_service_ = nh.advertiseService("goal_select_service",&BehaviorInterface::SetBehaviorGoalCB,this);
   set_enemy_priority_service_ = nh.advertiseService("set_enemy_priority_service",&BehaviorInterface::SetEnemyPriorityCB,this);
   general_info_server_ = nh.advertiseService("blackboard/general_info_service",&BehaviorInterface::GetGeneralInfoServiceCB,this);
-
+  confirm_hit_server_ = nh.advertiseService("confirm_hit_service",&BehaviorInterface::ConfirmHitServiceCB,this);
+  ammo_consume_server_ = nh.advertiseService("ammo_consume_service",&BehaviorInterface::AmmoConsumeServiceCB,this);
 
   //referee_shoot_service_ = nh.advertiseService("referee_shoot_service",&BehaviorInterface::RefereeShootCB,this);
   //referee_tag_service_ = nh.advertiseService("referee_tag_service",&BehaviorInterface::RefereeTagCB,this);
@@ -84,6 +85,23 @@ bool BehaviorInterface::SetEnemyPriorityCB(icra_roboin_msgs::SetEnemyPriority::R
   res.info = 0; 
   return true;
 }
+bool BehaviorInterface::ConfirmHitServiceCB(icra_roboin_msgs::ConfirmHit::Request& req, 
+                                icra_roboin_msgs::ConfirmHit::Response& resp)
+{
+  blackboard_->ConfirmHitSmartResponse();
+  resp.success = true;
+  return true;
+}
+
+bool BehaviorInterface::AmmoConsumeServiceCB(icra_roboin_msgs::AmmoConsume::Request& req, 
+                                icra_roboin_msgs::AmmoConsume::Response& resp)
+{
+  for(int i=0;i<req.shots;i++){
+    blackboard_->AmmoMinusOne();
+  }
+  resp.success = true;
+  return true;
+}
 
 
 bool BehaviorInterface::GetGeneralInfoServiceCB(icra_roboin_msgs::BlackboardGeneralInfo::Request& req, 
@@ -98,7 +116,9 @@ bool BehaviorInterface::GetGeneralInfoServiceCB(icra_roboin_msgs::BlackboardGene
     resp.reload_zone_cooltime = blackboard_->GetTimeLeftForReloadZoneToOnline();
     resp.my_health = blackboard_->GetMyHealth();
     resp.is_hit = blackboard_->GetIsHitSmartResponse();
-    blackboard_->ConfirmHitSmartResponse();
+    if(req.confirm = true){
+      blackboard_->ConfirmHitSmartResponse();
+    }
     resp.which_armor_hit = int(blackboard_->GetWhichArmorHit()); // 0,1,2,3 : front left rear right (counterclockwise)
     resp.last_hit_time = blackboard_->GetTimeLastHit();
     resp.has_buff = blackboard_->GetHasBuff();

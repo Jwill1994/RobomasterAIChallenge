@@ -1,5 +1,6 @@
 time stamp
 string request_sender
+bool confirm
 ---
 time stamp
 time game_start_time
