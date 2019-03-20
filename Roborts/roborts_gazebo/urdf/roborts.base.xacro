@@ -37,14 +37,14 @@
       </material>
     </visual>
 
-    <collision>
+    <!--<collision>
       <origin
         xyz="0 0 0.05"
         rpy="0 0 0" />
       <geometry>
         <box size="0.5 0.3 0.16" />
       </geometry>
-    </collision>
+    </collision>-->
 
   </link>
 
@@ -718,6 +718,55 @@
       link="base_link" />
     <child
       link="front_led_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+  <link
+    name="back_led_Link">
+
+    <inertial>
+      <origin
+        xyz="-0.27282 -0.063339 0.010089"
+        rpy="0 0 0" />
+      <mass
+        value="0.028183" />
+      <inertia
+        ixx="0.00037048"
+        ixy="7.803E-06"
+        ixz="9.4378E-05"
+        iyy="0.0011379"
+        iyz="-1.4266E-06"
+        izz="0.0014674" />
+    </inertial>
+
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roborts_gazebo/meshes/back_led_part.STL" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 0 0 1" />
+      </material>
+    </visual>
+  </link>
+
+
+  <joint
+    name="base_link_to_back_led_joint"
+    type="fixed">
+    <origin
+      xyz="-0.275 -0.075 0.082"
+      rpy="-3.14 0 1.57" />
+    <parent
+      link="base_link" />
+    <child
+      link="back_led_Link" />
     <axis
       xyz="0 0 0" />
   </joint>

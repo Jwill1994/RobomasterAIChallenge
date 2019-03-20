@@ -55,7 +55,26 @@
       <material>Gazebo/${led_color}</material>
       <turnGravityOff>false</turnGravityOff>
     </gazebo>
+    <gazebo reference="back_led_Link">
+      <material>Gazebo/${led_color}</material>
+      <turnGravityOff>false</turnGravityOff>
+    </gazebo>
   </xacro:macro>
+
+
+  <!-- position controller plugin-->
+  <gazebo>
+    <plugin name="mecanum_base_controller" filename="libgazebo_ros_planar_move.so">
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometryRate>100.0</odometryRate>
+      <robotBaseFrame>base_footprint</robotBaseFrame>
+      <broadcastTF>true</broadcastTF>
+  </plugin>
+</gazebo>
+
+
 
   <xacro:macro name="gazebo_plugin" params="namespace">
     <!-- hokuyo -->
@@ -98,19 +117,6 @@
       <plugin name="realsense_plugin" filename="libRealSensePlugin.so"/>
     </gazebo>-->
 
-
-    <!-- position controller plugin-->
-    <gazebo>
-      <plugin name="mecanum_base_controller" filename="libgazebo_ros_planar_move.so">
-        <commandTopic>cmd_vel</commandTopic>
-        <odometryTopic>odom</odometryTopic>
-        <odometryFrame>odom</odometryFrame>
-        <odometryRate>100.0</odometryRate>
-        <robotBaseFrame>base_footprint</robotBaseFrame>
-        <broadcastTF>true</broadcastTF>
-    </plugin>
-  </gazebo>
-
     
     <gazebo>
       <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
@@ -125,7 +131,7 @@
         <robotNamespace>${namespace}</robotNamespace>
         <gimbal_link>${namespace}/pitch_Link</gimbal_link>
         <fake_link>${namespace}/fake_link</fake_link>
-        <reference_frame>${namespace}/map</reference_frame>
+        <reference_frame>map</reference_frame>
         <force>4000.0</force>
         <default_freq>30</default_freq>
       </plugin>

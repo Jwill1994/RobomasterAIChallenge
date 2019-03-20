@@ -11,7 +11,7 @@
 
     <node name="map_server" pkg="map_server" type="map_server" args="$(find roborts_bringup)/maps/robomaster.yaml" respawn="false" />
 
-  	<!--Load parameters for localization node  -->
+  	
 	  <rosparam command="load" file="$(find roborts_localization)/config/robomaster_localization.yaml" />
   	<rosparam command="load" file="$(find roborts_localization)/amcl/config/amcl.yaml" />
 	  <param name="odom_frame" value="roborts_Red_0/odom"/>
@@ -25,7 +25,7 @@
     <param name="initial_pose_y" value="1.95" />
     <param name="initial_pose_a" value="0.0" />
 
-	  <!-- Run the localization node -->
+	  
 	  <node pkg="roborts_localization" type="localization_node" name="localization_node" respawn="false" />
 
     <include file="$(find roborts_navigation)/launch/move_base.launch" />
@@ -34,7 +34,7 @@
 
 
 
-  <group ns="roborts_Red_1">
+  <!--<group ns="roborts_Red_1">
     <param name="tf_prefix" value="roborts_Red_1" />
 
     <include file="$(find roborts_navigation)/launch/single.launch" >
@@ -47,7 +47,7 @@
 
     <node name="map_server" pkg="map_server" type="map_server" args="$(find roborts_bringup)/maps/robomaster.yaml" respawn="false" />
 
-  	<!--Load parameters for localization node  -->
+  	
 	  <rosparam command="load" file="$(find roborts_localization)/config/robomaster_localization.yaml" />
   	<rosparam command="load" file="$(find roborts_localization)/amcl/config/amcl.yaml" />
 	  <param name="odom_frame" value="roborts_Red_1/odom"/>
@@ -61,7 +61,7 @@
     <param name="initial_pose_y" value="1.95" />
     <param name="initial_pose_a" value="3.14" />
 
-	  <!-- Run the localization node -->
+	  
 	  <node pkg="roborts_localization" type="localization_node" name="localization_node" respawn="false" />
 
     <include file="$(find roborts_navigation)/launch/move_base.launch" />
@@ -81,7 +81,7 @@
       <arg name="robot_number" value="0" />
     </include>
 
-    <!--Load parameters for localization node  -->
+    
 	  <rosparam command="load" file="$(find roborts_localization)/config/robomaster_localization.yaml" />
   	<rosparam command="load" file="$(find roborts_localization)/amcl/config/amcl.yaml" />
 	  <param name="odom_frame" value="roborts_Blue_0/odom"/>
@@ -95,12 +95,12 @@
     <param name="initial_pose_y" value="-1.95" />
     <param name="initial_pose_a" value="0.0" />
 
-	  <!-- Run the localization node -->
+	  
 	  <node pkg="roborts_localization" type="localization_node" name="localization_node" respawn="false" />
 
     <include file="$(find roborts_navigation)/launch/move_base.launch" />
 
-  </group>
+  </group>-->
 
 
 
@@ -117,7 +117,7 @@
       <arg name="robot_number" value="1" />
     </include>
 
-    <!--Load parameters for localization node  -->
+    
 	  <rosparam command="load" file="$(find roborts_localization)/config/robomaster_localization.yaml" />
   	<rosparam command="load" file="$(find roborts_localization)/amcl/config/amcl.yaml" />
 	  <param name="odom_frame" value="roborts_Blue_1/odom"/>
@@ -131,7 +131,7 @@
     <param name="initial_pose_y" value="-1.95" />
     <param name="initial_pose_a" value="3.14" />
 
-	  <!-- Run the localization node -->
+	  
 	  <node pkg="roborts_localization" type="localization_node" name="localization_node" respawn="false" />
 
     <include file="$(find roborts_navigation)/launch/move_base.launch" />

@@ -1,5 +1,5 @@
 <launch>
-  <arg name="model" default="roborts"/>
+  <arg name="model" default="roborts.original"/>
   <arg name="world" default="robomaster"/>
   <arg name="color" default="Red" />
   <arg name="robort_number" default="0" />
@@ -10,7 +10,7 @@
   <arg name="P_pos" default="0.0"/>
   <arg name="Y_pos" default="0.0"/>
 
-  <node name="kill_gzserver" pkg="roborts_gazebo" type="kill_gzserver.sh"/>
+  <!--<node name="kill_gzserver" pkg="roborts_gazebo" type="kill_gzserver.sh"/>-->
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="$(find roborts_gazebo)/world/$(arg world).world"/>
@@ -21,7 +21,8 @@
     <arg name="debug" value="false"/>
   </include>
 
-  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find roborts_gazebo)/urdf/$(arg model).xacro' color:=$(arg color) number:=$(arg robort_number)" />
+  <!--<param name="robot_description" command="$(find xacro)/xacro -inorder '$(find roborts_gazebo)/urdf/$(arg model).xacro'" />-->
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find roborts_gazebo)/urdf/$(arg model).xacro' color:=Red number:=0" />
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
 

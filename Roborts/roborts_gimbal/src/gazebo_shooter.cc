@@ -50,6 +50,7 @@ namespace gazebo
             this->force = _sdf->Get<double>("force");
             this->default_freq = _sdf->Get<double>("default_freq");
             this->robot_namespace = _sdf->Get<std::string>("robotNamespace");
+            this->bullet_link_name = this->robot_namespace + "_bullet";
 
             if (this->default_freq != 0.0)
             {
@@ -411,7 +412,7 @@ namespace gazebo
         int linkIDToName_size = 0;
         int link_to_update_index_now = 0;
         
-        std::string bullet_link_name = this->robot_namespace + "bullet";
+        std::string bullet_link_name;
     };
     GZ_REGISTER_MODEL_PLUGIN(RobortsShooterPlugin)
 }
