@@ -136,6 +136,58 @@
         <default_freq>30</default_freq>
       </plugin>
     </gazebo>
+
+    <gazebo reference="front_armor_link">
+      <sensor name="front_armor_contactsensor_sensor" type="contact">
+        <always_on>true</always_on>
+        <contact>
+          <collision>base_footprint_fixed_joint_lump__front_armor_collision_collision_6</collision>
+        </contact>
+        <plugin name="front_armor_bumper" filename="libgazebo_ros_bumper.so">
+          <bumperTopicName>front_armor_contact</bumperTopicName>
+          <frameName>front_armor_link</frameName>
+        </plugin>
+      </sensor>
+    </gazebo>
+
+    <gazebo reference="left_armor_link">
+      <sensor name="left_armor_contactsensor_sensor" type="contact">
+        <always_on>true</always_on>
+        <contact>
+          <collision>base_footprint_fixed_joint_lump__left_armor_collision_collision_7</collision>
+        </contact>
+        <plugin name="left_armor_bumper" filename="libgazebo_ros_bumper.so">
+          <bumperTopicName>left_armor_contact</bumperTopicName>
+          <frameName>left_armor_link</frameName>
+        </plugin>
+      </sensor>
+    </gazebo>
+
+    <gazebo reference="right_armor_link">
+      <sensor name="right_armor_contactsensor_sensor" type="contact">
+        <always_on>true</always_on>
+        <contact>
+          <collision>base_footprint_fixed_joint_lump__right_armor_collision_collision_8</collision>
+        </contact>
+        <plugin name="right_armor_bumper" filename="libgazebo_ros_bumper.so">
+          <bumperTopicName>right_armor_contact</bumperTopicName>
+          <frameName>right_armor_link</frameName>
+        </plugin>
+      </sensor>
+    </gazebo>
+
+    <gazebo reference="back_armor_link">
+      <sensor name="back_armor_contactsensor_sensor" type="contact">
+        <always_on>true</always_on>
+        <contact>
+          <collision>base_footprint_fixed_joint_lump__back_armor_collision_collision_1</collision>
+        </contact>
+        <plugin name="back_armor_bumper" filename="libgazebo_ros_bumper.so">
+          <bumperTopicName>back_armor_contact</bumperTopicName>
+          <frameName>back_armor_link</frameName>
+        </plugin>
+      </sensor>
+    </gazebo>
   </xacro:macro>
 
 </robot>

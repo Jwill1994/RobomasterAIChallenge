@@ -37,14 +37,14 @@
       </material>
     </visual>
 
-    <!--<collision>
+    <collision name="base_link_bump_sensor_collision">
       <origin
-        xyz="0 0 0.05"
+        xyz="-0.1 0 0.05"
         rpy="0 0 0" />
       <geometry>
-        <box size="0.5 0.3 0.16" />
+        <box size="0.25 0.3 0.16" />
       </geometry>
-    </collision>-->
+    </collision>
 
   </link>
 
@@ -770,5 +770,182 @@
     <axis
       xyz="0 0 0" />
   </joint>
+
+  <link
+    name="front_armor_link">
+
+    <inertial>
+      <origin
+        xyz="-0.27282 -0.063339 0.010089"
+        rpy="0 0 0" />
+      <mass
+        value="0.028183" />
+      <inertia
+        ixx="0.00037048"
+        ixy="7.803E-06"
+        ixz="9.4378E-05"
+        iyy="0.0011379"
+        iyz="-1.4266E-06"
+        izz="0.0014674" />
+    </inertial>
+
+    <collision name="front_armor_collision">
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roborts_gazebo/meshes/back_armor.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+
+  <joint
+    name="base_link_to_front_armor_joint"
+    type="fixed">
+    <origin
+      xyz="0.28 0.04 0.0"
+      rpy="0 0 1.57" />
+    <parent
+      link="base_link" />
+    <child
+      link="front_armor_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+  <link
+    name="left_armor_link">
+
+    <inertial>
+      <origin
+        xyz="-0.27282 -0.063339 0.010089"
+        rpy="0 0 0" />
+      <mass
+        value="0.028183" />
+      <inertia
+        ixx="0.00037048"
+        ixy="7.803E-06"
+        ixz="9.4378E-05"
+        iyy="0.0011379"
+        iyz="-1.4266E-06"
+        izz="0.0014674" />
+    </inertial>
+
+    <collision name="left_armor_collision">
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roborts_gazebo/meshes/left_armor.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+
+  <joint
+    name="base_link_to_left_armor_joint"
+    type="fixed">
+    <origin
+      xyz="-0.05 0.16 0.1"
+      rpy="3.14 0 1.57" />
+    <parent
+      link="base_link" />
+    <child
+      link="left_armor_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+  <link
+    name="right_armor_link">
+
+    <inertial>
+      <origin
+        xyz="-0.27282 -0.063339 0.010089"
+        rpy="0 0 0" />
+      <mass
+        value="0.028183" />
+      <inertia
+        ixx="0.00037048"
+        ixy="7.803E-06"
+        ixz="9.4378E-05"
+        iyy="0.0011379"
+        iyz="-1.4266E-06"
+        izz="0.0014674" />
+    </inertial>
+
+    <collision name="right_armor_collision">
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roborts_gazebo/meshes/right_armor.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+
+  <joint
+    name="base_link_to_right_armor_joint"
+    type="fixed">
+    <origin
+      xyz="0.045 -0.145 0.09"
+      rpy="3.14 0 1.57" />
+    <parent
+      link="base_link" />
+    <child
+      link="right_armor_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+  <link
+    name="back_armor_link">
+
+    <inertial>
+      <origin
+        xyz="-0.27282 -0.063339 0.010089"
+        rpy="0 0 0" />
+      <mass
+        value="0.028183" />
+      <inertia
+        ixx="0.00037048"
+        ixy="7.803E-06"
+        ixz="9.4378E-05"
+        iyy="0.0011379"
+        iyz="-1.4266E-06"
+        izz="0.0014674" />
+    </inertial>
+
+    <collision name="back_armor_collision">
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roborts_gazebo/meshes/back_armor.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+
+  <joint
+    name="base_link_to_back_armor_joint"
+    type="fixed">
+    <origin
+      xyz="-0.245 -0.055 -0.005"
+      rpy="0 0 1.57" />
+    <parent
+      link="base_link" />
+    <child
+      link="back_armor_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
 
 </robot>
