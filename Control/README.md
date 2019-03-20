@@ -1,4 +1,4 @@
-lidar & laser_filters & rplidar_ros 사용법
+# lidar & laser_filters & rplidar_ros 사용법
 
 1. laser_filters, rplidar_ros 폴더 src폴더에 넣구 catkin_make
 2. 라이다 연결 후 'sudo chmod 666 /dev/ttyUSB0'
