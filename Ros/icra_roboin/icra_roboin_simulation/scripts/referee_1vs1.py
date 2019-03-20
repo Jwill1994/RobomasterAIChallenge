@@ -44,7 +44,7 @@ class Referee1vs1:
         self.shoot_server_1 = rospy.Service("robot_1"+'/referee_shoot_service',RefereeShoot,self.ShootCB_1)
         self.tag_server_0 = rospy.Service("robot_0"+'/referee_tag_service',RefereeTag,self.TagCB_0)
         self.tag_server_1 = rospy.Service("robot_1"+'/referee_tag_service',RefereeTag,self.TagCB_1)
-        self.hit_damage = 8
+        self.hit_damage = 15
         self.start_ammo = 50
         self.start_hp = 1000
         self.game_state = 1   #dead ready play end

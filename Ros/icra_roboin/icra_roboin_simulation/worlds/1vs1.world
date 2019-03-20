@@ -80,12 +80,12 @@ floorplan
 ( 
   name "RoboMaster Map"
   bitmap "../maps/icra2019.pgm"
-  size [8.15 5.15 1.000]
-  pose [4.075  2.575  0 0 ]
+  size [9 6 1.000]
+  pose [4  2.5  0 0 ]
 )
 
 # throw in a robot
  rmcar(pose [ 1 1 0 0 ] name "blue robot" color "blue" )
- rmcar(pose [ 7.2 4.2 0 180 ] name "red robot" color "red" )
+ rmcar(pose [ 7 4 0 180 ] name "red robot" color "red" )
 # throw in a block for test
 

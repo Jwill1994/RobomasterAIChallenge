@@ -16,7 +16,9 @@
 	</node>
 	<node name="map_server" pkg="map_server" type="map_server" args="$(find icra_roboin_simulation)/maps/$(arg map).yaml" respawn="false">
 		<param name="frame_id" value="referee_map"/>
+		<remap from="map" to="referee_map" />
 	</node>
+	
 
     	<node pkg="tf2_ros" type="static_transform_publisher" name="map_static_tf1" args="0.0  0.0 0.0  0.0  0.0 0.0 referee_map robot_0/map" />
 	<node pkg="tf2_ros" type="static_transform_publisher" name="map_static_tf2" args="0.0  0.0 0.0  0.0  0.0 0.0 referee_map robot_1/map" />
@@ -51,8 +53,6 @@
 	<include file="$(find icra_roboin_navigation)/launch/navigation_base.launch">
 
 		<arg name="cmd_vel_topic" default="omni_cmd_vel" />
-		<arg name="odom_topic" default="odom" />
-		<arg name="map_topic" default="map" />
 		<arg name="local_planner_algorithm" default="dwa_local_planner/DWAPlannerROS"/>
 
 	</include>
@@ -104,8 +104,6 @@
 	<include file="$(find icra_roboin_navigation)/launch/navigation_base.launch">
 
 		<arg name="cmd_vel_topic" default="omni_cmd_vel" />
-		<arg name="odom_topic" default="odom" />
-		<arg name="map_topic" default="map" />
 		<arg name="local_planner_algorithm" default="dwa_local_planner/DWAPlannerROS"/>
 
 	</include>

@@ -35,7 +35,7 @@ Visualization Manager:
       Draw Behind: false
       Enabled: true
       Name: Map
-      Topic: /map
+      Topic: /referee_map
       Unreliable: false
       Use Timestamp: false
       Value: true
@@ -214,4 +214,4 @@ Window Geometry:
     collapsed: false
   Width: 833
   X: 2841
-  Y: 84
+  Y: 38
