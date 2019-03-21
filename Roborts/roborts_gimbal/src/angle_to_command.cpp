@@ -8,23 +8,28 @@
 std_msgs::Float64 pitch_angle_;
 std_msgs::Float64 yaw_angle_;
 
+std::string robot_namespace;
+
 double yaw_pos;
 double pitch_pos;
+
+double yaw_command;
+double pitch_command;
 
 void angleCallback(const roborts_msgs::GimbalAngleConstPtr& msg) {
     ROS_INFO("Pitch Angle : %f", msg->pitch_angle);
     ROS_INFO("Yaw Angle : %f", msg->yaw_angle);
 
     if (msg->pitch_mode) {
-        pitch_angle_.data = msg->pitch_angle;
+        pitch_command = msg->pitch_angle;
     } else {
-        pitch_angle_.data = 0.0;
+        pitch_command = 0.0;
     }
 
     if (msg->yaw_mode) {
-        yaw_angle_.data = msg->yaw_angle;
+        yaw_command = msg->yaw_angle;
     } else {
-        yaw_angle_.data = 0.0;
+        yaw_command = 0.0;
     }
     
 }
@@ -33,9 +38,11 @@ int main(int argc, char** argv) {
     ros::init(argc, argv, "angle_to_command");
     ros::NodeHandle nh;
 
+    nh.param<std::string>("robot_namespace", robot_namespace, "roborts_Red_0");
+
     ros::Subscriber sub = nh.subscribe("cmd_gimbal_angle", 1, angleCallback);
-    ros::Publisher pub1 = nh.advertise<std_msgs::Float64>("roborts/pitch_position_controller/command", 1);
-    ros::Publisher pub2 = nh.advertise<std_msgs::Float64>("roborts/yaw_position_controller/command", 1);
+    ros::Publisher pub1 = nh.advertise<std_msgs::Float64>("pitch_position_controller/command", 1);
+    ros::Publisher pub2 = nh.advertise<std_msgs::Float64>("yaw_position_controller/command", 1);
 
     ros::ServiceClient joint_property_client = nh.serviceClient<gazebo_msgs::GetJointProperties>("/gazebo/get_joint_properties");
     gazebo_msgs::GetJointProperties joint_property;
@@ -48,8 +55,9 @@ int main(int argc, char** argv) {
     // svc.request.reference_frame = "map";
 
     while(ros::ok()){
+        ros::spinOnce();
 
-        joint_property.request.joint_name = "base_link_to_yaw_joint";
+        joint_property.request.joint_name = robot_namespace + "base_link_to_yaw_joint";
 
         if(joint_property_client.call(joint_property)) {
             if(joint_property.response.success) {
@@ -63,7 +71,7 @@ int main(int argc, char** argv) {
             ROS_INFO("CALL FAIL!");
         }
 
-        joint_property.request.joint_name = "base_link_to_yaw_joint";
+        joint_property.request.joint_name = robot_namespace + "base_link_to_yaw_joint";
 
         if(joint_property_client.call(joint_property)) {
             if(joint_property.response.success) {
@@ -77,19 +85,20 @@ int main(int argc, char** argv) {
             ROS_INFO("CALL FAIL!");
         }
 
-        pitch_angle_.data += pitch_pos;
-        yaw_angle_.data += yaw_pos;
+        pitch_pos += pitch_command;
+        yaw_pos += yaw_command;
+
+        pitch_angle_.data = pitch_pos;
+        yaw_angle_.data = yaw_pos;
 
         pub1.publish(pitch_angle_);
         pub2.publish(yaw_angle_);
-
-        // if(get_link_state_client.call(svc)){
-        //     ROS_INFO("x:%f", svc.response.link_state.pose.position.x);
-        //     ROS_INFO("y:%f", svc.response.link_state.pose.position.y);
-        //     ROS_INFO("z:%f", svc.response.link_state.pose.position.z);
-        // }
-        ros::spinOnce();
+        
         loop_rate.sleep();
+
+        yaw_command = 0.0;
+        pitch_command = 0.0;
+
     }
     return 0;
 }

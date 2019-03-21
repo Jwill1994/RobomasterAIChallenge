@@ -3,7 +3,6 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="roborts">
 
   <xacro:include filename="$(find roborts_gazebo)/urdf/roborts.gazebo.xacro"/>
-  <xacro:include filename="$(find roborts_gazebo)/urdf/roborts.trans.xacro"/>
   <xacro:include filename="$(find roborts_gazebo)/urdf/roborts.base.xacro"/>
 
   <xacro:property name="color" value="$(arg color)" />

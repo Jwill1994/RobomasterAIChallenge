@@ -3,8 +3,8 @@
   <arg name="world" default="robomaster"/>
   <arg name="color" default="Red" />
   <arg name="robort_number" default="0" />
-  <arg name="x_pos" default="-3.55"/>
-  <arg name="y_pos" default="1.95"/>
+  <arg name="x_pos" default="-3.5"/>
+  <arg name="y_pos" default="-2"/>
   <arg name="z_pos" default="0.0"/>
   <arg name="R_pos" default="0.0"/>
   <arg name="P_pos" default="0.0"/>

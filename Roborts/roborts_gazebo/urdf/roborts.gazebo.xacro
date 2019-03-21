@@ -2,40 +2,36 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
   <!-- materials -->
   <gazebo reference="base_link">
-    <material>Gazebo/Grey</material>
+    <material>Gazebo/DarkGrey</material>
     <gravity>true</gravity>
   </gazebo>
 
   <gazebo reference="fr_wheel_Link">
-    <material>Gazebo/Black</material>
+    <material>Gazebo/FlatBlack</material>
     <gravity>true</gravity>
   </gazebo>
   <gazebo reference="fl_wheel_Link">
-    <material>Gazebo/Black</material>
+    <material>Gazebo/FlatBlack</material>
     <gravity>true</gravity>
   </gazebo>
   <gazebo reference="br_wheel_Link">
-    <material>Gazebo/Black</material>
+    <material>Gazebo/FlatBlack</material>
     <gravity>true</gravity>
   </gazebo>
   <gazebo reference="bl_wheel_Link">
-    <material>Gazebo/Black</material>
+    <material>Gazebo/FlatBlack</material>
     <gravity>true</gravity>
   </gazebo>
   
   
   <gazebo reference="base_laser_link">
-    <material>Gazebo/Black</material>
+    <material>Gazebo/FlatBlack</material>
     <gravity>true</gravity>
   </gazebo>
 
   <gazebo reference="yaw_Link">
-    <material>Gazebo/Orange</material>
+    <material>Gazebo/DarkGrey</material>
     <gravity>true</gravity>
-  </gazebo>
-  <gazebo reference="pitch_Link">
-    <material>Gazebo/Orange</material>
-    <turnGravityOff>false</turnGravityOff>
   </gazebo>
 
   <xacro:macro name="led_color" params="led_color">
@@ -77,6 +73,12 @@
 
 
   <xacro:macro name="gazebo_plugin" params="namespace">
+
+    <gazebo reference="${namespace}/pitch_Link">
+      <material>Gazebo/DarkGrey</material>
+      <turnGravityOff>false</turnGravityOff>
+    </gazebo>
+
     <!-- hokuyo -->
     <!-- Noise is sampled independently per pixel on each frame.  
         That pixel's noise value is added to each of its color

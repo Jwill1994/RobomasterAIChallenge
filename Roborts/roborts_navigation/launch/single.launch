@@ -26,12 +26,18 @@
         respawn="false">
   </node>
 
-  <rosparam file="$(find roborts_gimbal)/config/joint_controller.yaml" command="load" />
+  <rosparam file="$(find roborts_gimbal)/config/$(arg color)_$(arg robot_number)_joint_controller.yaml" command="load" />
 
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
 	output="screen" 
 	args="joint_state_controller
 	      yaw_position_controller
 	      pitch_position_controller" /> 
+
+  <param name="robot_namespace" value="roborts_$(arg color)_$(arg robot_number)" />
+
+  <node name="angle_to_command" pkg="roborts_gimbal" type="angle_to_command" />
+
+  <node name="contact_to_damage" pkg="roborts_navigation" type="contact_to_damage" />
 
 </launch>

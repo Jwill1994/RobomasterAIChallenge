@@ -9,9 +9,11 @@
       <arg name="debug" value="false"/>
   </include>
 
-  <node name="map_server" pkg="map_server" type="map_server" args="$(find roborts_bringup)/maps/robomaster.yaml" respawn="false" />
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find roborts_bringup)/maps/icra2019.yaml" respawn="false" />
 
   <!-- include multiple robots -->
   <include file="$(find roborts_navigation)/launch/multi.launch"/>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find roborts_navigation)/rviz/multi_spawn.rviz" />
 
 </launch>

@@ -22,5 +22,5 @@
     name="rviz"
     pkg="rviz"
     type="rviz"
-    args="-d $(find roborts_gazebo)/config/roborts.rviz" />
+    args="-d $(find roborts_gazebo)/rviz/roborts.rviz" />
 </launch>

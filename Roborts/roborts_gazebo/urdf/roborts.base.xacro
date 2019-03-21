@@ -325,9 +325,10 @@
 
   </link>
 
+<xacro:macro name="gimbal" params="namespace" >
 
   <joint
-    name="base_link_to_yaw_joint"
+    name="${namespace}/base_link_to_yaw_joint"
     type="revolute">
     <origin
       xyz="0 0 0"
@@ -345,7 +346,6 @@
       velocity="100" />
   </joint>
 
-<xacro:macro name="gimbal" params="namespace" >
   <link
     name="${namespace}/pitch_Link">
     <inertial>
@@ -380,7 +380,7 @@
   </link>
 
   <joint
-    name="base_link_to_pitch_joint"
+    name="${namespace}/base_link_to_pitch_joint"
     type="revolute">
     <origin
       xyz="0 0 -0.148"
@@ -421,6 +421,29 @@
       </material>
     </visual>-->
   </link>
+
+  <transmission name="${namespace}/base_link_to_yaw_joint_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="${namespace}/base_link_to_yaw_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="${namespace}/base_link_to_yaw_joint_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+
+
+  <transmission name="${namespace}/base_link_to_pitch_joint_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="${namespace}/base_link_to_pitch_joint">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="${namespace}/base_link_to_pitch_joint_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
 </xacro:macro>
 
 

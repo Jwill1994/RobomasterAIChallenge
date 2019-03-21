@@ -12,7 +12,7 @@
             yaw_position_controller
             pitch_position_controller" />
 
-    <node name="angle_to_command" pkg="roborts_gimbal" type="angle_to_command" />
+    
 
     
 
