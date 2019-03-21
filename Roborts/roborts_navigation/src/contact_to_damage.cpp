@@ -15,15 +15,16 @@ std_msgs::UInt8 damage_source;
 std::string frame;
 std::string delimeter = "/";
 
+bool recieved;
+
 void bumperCallback(const gazebo_msgs::ContactsStatePtr& msg) {
-    ROS_WARN("Contact Frame ID : %s", msg->header.frame_id.c_str());
     frame = msg->header.frame_id;
 
     if (msg->states.size() != 0) {
         damage_type.data = 0;
+        recieved = true;
 
         if (frame.find("front") != std::string::npos) {
-            ROS_INFO("Front!");
             damage_source.data = FORWARD;
         } else if (frame.find("back") != std::string::npos) {
             damage_source.data = BACKWARD;
@@ -48,17 +49,20 @@ int main(int argc, char** argv) {
     ros::Publisher pub = nh.advertise<roborts_msgs::RobotDamage>("robot_damage", 30);
     roborts_msgs::RobotDamage robot_damage;
 
-    ros::Rate loop_rate(10);
+    ros::Rate loop_rate(30);
 
     while(ros::ok()){
-
+        ros::spinOnce();
         robot_damage.damage_type = damage_type.data;
         robot_damage.damage_source = damage_source.data;
 
-        pub.publish(robot_damage);
-
-        ros::spinOnce();
+        if (recieved) {
+            ROS_WARN("Received");
+            pub.publish(robot_damage);
+        }
+        
         loop_rate.sleep();
+        recieved = false;
     }
     return 0;
 }

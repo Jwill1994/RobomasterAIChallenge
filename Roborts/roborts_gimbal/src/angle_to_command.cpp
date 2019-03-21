@@ -23,13 +23,13 @@ void angleCallback(const roborts_msgs::GimbalAngleConstPtr& msg) {
     if (msg->pitch_mode) {
         pitch_command = msg->pitch_angle;
     } else {
-        pitch_command = 0.0;
+        pitch_command = msg->pitch_angle - pitch_pos;
     }
 
     if (msg->yaw_mode) {
         yaw_command = msg->yaw_angle;
     } else {
-        yaw_command = 0.0;
+        yaw_command = msg->yaw_angle - yaw_pos;
     }
     
 }
