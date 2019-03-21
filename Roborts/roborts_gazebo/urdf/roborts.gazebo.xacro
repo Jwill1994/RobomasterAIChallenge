@@ -67,8 +67,64 @@
       <odometryRate>100.0</odometryRate>
       <robotBaseFrame>base_footprint</robotBaseFrame>
       <broadcastTF>true</broadcastTF>
-  </plugin>
-</gazebo>
+    </plugin>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="realsense_plugin" filename="libRealSensePlugin.so"/>
+  </gazebo>
+
+  <!-- camera -->
+  <gazebo reference="camera_Link">
+    
+      <sensor name="color" type="camera">
+        <pose frame="">0 -0.046 0.004 0 0 0</pose>
+        <camera name="__default__">
+          <horizontal_fov>1.047</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>RGB_INT8</format>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>100</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>60</update_rate>
+        <visualize>1</visualize>
+      </sensor>
+
+      <sensor name="depth" type="depth">
+        <pose frame="">0 -0.03 0.004 0 0 0</pose>
+        <camera name="__default__">
+          <horizontal_fov>1.047</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>100</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>60</update_rate>
+        <visualize>0</visualize>
+      </sensor>
+
+  </gazebo>
 
 
 
@@ -114,10 +170,6 @@
         </plugin>
       </sensor>
     </gazebo>
-
-    <!--<gazebo>
-      <plugin name="realsense_plugin" filename="libRealSensePlugin.so"/>
-    </gazebo>-->
 
     
     <gazebo>
