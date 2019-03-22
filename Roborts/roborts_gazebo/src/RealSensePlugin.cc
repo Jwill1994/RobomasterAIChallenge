@@ -188,8 +188,8 @@ void RealSensePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr /*_sdf*/)
   ROS_INFO("Realsense Gazebo Plugin: ros online!");
 	  
   this->rosNh_.reset(new ros::NodeHandle("realsense_gazebo"));
-  this->rosPub_ = this->rosNh_->advertise<sensor_msgs::Image>("realsense_rgb_image",4);
-  this->rosPub_depth = this->rosNh_->advertise<sensor_msgs::Image>("realsense_depth_image",4);	
+  this->rosPub_ = this->rosNh_->advertise<sensor_msgs::Image>(_model->GetName() +  "realsense_rgb_image",4);
+  this->rosPub_depth = this->rosNh_->advertise<sensor_msgs::Image>(_model->GetName() + "realsense_depth_image",4);	
 }
 
 
