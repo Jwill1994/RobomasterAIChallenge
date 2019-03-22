@@ -35,6 +35,8 @@ add_service_files(
   RefereeReload.srv
   ConfirmHit.srv
   AmmoConsume.srv
+  PitchGain.srv
+  YawGain.srv
 )
 
 add_action_files(
