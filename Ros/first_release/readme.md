@@ -1,3 +1,10 @@
+# TroubleShooter 3월23일 추가
+임포트문제시 파이썬2 커널 사용중인지 확인해주시고
+sudo rosdep init
+rosdep update
+sudo apt install python-rosinstall python-rosinstall-generator python-wstool build-essential
+하면 잘될듯
+
 # 사용법
 1. 로스 설치
 2. sudo apt install ros-kinetic-navigation
