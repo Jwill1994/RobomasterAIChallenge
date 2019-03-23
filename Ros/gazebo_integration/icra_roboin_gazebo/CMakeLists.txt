@@ -50,11 +50,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
 
 add_library(gazebo_shooter_plugin src/gazebo_shooter.cc)
 
-add_library(RealSensePlugin SHARED 
-   src/RealSensePlugin.cc
- )
-
-target_link_libraries(RealSensePlugin ${GAZEBO_libraries})
 
 add_executable(angle_to_command src/angle_to_command.cpp)
 target_link_libraries(angle_to_command
