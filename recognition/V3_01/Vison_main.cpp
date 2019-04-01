@@ -6,7 +6,10 @@
 //#define BASIC_FUNCTION  //this is for basic function (using ROS)
 #define DISPLAY  // control opencv_ imshow function 
 //#define DEBUG  //show what function start and worked
+
+#ifdef BASIC_FUNCTION
 //#define VIRTUAL  // for mechine learning code with object detection  (must run with BASIC_FUNCTION)
+#endif
 
 //#define VISION_DATACHECK //show visoin output data such as number of detection
 #define ZIMBAL_DATACHECK //show zimbal`s output data such as angle
