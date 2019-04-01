@@ -124,6 +124,7 @@
     <ClInclude Include="src\Data_control.hpp" />
     <ClInclude Include="src\object_detection.hpp" />
     <ClInclude Include="src\pch.hpp" />
+    <ClInclude Include="src\Vision_ros.hpp" />
     <ClInclude Include="src\yolo_class.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

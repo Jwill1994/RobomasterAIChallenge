@@ -97,16 +97,27 @@ private:
 		}
 		dataset.number_of_detection = detection_num;
 	}
+
+
 public:
 	/*detector initialize*/
 	vision_detector() {
+#ifndef VIRTUAL
 		names_file = "/home/nvidia/CLionProjects/vision_dev/yolo/yolo3.names";// class file path (name of objects)
 		cfg_file = "/home/nvidia/CLionProjects/vision_dev/yolo/yolov3.cfg";  //cfg File and weights File path setting
 		weights_file = "/home/nvidia/CLionProjects/vision_dev/yolo/yolov3-tiny.backup";
 		darknet::Detector abc(cfg_file, weights_file);
 		abc.nms = nmsThreshold;
 		std::vector<std::string> obj_names = objects_names_from_file(names_file);
-
+#else
+		//GZbot code insert (GZbot yolo wighte file pate is needed)
+		names_file = "/home/nvidia/CLionProjects/vision_dev/yolo/yolo3.names";// class file path (name of objects)
+		cfg_file = "/home/nvidia/CLionProjects/vision_dev/yolo/yolov3.cfg";  //cfg File and weights File path setting
+		weights_file = "/home/nvidia/CLionProjects/vision_dev/yolo/yolov3-tiny.backup";  
+		darknet::Detector abc(cfg_file, weights_file);
+		abc.nms = nmsThreshold;
+		std::vector<std::string> obj_names = objects_names_from_file(names_file);
+#endif !VIRTUAL
 #ifdef DEBUG
 		std::cout << "vision_detector initialized" << std::endl;
 #endif
@@ -132,9 +143,6 @@ public:
 #endif !DISPLAY
 
 	}
-
-
-
 
 };
 

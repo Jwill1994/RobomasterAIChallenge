@@ -7,6 +7,7 @@
 
 struct armour_data {   //need to change
 	// if you learning, you should do max labeling obliqued label
+	short dominant_armour = 0;
 	short number_of_armer = 0;
 	short armour_type[6] = { 0, 0, 0, 0, 0, 0 };
 	double armour_confidence[6] = { 0, 0, 0, 0, 0, 0 };
@@ -65,6 +66,7 @@ private:
 			armour.width[index] = 0;
 			armour.height[index] = 0;
 			armour.distance[index] = 0;
+			armour.dominant_armour = 0;
 		}
 	}
 	static void VisionDataset_initialize(VisionDataset& dataset) {
@@ -107,12 +109,12 @@ private:
 
 	}
 	
+	bool First_tracking = true;
 
 public:
-
-	bool First_tracking = true;
 	static VisionDataset dataset;
 
+	/*data_control initialize*/
 	data_control() {
 		VisionDataset_initialize(dataset);
 
@@ -122,6 +124,7 @@ public:
 	}
 	~data_control() = default;
 
+	/*clear the data set before detecting*/
 	void runing_initialize() {
 		VisionDataset_initialize(dataset);
 		dataset.how_old = 0;
@@ -140,7 +143,7 @@ public:
 		{
 	
 			int index;
-			for (index = 0; index < 3; index++) {
+			for (index = 0; index < 6; index++) {
 				if (dataset.Center_X[index] > 0 && dataset.Center_Y[index] > 0) {
 					dataset.KCF_X[index] = (dataset.Center_X[index]) - ((dataset.width[index]) * 0.5);
 					dataset.KCF_Y[index] = (dataset.Center_Y[index]) - ((dataset.height[index]) * 0.5);
@@ -164,45 +167,119 @@ public:
 
 			//cv::rectangle(mat_img, cv::Rect(i.x, i.y, i.w, i.h), color, 2);  // doesn`t used
 
-			if (i.prob > confThreshold) {
+			if (i.prob > confThreshold && ((i.obj_id == Number1) || (i.obj_id == Number2))) {
+				for (index = 1; index < 6; index++) {   //first we check the detected robot data and check only ememy
 
-				if ((i.obj_id == Number1) || (i.obj_id == Number2)) {
+					if (dataset.Center_X[index] > 0 && dataset.Center_Y[index] > 0) {  //if there are no data, check next data
 
-					for (index = 1; index < 6; index++) {   //first we check the detected robot data and check only ememy
-
-						if (dataset.Center_X[index] > 0 && dataset.Center_Y[index] > 0) {  //if there are no data, check next data
-
-							if (dataset.KCF_X[index] < (i.x + 0.5*(i.w)) && dataset.KCF_Y[index] < (i.y + 0.5*(i.h)) && (i.x + 0.5*(i.w)) < (dataset.KCF_X[index] + dataset.width[index]) && (i.y + 0.5*(i.h)) < (dataset.KCF_Y[index] + dataset.height[index])) {
-								dataset.armour[index].Center_x[number_of_armer] = i.x + 0.5*(i.w);
-								dataset.armour[index].Center_y[number_of_armer] = i.y + 0.5*(i.h);
-								dataset.armour[index].width[number_of_armer] = i.w;
-								dataset.armour[index].height[number_of_armer] = i.h;
-								dataset.armour[index].armour_type[number_of_armer] = i.obj_id;        //next using this data,configure enemy`s Id
-								dataset.armour[index].armour_confidence[number_of_armer] = i.prob;
-								dataset.armour[index].number_of_armer++;
-							}
+						if (dataset.KCF_X[index] < (i.x + 0.5*(i.w)) && dataset.KCF_Y[index] < (i.y + 0.5*(i.h)) && (i.x + 0.5*(i.w)) < (dataset.KCF_X[index] + dataset.width[index]) && (i.y + 0.5*(i.h)) < (dataset.KCF_Y[index] + dataset.height[index])) {
+							dataset.armour[index].Center_x[number_of_armer] = i.x + 0.5*(i.w);
+							dataset.armour[index].Center_y[number_of_armer] = i.y + 0.5*(i.h);
+							dataset.armour[index].width[number_of_armer] = i.w;
+							dataset.armour[index].height[number_of_armer] = i.h;
+							dataset.armour[index].armour_type[number_of_armer] = i.obj_id;        //next using this data,configure enemy`s Id
+							dataset.armour[index].armour_confidence[number_of_armer] = i.prob;
+							dataset.armour[index].number_of_armer++;
 						}
-#ifdef VISION_DATACHECK
-						std::cout << "(armour_assign) Armour " << index << " founded Number of" << index << " :" << dataset.armour[index].number_of_armer << std::endl;
-#endif
 					}
+#ifdef VISION_DATACHECK
+					std::cout << "(armour_assign) Armour " << index << " founded Number of" << index << " :" << dataset.armour[index].number_of_armer << std::endl;
+#endif
 				}
 			}
 		}
 	}
 };
 
+#ifdef BASIC_FUNCTION
 /*for send data to Ros*/
+#include "Vision_ros.hpp"
+
 class send_control {
 private:
 
 public:
 	send_control() {
-
 	}
 	~send_control() = default;
 
+};
+
+class ImageConverter
+
+{
+private:
+
+	image_transport::ImageTransport it_;
+	image_transport::Subscriber image_sub_;
+	cv_bridge::CvImagePtr cv_ptr_;
+	bool is_new_img_;
+
+public:
+	ImageConverter(ros::NodeHandle nh) : it_(nh) {
+		image_sub_ = it_.subscribe("simulated_image_topic", 1, &ImageConverter::imageCB, this);
+	}
+	~ImageConverter() = default;
+	void imageCB(const sensor_msgs::ImageConstPtr& msg) {
+		try {
+			cv_ptr_ = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
+			is_new_img_ = true;
+		}
+		catch (cv_bridge::Exception& e) {
+			ROS_ERROR("cv_bridge exception: %s", e.what());
+			return;
+		}
+	}
+	cv::Mat GetImage() {
+		while (is_new_img_);
+		is_new_img_ = false;
+		return cv_ptr_->image;
+	}
+};
+
+
+
+class DepthConverter
+
+{
+private:
+
+	image_transport::ImageTransport it_;
+
+	image_transport::Subscriber image_sub_;
+
+	cv_bridge::CvImagePtr cv_ptr_;
+	bool is_new_img_;
+
+public:
+
+	DepthConverter(ros::NodeHandle nh) : it_(nh) {
+		image_sub_ = it_.subscribe("simulated_depth_image_topic", 1, &DepthConverter::imageCB, this);
+	}
+	~DepthConverter() = default;
+
+	void imageCB(const sensor_msgs::ImageConstPtr& msg) {
+		try {
+			cv_ptr_ = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::TYPE_16UC1);
+			is_new_img_ = true;
+		}
+		catch (cv_bridge::Exception& e) {
+			ROS_ERROR("cv_bridge exception: %s", e.what());
+			return;
+		}
+	}
+	cv::Mat GetDepth() {
+		while (is_new_img_);
+		is_new_img_ = false;
+		return cv_ptr_->image;
+	}
+	int getDepthdata(short x, short y) {
+		return cv_ptr_->image.at<shrot int>(cv::Point(x, y));
+	}
 
 };
 
+static float SIMUL
+
+#endif
 #endif // !DATA_CONTROL_HPP

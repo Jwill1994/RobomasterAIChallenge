@@ -6,13 +6,19 @@
 
 #include "pch.hpp"
 #include "Data_control.hpp"
+#include "Vision_ros.hpp"
+
+#ifdef ADD_DEEPLEARNING
+#include "object_detection.hpp"
+#endif
 
 class vision_camera
 {
-#ifndef VIRTUAL
 private:
 	int Width = 640;
-	int Height = 480;  //resolution of camera 640*480 is defult
+	int Height = 480;
+#ifndef VIRTUAL
+  //resolution of camera 640*480 is defult
 
 	rs2::context ctx;
 	rs2::device_list list;
@@ -52,6 +58,11 @@ private:
 
 		throw std::runtime_error("Frame format is not supported yet!");
 	}
+#else
+	//GZbot code
+
+
+#endif
 
 	static float VisionDataset_avoid_zero(short x, short y) {
 		//to use this function, x andy must be larger then 3 and smaler than Max-3
@@ -92,7 +103,12 @@ private:
 
 
 public:
+#ifdef BASIC_FUNCTION
+	ros::init(argc, argv, "vision_node");
+	ros::NodeHandle nh;
+#endif
 
+	/*camera class init*/
 	vision_camera() {
 #ifndef VIRTUAL
 
@@ -112,11 +128,12 @@ public:
 
 #else
 // for GZbot code
+		ImageConverter sim_img(nh);
+		DepthConverter sim_depth(nh);
 
 #endif !VIRTUAL
-		
-
-	}
+		}
+	/*delete camera class*/
 	~vision_camera() = default;
 
 	/*running camera*/
@@ -132,19 +149,21 @@ public:
 			}
 			CT_data.dataset.detectimg = frame_to_mat(color_frame);
 
-#ifdef DISPLAY
-			CT_data.dataset.display = CT_data.dataset.detectimg;
-#endif !DISPLAY
 
 			break; //get new frame
 		}
 #else
 		//insert GZbot code
-
+		dataset.detectimg = sim_img.GetImage(); // ros image get
 #endif !VIRTUAL
+
+#ifdef DISPLAY
+			CT_data.dataset.display = CT_data.dataset.detectimg; //making display image
+#endif !DISPLAY
+
 	}
 
-	/*linial_aligned function*/
+	/*directly get distance data*/
 	static float linial_align(short RGB_X, short RGB_Y) {
 			// based on 3m > 6 pixel moved and it is for 640*480
 			short fake_depth_x = (RGB_X * 0.63125 + 112);
@@ -167,19 +186,35 @@ public:
 	#endif
 			return distance;
 		}
+	
 	/*get depth data*/
 	static void VisionDataset_getDepth(data_control& CT_data) {
-
+#ifndef VIRTUAL
 		for (int index = 0; index < 6; index++) {
 			if (CT_data.dataset.Center_X[index] > 0 && CT_data.dataset.Center_Y[index] > 0) {
 				CT_data.dataset.distance[index] = linial_align(CT_data.dataset.Center_X[index], CT_data.dataset.Center_Y[index]);
 				// std::cerr << index + 1 <<": distance info (m) : " << dataset.distance[index] << std::endl;  // we don`t need it reight now.
 			}
+#else 
+		for (int index = 0; index < 6; index++) {
+			if (CT_data.dataset.Center_X[index] > 0 && CT_data.dataset.Center_Y[index] > 0) {
+				CT_data.dataset.distance[index] = sim_depth.getDepthdata(dataset.Center_X[index], dataset.Center_Y[index]); // get depth data form slim
+				// std::cerr << index + 1 <<": distance info (m) : " << dataset.distance[index] << std::endl;  // we don`t need it reight now.
+			}
+		//GZbot code will insert
+#endif !VIRTUAL
 		}
 
 	}
 
+	/*for making lable img*/
+	static void making_img(data_control& CT_data) {
+#ifdef MAKEING_IMG //this fucntion is making a img
+
+
 #endif
+	}
+
 };
 
 #endif

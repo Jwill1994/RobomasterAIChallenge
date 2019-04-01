@@ -24,9 +24,16 @@
 #include <math.h> // for calculate detection anlge control
 #include <condition_variable>
 
-#ifdef BASIC_FUNTION
+
 #include "yolo_class.hpp" //need to include it 
+
+#ifdef VIRTUAL
+#include <image_transport/image_transport.h>
+#include <cv_bridge/cv_bridge.h>
+#include <sensor_msgs/image_encodings.h>
 #endif
+
+
 
 //deeplearning and opencv basic header file (opencv version 3.4.5)
 #include <opencv2/opencv.hpp>
