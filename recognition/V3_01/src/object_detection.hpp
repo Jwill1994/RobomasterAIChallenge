@@ -117,7 +117,7 @@ public:
 		darknet::Detector abc(cfg_file, weights_file);
 		abc.nms = nmsThreshold;
 		std::vector<std::string> obj_names = objects_names_from_file(names_file);
-#endif !VIRTUAL
+#endif //!VIRTUAL
 #ifdef DEBUG
 		std::cout << "vision_detector initialized" << std::endl;
 #endif
@@ -126,6 +126,8 @@ public:
 	~vision_detector() = default;
 	
 	static void vision_detector_run(data_control& CT_data) {
+
+
 		CT_data.runing_initialize(); //clear data before running
 		detect_Data = abc.detect(CT_data.dataset.detectimg , 0.2, false);
 
@@ -140,7 +142,7 @@ public:
 
 #ifdef DISPLAY
 		cv::imshow("Display window" , CT_data.dataset.display);
-#endif !DISPLAY
+#endif //!DISPLAY
 
 	}
 

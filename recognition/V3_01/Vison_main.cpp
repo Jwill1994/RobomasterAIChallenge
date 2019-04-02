@@ -3,7 +3,7 @@
 
 
 //////////////////////////preprocesser define////////////////////////////
-//#define BASIC_FUNCTION  //this is for basic function (using ROS)
+#define BASIC_FUNCTION  //this is for basic function (using ROS)
 #define DISPLAY  // control opencv_ imshow function 
 //#define DEBUG  //show what function start and worked
 
@@ -26,8 +26,14 @@
 #include "src/all.hpp"
 
 void main() {
+
+	ros::init(argc, argv, "vision_node");
+	ros::NodeHandle nh;  //ros node init
+
+
+
 	data_control CT_data; //define basic data class
-	vision_camera camera; //camera class initialize
+	vision_camera camera(nh); //camera class initialize
 	vision_detector detector; //object detector class setup
 	
 	while (true) {

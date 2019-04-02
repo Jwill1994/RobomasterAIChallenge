@@ -120,7 +120,7 @@ public:
 
 #ifdef DEBUG
 		std::cout << "data_control initialized" << std::endl;
-#endif !DEBUG
+#endif //!DEBUG
 	}
 	~data_control() = default;
 
@@ -136,7 +136,7 @@ public:
 		// copy new img to old img 
 #ifdef DEBUG
 		std::cout << "(VisionDataset_continueTraking) is worked" << std::endl;
-#endif !DEBUG
+#endif //!DEBUG
 	}
 	/*for making left top x and y corrdinate*/
 	static void VisionDataset_KCFCORMaker()
@@ -205,6 +205,9 @@ public:
 
 };
 
+
+
+#ifdef VIRTUAL
 class ImageConverter
 
 {
@@ -280,6 +283,6 @@ public:
 };
 
 static float SIMUL
-
+#endif //!VIRTUAL
 #endif
 #endif // !DATA_CONTROL_HPP

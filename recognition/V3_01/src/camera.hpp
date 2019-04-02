@@ -17,6 +17,40 @@ class vision_camera
 private:
 	int Width = 640;
 	int Height = 480;
+
+	static int numberofimg;
+#ifdef MAKEING_IMG
+	//for read img files to continue image write
+
+	static int find_img_number() {
+		std::cout << "try to read the last number of img" << std::endl;
+		std::ostringstream check_name; //
+		int number = 1;
+		bool flag = true;
+		while (flag) {
+			if (number < 10) {
+				check_name << "img/" << "0000" << number << ".jpg";
+			}
+			else if (9 < numberofimg < 100) {
+				check_name << "img/" << "000" << number << ".jpg";
+			}
+			else if (99 < numberofimg < 1000) {
+				check_name << "img/" << "00" << number << ".jpg";
+			}
+			else if (999 < numberofimg < 10000) {
+				check_name << "img/" << "0" << number << ".jpg";
+			}
+			else {
+				check_name << "img/" << number << ".jpg";
+			}
+			number++;
+			
+			flag = std::experimental::filesystem::exists(check_name.str());
+		}
+		return number;
+	}
+#endif
+
 #ifndef VIRTUAL
   //resolution of camera 640*480 is defult
 
@@ -32,11 +66,9 @@ private:
 	{
 		using namespace cv;
 		using namespace rs2;
-
 		auto vf = f.as<video_frame>();
 		const int w = vf.get_width();
 		const int h = vf.get_height();
-
 		if (f.get_profile().format() == RS2_FORMAT_BGR8)
 		{
 			return Mat(Size(w, h), CV_8UC3, (void*)f.get_data(), Mat::AUTO_STEP);
@@ -55,15 +87,12 @@ private:
 		{
 			return Mat(Size(w, h), CV_8UC1, (void*)f.get_data(), Mat::AUTO_STEP);
 		}
-
-		throw std::runtime_error("Frame format is not supported yet!");
-	}
+		throw std::runtime_error("Frame format is not supported yet!");	}
 #else
 	//GZbot code
 
 
 #endif
-
 	static float VisionDataset_avoid_zero(short x, short y) {
 		//to use this function, x andy must be larger then 3 and smaler than Max-3
 		float Depth = 0;
@@ -71,45 +100,32 @@ private:
 		short i = 0;
 		short j = 0;
 		short count = 0;
-
-
 		for (i = x; i < x + 3; i++) {
-
 			for (j = y; j < y + 3; j++) {
 				tem_Depth = depth_frame.get_distance((i - 1), (j - 1));
-
 				if (tem_Depth > 0) {
 					count++;
 					Depth = Depth + tem_Depth;
 				}
 			}
 		}
-
 		if (count > 0) {
-
 			Depth = Depth / count;
 			return Depth;
-
 		}
 		else {
 #ifdef DEBUG
 			std::cout << "(VisionDataset_avoid_zero) distance is zero" << std::endl;
 #endif
-
 			return 0;
 		}
-
 	}
 
-
 public:
-#ifdef BASIC_FUNCTION
-	ros::init(argc, argv, "vision_node");
-	ros::NodeHandle nh;
-#endif
 
 	/*camera class init*/
-	vision_camera() {
+	vision_camera( ros::NodeHandle& nh ) {
+		numberofimg = 1;
 #ifndef VIRTUAL
 
 		list = ctx.query_devices();
@@ -124,14 +140,14 @@ public:
 		profile = pipe.start(cfg);
 #ifdef DEBUG
 		std::cout << "vision_camera initialized" << std::endl;
-#endif !DEBUG
+#endif //!DEBUG
 
 #else
 // for GZbot code
-		ImageConverter sim_img(nh);
-		DepthConverter sim_depth(nh);
+		static ImageConverter sim_img(nh);
+		static DepthConverter sim_depth(nh);
 
-#endif !VIRTUAL
+#endif //!VIRTUAL
 		}
 	/*delete camera class*/
 	~vision_camera() = default;
@@ -155,38 +171,37 @@ public:
 #else
 		//insert GZbot code
 		dataset.detectimg = sim_img.GetImage(); // ros image get
-#endif !VIRTUAL
+#endif //!VIRTUAL
 
 #ifdef DISPLAY
-			CT_data.dataset.display = CT_data.dataset.detectimg; //making display image
-#endif !DISPLAY
-
-	}
+		CT_data.dataset.display = CT_data.dataset.detectimg; //making display image
+#endif //!DISPLAY
+		}
 
 	/*directly get distance data*/
 	static float linial_align(short RGB_X, short RGB_Y) {
-			// based on 3m > 6 pixel moved and it is for 640*480
-			short fake_depth_x = (RGB_X * 0.63125 + 112);
-	
-			short real_depth_y = (RGB_Y * 0.63125 + 88.5);
-			float fake_distance = VisionDataset_avoid_zero(fake_depth_x, real_depth_y);
-			float distance = 0;
-	
-	
-			if (fake_distance > 0) {
-				short move_pixel = (17.72 / fake_distance);
-				short real_depth_x = (RGB_X * 0.63125 + 118 - move_pixel);
-				distance = VisionDataset_avoid_zero(real_depth_x, real_depth_y);
-			}
-	
-	#ifdef DEBUG
-			if (distance = 0) {
-				std::cout << "(linial_align)_fail to get distance / distance = 0" << std::endl;
-			}
-	#endif
-			return distance;
+		// based on 3m > 6 pixel moved and it is for 640*480
+		short fake_depth_x = (RGB_X * 0.63125 + 112);
+
+		short real_depth_y = (RGB_Y * 0.63125 + 88.5);
+		float fake_distance = VisionDataset_avoid_zero(fake_depth_x, real_depth_y);
+		float distance = 0;
+
+
+		if (fake_distance > 0) {
+			short move_pixel = (17.72 / fake_distance);
+			short real_depth_x = (RGB_X * 0.63125 + 118 - move_pixel);
+			distance = VisionDataset_avoid_zero(real_depth_x, real_depth_y);
 		}
-	
+
+#ifdef DEBUG
+		if (distance = 0) {
+			std::cout << "(linial_align)_fail to get distance / distance = 0" << std::endl;
+		}
+#endif //!DEBUG
+		return distance;
+	}
+
 	/*get depth data*/
 	static void VisionDataset_getDepth(data_control& CT_data) {
 #ifndef VIRTUAL
@@ -201,20 +216,67 @@ public:
 				CT_data.dataset.distance[index] = sim_depth.getDepthdata(dataset.Center_X[index], dataset.Center_Y[index]); // get depth data form slim
 				// std::cerr << index + 1 <<": distance info (m) : " << dataset.distance[index] << std::endl;  // we don`t need it reight now.
 			}
-		//GZbot code will insert
-#endif !VIRTUAL
-		}
+			//GZbot code will insert
+#endif //!VIRTUAL
+			}
 
-	}
+		}
 
 	/*for making lable img*/
 	static void making_img(data_control& CT_data) {
 #ifdef MAKEING_IMG //this fucntion is making a img
+		std::ostringstream img_name; // this is making img`s name
+		char flag = 'n';
+		if (numberofimg == 1) {
+			std::cout << "start making image "<< std::endl;
+			std::cout << "if you want to continue form last img type (y) , start from 00001.jpg type (n): " << std::endl;
+			while (true) {
+				std::cin >> flag;
+				if (flag == 'n') {
+					std::cout << "directly start with number 00001.jpg" << std::endl;
+					break;
+				}
+				else if (flag == 'y') {
+					numberofimg = find_img_number(); //fine last number of img
+					std::cout << "the image file makeing is start form" << numberofimg << ".jpg" << std::endl;
+					break;
+				}
+			}
+		}
 
 
-#endif
+		try
+		{
+			if (numberofimg < 10) {
+				img_name << "img/" << "0000" << numberofimg << ".jpg";
+			}
+			else if (9 < numberofimg < 100) {
+				img_name << "img/" << "000" << numberofimg << ".jpg";
+			}
+			else if (99 < numberofimg < 1000) {
+				img_name << "img/" << "00" << numberofimg << ".jpg";
+			}
+			else if (999 < numberofimg < 10000) {
+				img_name << "img/" << "0" << numberofimg << ".jpg";
+			}
+			else {
+				img_name << "img/" << numberofimg << ".jpg";
+			}
+			numberofimg++;
+			cv::imwrite(img_name.str(), CT_data.dataset.detectimg);
+		}
+		catch (cv::Exception& e)
+		{
+			std::cout << "error has been occured " << numberofimg - 1 << std::endl;
+		}
+		  
+#ifdef ADD_DEEPLEARNING  //this is for auto labeling when making image.
+
+#endif //!ADD_DEEPLEARNING
+
+#endif //!MAKEING_IMG
 	}
 
 };
 
-#endif
+#endif //!CAMERA_HPP
