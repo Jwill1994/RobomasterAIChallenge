@@ -19,7 +19,7 @@
 #endif
 
 #define C_SHARP_MAX_OBJECTS 1000
-
+#include "pch.hpp"
 struct bbox_t {
 	unsigned int x, y, w, h;       // (x,y) - top-left corner, (w, h) - width & height of bounded box
 	float prob;                    // confidence - probability that the object was found correctly
@@ -59,6 +59,7 @@ extern "C" LIB_API int get_device_count();
 extern "C" LIB_API int get_device_name(int gpu, char* deviceName);
 
 namespace darknet {
+	/*this class is yolo detector*/
 	class Detector {
 		std::shared_ptr<void> detector_gpu_ptr;
 		std::deque<std::vector<bbox_t>> prev_bbox_vec_deque;

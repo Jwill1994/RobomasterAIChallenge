@@ -7,8 +7,11 @@
 
 
 //cpp basic header file
-#include <filesystem>  //for c++17
-#include <experimental/filesystem>  //for c++14
+//#include <filesystem>  //for c++17
+//#include <experimental/filesystem>  //for c++14
+
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include <iostream>
 #include <iomanip>
@@ -29,6 +32,7 @@
 
 
 #include "yolo_class.hpp" //need to include it 
+//#include "/home/nvidia/robomaster_extra/darknet/include/yolo_v2_class.hpp"
 
 #ifdef VIRTUAL
 #include <image_transport/image_transport.h>
@@ -50,7 +54,7 @@
 
 #ifdef MAKEING_IMG
 #include <opencv2/videoio/videoio.hpp>
-#endif !MAKEING_IMG
+#endif //!MAKEING_IMG
 
 #ifndef VIRTUAL
 #include <opencv2/tracking.hpp>  //need to install opencv_contrib 
