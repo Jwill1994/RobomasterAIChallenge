@@ -1,27 +1,4 @@
-<<<<<<< HEAD
-# ROS Dependency:
 
-sudo apt-get install ros-kinetic-ros-control ros-kinetic-ros-controllers \
-	ros-kinetic-gazebo-ros-control
-
-sudo apt install ros-kinetic-navigation-core
-
-
-sudo sysctl fs.inotify.max_user_watches=65536
-
-
-# Save Image :
-
-1. roscd image_view
-
-2. rosbag record -O <file-name> image:=<image_topic>
-
-3. roslaunch roborts_navigation export.launch
-
-# Reset World :
-
-rosserviec call /gazebo/reset_world
-=======
 **ROS 명령어 다룰 줄 알면 아래 내용 이해하기 편함. 현재 폴더 안의 ros cheat sheet 참조.**  
 
 ## 1. ROS kinetic 설치 (우분투 16.04, ros desketop full 버젼 - ros wiki 참조)
@@ -58,14 +35,14 @@ git clone https://github.com/woong164/RobomasterAIChallenge.git roboin
 
 mkdir -p catkin_ws/src
 
-cp roboin/Roborts/* catkin_ws/src
+cp -r roboin/Roborts/* catkin_ws/src
 // git repository의 Roborts 내부 폴더 및 파일을 catkin_ws 의 src 폴더로 복사
 
-cd catkin_ws; mv src/roborts_gimbal ./; catkin_make
-// roborst_gimbal 패키지는 다른 패키지가 build 되기 이전에는 cmake 에러 발생하는 문제 때문에 빼놓고 빌드 후에 다시 빌드함.
+cd catkin_ws; mv src/roborts_gimbal ./; mv src/roborts_navigation ./; catkin_make
+// roborst_gimbal과 navigation 패키지는 다른 패키지가 build 되기 이전에는 cmake 에러 발생하는 문제 때문에 빼놓고 빌드 후에 다시 빌드함.
 // 아직 에러 해결 못함.
 
-mv roborts_gimbal ./src; catkin_make --only-pkg-with-deps roborts_gimbal
+mv roborts_gimbal ./src; mv roborts_navigation ./src; catkin_make
 // 다시 roborts_gimbal 패키지 포함시키고 해당 패키지만 빌드
 
 source ~/catkin_ws/devel/setup.bash
