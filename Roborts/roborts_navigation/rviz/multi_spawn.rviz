@@ -6,8 +6,8 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /Map1/Status1
-        - /Map2
+        - /Map1
+        - /CostMap1
         - /LaserScan1
       Splitter Ratio: 0.5
     Tree Height: 565
@@ -57,7 +57,7 @@ Visualization Manager:
       Draw Behind: false
       Enabled: true
       Name: Map
-      Topic: /roborts_Blue_1/map
+      Topic: /roborts_Red_0/map
       Unreliable: false
       Use Timestamp: false
       Value: true
@@ -170,9 +170,9 @@ Visualization Manager:
               roborts_Blue_1/base_link:
                 roborts_Blue_1/Projector_Bottom:
                   roborts_Blue_1/yaw_Link:
-                    roborts_Blue_1/camera_Link:
-                      {}
                     roborts_Blue_1/roborts_Blue_1/pitch_Link:
+                      roborts_Blue_1/camera_Link:
+                        {}
                       roborts_Blue_1/roborts_Blue_1/fake_link:
                         {}
                 roborts_Blue_1/back_armor_link:
@@ -209,9 +209,9 @@ Visualization Manager:
               roborts_Red_0/base_link:
                 roborts_Red_0/Projector_Bottom:
                   roborts_Red_0/yaw_Link:
-                    roborts_Red_0/camera_Link:
-                      {}
                     roborts_Red_0/roborts_Red_0/pitch_Link:
+                      roborts_Red_0/camera_Link:
+                        {}
                       roborts_Red_0/roborts_Red_0/fake_link:
                         {}
                 roborts_Red_0/back_armor_link:
@@ -249,8 +249,8 @@ Visualization Manager:
       Color Scheme: costmap
       Draw Behind: false
       Enabled: true
-      Name: Map
-      Topic: /roborts_Blue_1/move_base/local_costmap/costmap
+      Name: CostMap
+      Topic: /roborts_Red_0/move_base/local_costmap/costmap
       Unreliable: false
       Use Timestamp: false
       Value: true
@@ -279,7 +279,7 @@ Visualization Manager:
       Size (Pixels): 3
       Size (m): 0.0500000007
       Style: Flat Squares
-      Topic: /roborts_Blue_1/scan
+      Topic: /roborts_Red_0/scan
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -292,7 +292,7 @@ Visualization Manager:
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: roborts_Blue_1/map
+    Fixed Frame: roborts_Red_0/map
     Frame Rate: 30
   Name: root
   Tools:
@@ -320,18 +320,18 @@ Visualization Manager:
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 5.59592199
-        Y: 1.79803693
-        Z: -1.60168302
+        X: 4.19787836
+        Y: 1.80669761
+        Z: -2.33057261
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 1.07979655
+      Pitch: 1.25479639
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.09039378
+      Yaw: 3.02039433
     Saved: ~
 Window Geometry:
   Displays:
