@@ -2,7 +2,7 @@
 """
 @author: SHF_W
 """
-
+import random
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -102,16 +102,26 @@ class potentialField():
             self.value_matrix[mask] += value
     
     # 현재 위치의 값 보기
-    def get_value(self, xy):
+    def getValue(self, xy):
         xy[0] = int( xy[0] / self.grid)
         xy[1] = int( xy[1] / self.grid)
         
         return self.value_matrix[xy[0],xy[1]]
        
     # 가장 높은 값과, 그 값의 위치'들'. output이 좀 특이한 형태라 가공 필요
-    def get_maixmum(self):
+    def getMax(self):
         value = np.max(self.value_matrix)
         return (value, np.where(self.value_matrix >= value))
+    
+    ## 임시 함수
+    def getPoint(self):
+        value = np.max(self.value_matrix)
+        temp = np.where(self.value_matrix >= value)
+        
+        index = random.randint(0, len(temp[1])-1)
+        
+        point = [ temp[1][index], temp[1][index] ]       
+        return (value, point )
     
     def out(self):
         return self.value_matrix
