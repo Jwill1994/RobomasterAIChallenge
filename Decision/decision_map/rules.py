@@ -105,7 +105,9 @@ class rules():
             self.pm.square_assign(our[0], our[1], our[2], value)  
             
     def move_cost(self, my_pos, stance, value):
-        self.pm.circle_assign_gradient(my_pos[0], my_pos[1], 10000, -value, 20)
+        x = my_pos[0]
+        y = my_pos[1]
+        self.pm.circle_assign_gradient(x, y, 10000, -value, 20)
         
     
                

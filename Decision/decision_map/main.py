@@ -37,9 +37,9 @@ if __name__ == '__main__':
     #stance = 'passive'
     stance = 'aggressive'
     
-    my_pos = [1000, 4000]
-    e1 = [7000, 1000]
-    e2 = [1000, 1000]
+    my_position = [500, 4500]
+    e1 = [7500, 500]
+    e2 = [500, 500]
         
     buff_time = 0
     ammo_left = False
@@ -52,7 +52,7 @@ if __name__ == '__main__':
         robot1.enemy_zone(stance, e2, 90,  700, 50)   
         
         robot1.reload_zone(stance, now_time(startTime), ammo_left, 10, 100)    
-        robot1.move_cost(my_pos, stance, -2)
+        robot1.move_cost(my_position, stance, -2)
         robot1.wall_limit() #   
               
         
@@ -67,13 +67,11 @@ if __name__ == '__main__':
         flags = np.zeros([10])
         if now_time(startTime) >= 5 and now_time(startTime) < 35:
             buff_time = 35-now_time(startTime)
-            if flags[0] == 0:
-                my_pos = [1700,3250] # blue team
         if now_time(startTime) >= 5:
             buff_time = 65-now_time(startTime)
                 
         b = robot1.raw().getPoint()        
-        print(b, 'my_pos : ', robot1.raw().getValue(my_pos), my_pos)
+        print('my_pos : ', robot1.raw().getValue(my_position), my_position, 'Max :' , b)
         
         
         robot1.plot()
