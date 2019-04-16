@@ -12,9 +12,12 @@ class rules():
         self.pm.rectangular_assign(0, 8000, 0, 5000, 50)
         self.robot_radius = 350
         self.team = team
-    
+        
     def out(self):
         return self.pm.out()
+    
+    def raw(self):
+        return self.pm
         
     def plot(self):
         self.pm.plot()
@@ -45,8 +48,8 @@ class rules():
                 self.pm.rectangular_assign(x1-r, x2+r, y1, y2, 0, mode='abs')
                 
                 
-    def bonus_zone(self, buff_left, buff_zone_count, has_buff, team, value):
-        if team == 'blue':
+    def bonus_zone(self, buff_left, buff_zone_count, has_buff, value):
+        if self.team == 'blue':
             p = [1700,3250,500]
         else:
             p = [6300,1750,500]        
@@ -57,13 +60,14 @@ class rules():
         if buff_zone_count > 0:
             # 버프 남은 시간이 5초 이하일 경우 매우 높은 value
             if buff_left < 5:
-               self.pm.square_assign(p[0], p[1], p[2], value)
+               self.pm.square_assign_gradient(p[0], p[1], p[2]*4, value/3,2)
+               self.pm.square_assign(p[0], p[1], p[2], value, mode='abs')
             # 버프 남은 시간이 5~10초일 경우 근처에서 value가 높지만 미리 점령하면 안되므로 점령 지점은 value가 낮음
             elif buff_left < 10:
                self.pm.square_assign_gradient(p[0], p[1], p[2]*4, value,2)               
                self.pm.square_assign(p[0], p[1], p[2], 0, mode='abs')
                
-    def enemy_zone(self, enemy_pos, percentage, stance, distance, value):
+    def enemy_zone(self, stance, enemy_pos, percentage, distance, value):
         # 확실하게 적을 포착할 수록 작은 구역에 더 높은 가치, 적의 위치를 잘 모를 경우 작아짐 
         if percentage > 90:
             constant = 2
@@ -72,18 +76,37 @@ class rules():
         elif percentage > 50:
             constant = 4
         else:
-            constant = 5
+            constant = 6
         
         # aggressive stance일 경우 최적 거리 distance에서 가장 높은 값을 가지고, 거기서 멀어지면 값이 작아짐.
         if stance == 'aggressive':
-            self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], distance*constant, value/constant, constant)
-            
-            if percentage > 75:
-                self.pm.circle_assign(enemy_pos[0], enemy_pos[1], distance, -value/constant*2)
-                self.pm.circle_assign(enemy_pos[0], enemy_pos[1], self.robot_radius, 0, mode='abs')
+            self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], distance*constant, value/constant, constant)            
+            if percentage > 70:
+                self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], distance, -value/constant, constant)
         # passive stance일 경우 그냥 적에서 멀어질수록 높은 값을 가짐
         elif stance == 'passive':
            #circle_assign(enemy_pos[0], enemy_pos[1], int(distance*constant*4), value/constant)
            self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], distance*constant*2, -value/constant, constant)
+           
+    def reload_zone(self, stance, game_time, ammo_left, bullets, value):
+        if self.team == 'blue':
+            our = [4000,750,100]
+            enemy = [4000,4750,500] 
+        else:
+            our, enemy = enemy, our
+            
+        # 적 재장전 존 패널티 : 2번 이상 들어가면 실격
+        self.pm.square_assign(enemy[0], enemy[1], enemy[2], 0, mode='abs')
+        
+        if stance == 'passive' or stance == 'aggressive_low_ammo':
+            value = value * 2
+        
+        if game_time > 30 and ammo_left == True:
+            self.pm.square_assign(our[0], our[1], our[2], value)  
+            
+    def move_cost(self, my_pos, stance, value):
+        self.pm.circle_assign_gradient(my_pos[0], my_pos[1], 10000, -value, 20)
+        
+    
                
     
