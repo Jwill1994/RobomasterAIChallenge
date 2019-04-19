@@ -4,9 +4,9 @@
 """
 
 import value_assign as va
+import math
 
-
-class rules():
+class rules():    
     def __init__(self, size, team):
         self.pm = va.potentialField(size) # pm : potential mplot        
         self.pm.rectangular_assign(0, 8000, 0, 5000, 50)
@@ -80,7 +80,7 @@ class rules():
         
         # aggressive stance일 경우 최적 거리 distance에서 가장 높은 값을 가지고, 거기서 멀어지면 값이 작아짐.
         if stance == 'aggressive':
-            self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], distance*constant, value/constant, constant)            
+            self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], distance*constant, value/constant, constant*2)            
             if percentage > 70:
                 self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], distance, -value/constant, constant)
         # passive stance일 경우 그냥 적에서 멀어질수록 높은 값을 가짐
@@ -88,10 +88,25 @@ class rules():
            #circle_assign(enemy_pos[0], enemy_pos[1], int(distance*constant*4), value/constant)
            self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], distance*constant*2, -value/constant, constant)
            
+    def enemy_overlap(self, e1, e2, value):
+        if e1 == None or e2 == None:
+            return
+        
+        p2p = self.pm.p2pRelation(e1, e2)        
+        if p2p[0] > 8000*8000:
+            return
+        
+        bisector = 2*math.atan2(self.robot_radius,p2p[0]/2)
+
+        print(bisector)        
+        
+        self.pm.sector_assign(e1[0], e1[1], 0, p2p[0]/math.sqrt(2), p2p[2], 0.1, -value)
+        #self.pm.sector_assign(e2[0], e2[1], 0, p2p[0]/math.sqrt(2), p2p[1], 0.1, -value)
+        
     def reload_zone(self, stance, game_time, ammo_left, bullets, value):
         if self.team == 'blue':
-            our = [4000,750,100]
-            enemy = [4000,4750,500] 
+            our = [4000,500,100]
+            enemy = [4000,4500,500] 
         else:
             our, enemy = enemy, our
             
@@ -104,10 +119,12 @@ class rules():
         if game_time > 30 and ammo_left == True:
             self.pm.square_assign(our[0], our[1], our[2], value)  
             
-    def move_cost(self, my_pos, stance, value):
+    def move_cost(self, stance, my_pos, value):
         x = my_pos[0]
         y = my_pos[1]
         self.pm.circle_assign_gradient(x, y, 10000, -value, 20)
+        
+   
         
     
                

@@ -3,6 +3,7 @@
 @author: SHF_W
 """
 import random
+import math
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -52,24 +53,7 @@ class potentialField():
         if setting == 'abs':
             self.value_matrix[y1:y2, x1:x2] = value             
         else:
-            self.value_matrix[y1:y2, x1:x2] += value 
-        
-    # 원형으로 값 지정
-    def circle_assign(self, x, y, r, value, *args, **kargs):
-        setting = kargs.get('mode', None)
-        
-        x = int(x/self.grid)
-        y = int(y/self.grid)
-        r = int(r/self.grid)        
-        m, n = self.value_matrix.shape
-        a, b = np.ogrid[-y:m-y, -x:n-x]
-        mask = a*a+b*b <= r*r    
-        
-        if setting == 'abs':
-            self.value_matrix[mask] = value
-        else:
-            self.value_matrix[mask] += value
-    
+            self.value_matrix[y1:y2, x1:x2] += value         
 
     # 정사각형으로 가운데로 갈수록 값이 커지는 형태로 값 더해줌
     def square_assign_gradient(self, x, y, d, value, gradient):
@@ -84,7 +68,66 @@ class potentialField():
             right_in = min(x+d+1-gradient*i, self.value_matrix.shape[1])
             down_in = max(y-d-1+gradient*i,0)
             up_in= min(y+d-gradient*i, self.value_matrix.shape[0])        
-            self.value_matrix[down_in:up_in, left_in:right_in] += value 
+            self.value_matrix[down_in:up_in, left_in:right_in] += value
+
+    # 원형으로 값 지정            
+    def circle_assign(self, x, y, r, value, *args, **kargs):
+        setting = kargs.get('mode', None)
+        
+        x = int(x/self.grid)
+        y = int(y/self.grid)
+        r = int(r/self.grid)        
+        m, n = self.value_matrix.shape
+        a, b = np.ogrid[-y:m-y, -x:n-x]
+        mask = a*a+b*b <= r*r    
+        
+        if setting == 'abs':
+            self.value_matrix[mask] = value
+        else:
+            self.value_matrix[mask] += value        
+            
+    def sector_assign(self, x, y, r1, r2, theta, gamma, value, *args, **kargs):
+        setting = kargs.get('mode', None)
+        
+        x = int(x/self.grid)
+        y = int(y/self.grid)
+        r1 = int(r1/self.grid)      
+        r2 = int(r2/self.grid)  
+                
+        if r1 > r2: r1, r2 = r2, r1
+        
+        m, n = self.value_matrix.shape
+        a, b = np.ogrid[-y:m-y, -x:n-x]        
+        
+        lower = (theta-gamma/2) % (math.pi*2)
+        upper = (theta+gamma/2) % (math.pi*2)
+
+        slope1= math.tan(theta-gamma/2)
+        slope2= math.tan(theta+gamma/2)        
+        
+
+        mask1 = a*a+b*b <= r2*r2
+        mask2 = a*a+b*b >= r1*r1
+
+        if lower < 1.5*math.pi and lower > 0.5*math.pi:
+            mask3 = (slope1*a-x) > (slope1*b-y)
+        else:
+            mask3 = (slope1*a-x) < (b-y)
+            
+        if upper < 1.5*math.pi and upper > 0.5*math.pi:
+            mask4 = (slope2*a-x) < (b-y)
+        else:
+            mask4 = (slope2*a-x) > (b-y)           
+        
+        
+        mask = np.multiply(mask1, mask2)
+        mask = np.multiply(mask, mask3)
+        mask = np.multiply(mask, mask4)
+        
+        if setting == 'abs':
+            self.value_matrix[mask] = value
+        else:
+            self.value_matrix[mask] += value   
             
     # 원형으로 가운데로 갈수록 값이 커지는 형태로 값 더해줌
     def circle_assign_gradient(self, x, y, r, value, gradient):
@@ -100,6 +143,11 @@ class potentialField():
             a, b = np.ogrid[-y:m-y, -x:n-x]
             mask = a*a+b*b <= (gradient*i)*(gradient*i)    
             self.value_matrix[mask] += value
+            
+            
+    def random_assign(self, value):
+        mat = np.random.rand(self.height, self.width)        
+        self.value_matrix += mat*value
     
     # 현재 위치의 값 보기
     def getValue(self, xy):
@@ -129,3 +177,16 @@ class potentialField():
     def plot(self):
         image = np.flip(self.value_matrix, axis=0)
         plt.imshow(image)
+        
+        # return distnace and relative angles
+    def p2pRelation(self, p1, p2):  
+        xd = p2[0]-p1[0]
+        yd = p2[1]-p1[1]       
+        
+        dist = math.sqrt(xd*xd+yd*yd)
+        e1_angle = math.atan2(yd,xd)
+        if e1_angle == math.pi:
+            e2_angle = math.pi/2
+        
+        return dist, e1_angle, e2_angle
+    
