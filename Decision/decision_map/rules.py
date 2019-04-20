@@ -9,8 +9,8 @@ import math
 class rules():    
     def __init__(self, size, team):
         self.pm = va.potentialField(size) # pm : potential mplot        
-        self.pm.rectangular_assign(0, 8000, 0, 5000, 50)
-        self.robot_radius = 350
+        self.pm.rectangular_assign(0, 8, 0, 5, 50)
+        self.robot_radius = 0.35
         self.team = team
         
     def out(self):
@@ -23,16 +23,16 @@ class rules():
         self.pm.plot()
         
     def init(self):
-        self.pm.rectangular_assign(0, 8000, 0, 5000, 50, mode='abs')
+        self.pm.rectangular_assign(0, 8, 0, 5, 50, mode='abs')
     
     def wall_limit(self): 
         r = self.robot_radius
-        self.pm.rectangular_assign(0, r, 0, 5000, 0, mode='abs')
-        self.pm.rectangular_assign(8000-r, 8000, 0, 5000 , 0, mode='abs')
-        self.pm.rectangular_assign(r, 8000-r, 0, r, 0, mode='abs')
-        self.pm.rectangular_assign(r, 8000-r, 5000-r, 5000, 0, mode='abs')
+        self.pm.rectangular_assign(0, r, 0, 5, 0, mode='abs')
+        self.pm.rectangular_assign(8-r, 8, 0, 5 , 0, mode='abs')
+        self.pm.rectangular_assign(r, 8-r, 0, r, 0, mode='abs')
+        self.pm.rectangular_assign(r, 8-r, 5-r, 5, 0, mode='abs')
         
-        inner_wall_tuple = ((1200,2200, 3750,4000), (1400,1600,1400,2400), (3250,3500,0,1000),(3500,4500,2375,2625),(5800,6800,1000,1250),(6350,6600,2600,3600),(4500,4750,4000,5000))
+        inner_wall_tuple = ((1.200,2.200, 3.750,4.000), (1.400,1.600,1.400,2.400), (3.250,3.500,0,1.000),(3.500,4.500,2.375,2.625),(5.800,6.800,1.000,1.250),(6.350,6.600,2.600,3.600),(4.500,4.750,4.000,5.000))
                 
         for item in inner_wall_tuple:
             x1, x2, y1, y2 = item
@@ -50,9 +50,9 @@ class rules():
                 
     def bonus_zone(self, buff_left, buff_zone_count, has_buff, value):
         if self.team == 'blue':
-            p = [1700,3250,500]
+            p = [1.700,3.250,0.100]
         else:
-            p = [6300,1750,500]        
+            p = [6.300,1.750,0.100]        
         
         if not has_buff:
             value = value * 2 #버프가 없을 경우 가치가 2배. 단, 정확히 작동한다면 처음 5초 외에 버프가 없는 시간이 거의 없음
@@ -93,7 +93,7 @@ class rules():
             return
         
         p2p = self.pm.p2pRelation(e1, e2)        
-        if p2p[0] > 8000*8000:
+        if p2p[0] > 8*8:
             return
         
         bisector = 2*math.atan2(self.robot_radius,p2p[0]/2)
@@ -105,8 +105,8 @@ class rules():
         
     def reload_zone(self, stance, game_time, ammo_left, bullets, value):
         if self.team == 'blue':
-            our = [4000,500,100]
-            enemy = [4000,4500,500] 
+            our = [4.000,0.500,0.100]
+            enemy = [4.000,4.000, 0.500] 
         else:
             our, enemy = enemy, our
             
@@ -116,13 +116,13 @@ class rules():
         if stance == 'passive' or stance == 'aggressive_low_ammo':
             value = value * 2
         
-        if game_time > 30 and ammo_left == True:
+        if game_time > 10 and ammo_left == True:
             self.pm.square_assign(our[0], our[1], our[2], value)  
             
     def move_cost(self, stance, my_pos, value):
         x = my_pos[0]
         y = my_pos[1]
-        self.pm.circle_assign_gradient(x, y, 10000, -value, 20)
+        self.pm.circle_assign_gradient(x, y, 10, -value, 20)
         
    
         

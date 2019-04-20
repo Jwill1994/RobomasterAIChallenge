@@ -12,15 +12,15 @@ class potentialField():
         self.value_matrix = np.zeros(size)
         self.height = self.value_matrix.shape[0]
         self.width = self.value_matrix.shape[1]    
-        self.grid = 5000/self.height    
+        self.grid = 5.0/self.height    
          
     # 정사각형으로 값을 더해줌
     def square_assign(self, x, y, d, value, *args, **kargs):
         setting = kargs.get('mode', None)
         
-        x = int(x/self.grid)
-        y = int(y/self.grid)
-        d = int(d/self.grid)       
+        x = int(x*1.0/self.grid)
+        y = int(y*1.0/self.grid)
+        d = int(d*1.0/self.grid)       
         
         left = max(x-d,0)
         right = min(x+d+1, self.width)
@@ -38,17 +38,17 @@ class potentialField():
         
         if x1 < 0:
             x1 = 0
-        if x2 > 8000:
-            x2 = 8000
+        if x2 > 8:
+            x2 = 8
         if y1 < 0:
             y1 = 0
-        if y2 > 5000:
+        if y2 > 5:
             y2 = 0      
         
-        x1 = int(x1/self.grid)
-        x2 = int(x2/self.grid)+1
-        y1 = int(y1/self.grid)
-        y2 = int(y2/self.grid)+1
+        x1 = int(x1*1.0/self.grid*1.0)
+        x2 = int(x2*1.0/self.grid*1.0)+1
+        y1 = int(y1*1.0/self.grid*1.0)
+        y2 = int(y2*1.0/self.grid*1.0)+1
         
         if setting == 'abs':
             self.value_matrix[y1:y2, x1:x2] = value             
@@ -57,12 +57,12 @@ class potentialField():
 
     # 정사각형으로 가운데로 갈수록 값이 커지는 형태로 값 더해줌
     def square_assign_gradient(self, x, y, d, value, gradient):
-        x = int(x/self.grid)
-        y = int(y/self.grid)
-        d = int(d/self.grid)
+        x = int(x*1.0/self.grid)
+        y = int(y*1.0/self.grid)
+        d = int(d*1.0/self.grid)
         
         steps = int(d/gradient+1)
-        value= value/steps
+        value= value*1.0/steps
         for i in range(steps):        
             left_in = max(x-d+gradient*i,0)
             right_in = min(x+d+1-gradient*i, self.value_matrix.shape[1])
@@ -74,9 +74,9 @@ class potentialField():
     def circle_assign(self, x, y, r, value, *args, **kargs):
         setting = kargs.get('mode', None)
         
-        x = int(x/self.grid)
-        y = int(y/self.grid)
-        r = int(r/self.grid)        
+        x = int(x*1.0/self.grid)
+        y = int(y*1.0/self.grid)
+        r = int(r*1.0/self.grid)        
         m, n = self.value_matrix.shape
         a, b = np.ogrid[-y:m-y, -x:n-x]
         mask = a*a+b*b <= r*r    
@@ -89,10 +89,10 @@ class potentialField():
     def sector_assign(self, x, y, r1, r2, theta, gamma, value, *args, **kargs):
         setting = kargs.get('mode', None)
         
-        x = int(x/self.grid)
-        y = int(y/self.grid)
-        r1 = int(r1/self.grid)      
-        r2 = int(r2/self.grid)  
+        x = int(x*1.0/self.grid)
+        y = int(y*1.0/self.grid)
+        r1 = int(r1*1.0/self.grid)      
+        r2 = int(r2*1.0/self.grid)  
                 
         if r1 > r2: r1, r2 = r2, r1
         
@@ -131,12 +131,12 @@ class potentialField():
             
     # 원형으로 가운데로 갈수록 값이 커지는 형태로 값 더해줌
     def circle_assign_gradient(self, x, y, r, value, gradient):
-        x = int(x/self.grid)
-        y = int(y/self.grid)
-        r = int(r/self.grid)
+        x = int(x*1.0/self.grid)
+        y = int(y*1.0/self.grid)
+        r = int(r*1.0/self.grid)
         
         steps = int(r/gradient+1)
-        value = value/steps
+        value = value*1.0/steps
         
         for i in range(steps):
             m, n = self.value_matrix.shape
@@ -154,7 +154,7 @@ class potentialField():
         x = int( xy[0] / self.grid)
         y = int( xy[1] / self.grid)
         
-        return self.value_matrix[x,y]
+        return self.value_matrix[y,x]
        
     # 가장 높은 값과, 그 값의 위치'들'. output이 좀 특이한 형태라 가공 필요
     def getMax(self):
@@ -168,14 +168,14 @@ class potentialField():
         
         index = random.randint(0, len(temp[1])-1)
         
-        point = [ temp[1][index]*self.grid, temp[1][index]*self.grid ]       
+        point = [ temp[1][index]*self.grid, temp[0][index]*self.grid ]       
         return (value, point )
     
     def out(self):
         return self.value_matrix
     
     def plot(self):
-        image = np.flip(self.value_matrix, axis=0)
+        image = np.flip(self.value_matrix, axis=0)    
         plt.imshow(image)
         
         # return distnace and relative angles
