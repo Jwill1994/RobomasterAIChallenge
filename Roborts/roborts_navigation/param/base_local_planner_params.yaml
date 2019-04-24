@@ -27,9 +27,9 @@ DWAPlannerROS:
   sim_time: 0.5
   sim_granularity: 0.025
   angular_sim_granularity: 0.1
-  vx_samples: 3
-  vy_samples: 3
-  vth_samples: 5
+  vx_samples: 10
+  vy_samples: 10
+  vth_samples: 15
   controller_frequency: 10.0
 
   path_distance_bias: 64
@@ -39,7 +39,7 @@ DWAPlannerROS:
   stop_time_buffer: 0.2
   scaling_speed: 0.25
   max_scaling_factor: 0.2
-  twirling_scale: 0
+  twirling_scale: 0.1
   penalize_negative_x: false
 
   oscillation_reset_dist: 0.05

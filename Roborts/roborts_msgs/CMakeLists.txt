@@ -27,6 +27,9 @@ add_message_files(
     ObstacleMsg.msg
     ShootInfo.msg
     ShootState.msg
+    CmdPose.msg
+    CostStatus.msg
+    Follower.msg
 )
 
 add_message_files(
@@ -60,4 +63,6 @@ generate_messages(
     nav_msgs
 )
 
-catkin_package()
+catkin_package(
+  CATKIN_DEPENDS
+  message_runtime)

@@ -75,7 +75,7 @@
   </gazebo>
 
   <!-- camera -->
-  <gazebo reference="camera_Link">
+  <!--<gazebo reference="camera_Link">
     
       <sensor name="color" type="camera">
         <pose frame="">0 -0.046 0.004 0 0 0</pose>
@@ -124,7 +124,7 @@
         <visualize>0</visualize>
       </sensor>
 
-  </gazebo>
+  </gazebo>-->
 
 
 
@@ -149,8 +149,8 @@
             <horizontal>
               <samples>720</samples>
               <resolution>1</resolution>
-              <min_angle>-2.3</min_angle>
-              <max_angle>2.3</max_angle>
+              <min_angle>-2.0</min_angle>
+              <max_angle>2.0</max_angle>
             </horizontal>
           </scan>
           <range>
@@ -172,7 +172,7 @@
     </gazebo>
 
     
-    <gazebo>
+    <!--<gazebo>
       <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
         <robotNamespace>/${namespace}</robotNamespace>
         <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
@@ -241,7 +241,7 @@
           <frameName>back_armor_link</frameName>
         </plugin>
       </sensor>
-    </gazebo>
+    </gazebo>-->
   </xacro:macro>
 
 </robot>
