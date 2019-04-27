@@ -59,6 +59,7 @@ public:
   bool prepare();
   double scoreTrajectory(Trajectory &traj);
 
+
   void setSumScores(bool score_sums){ sum_scores_=score_sums; }
 
   void setParams(double max_trans_vel, double max_scaling_factor, double scaling_speed);

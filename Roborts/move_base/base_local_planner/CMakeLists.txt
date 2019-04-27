@@ -45,6 +45,7 @@ add_message_files(
     FILES
     Position2DInt.msg
     CmdPose.msg
+    CostStatus.msg
 )
 
 generate_messages(

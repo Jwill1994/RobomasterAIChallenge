@@ -39,6 +39,7 @@
 #define TRAJECTORYCOSTFUNCTION_H_
 
 #include <base_local_planner/trajectory.h>
+#include <base_local_planner/CostStatus.h>
 
 namespace base_local_planner {
 
