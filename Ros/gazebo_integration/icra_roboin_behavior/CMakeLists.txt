@@ -19,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
 include_directories(
   include
   behavior
+  /home/kimtaehan/integration/src/icra_roboin_behavior/blackboard
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -26,9 +27,8 @@ catkin_package()
 
 add_executable(behavior_node
   enums.h
+  blackboard/class.h
   executor/chassis_executor.cpp
-  executor/gimbal_executor.cpp
-  executor/lockon_module.h
   blackboard/blackboard.cpp
   behavior_interface.cpp
   behavior_node.cpp

@@ -62,6 +62,7 @@ inline double GetShortestYawSigned(const double yaw2, const double yaw1) {
 
 
 
+
 /*
 inline double GetAngle(const geometry_msgs::PoseStamped &pose1,
                   const geometry_msgs::PoseStamped &pose2) {

@@ -3,32 +3,178 @@
 
 
 
-
 namespace icra_roboin_behavior{
 
 
 
-Blackboard::Blackboard(TeamType team = TeamType::BLUE_TEAM, RuleType rule = RuleType::SOLO): 
-                            my_team_(team), game_rule_(rule), game_state_(GameState::READY), 
-                            ammo_(START_AMMO), my_health_(START_HEALTH), is_ally_alive_(true),
-                            enemy_priority_(PlayerType::ENEMY_ANY), locked_on_enemy_(PlayerType::ALLY), //do not lockon
-                            behavior_style_(icra_roboin_behavior::BehaviorStyle::READY),
-                            behavior_process_(icra_roboin_behavior::BehaviorProcess::IDLE)
+Blackboard::Blackboard():  game_status(GameStatus::PRE_MATCH)
 {
-    ros::NodeHandle nh;
-    enemy_detection_sub_ = nh.subscribe("enemy_info",5,&Blackboard::EnemyDetectionCB,this);
+    ros::NodeHandle nh("~");
+
     tf_ptr_ = std::make_shared<tf::TransformListener>(ros::Duration(10));
     namespace_ = ros::this_node::getNamespace();
-    namespace_.erase(0,namespace_.find_first_not_of("/"));
+    namespace_.erase(0,namespace_.find_first_not_of("/")); // have to know that 1
 
-    //DEPRECATED: referee_hit_service_ = nh.advertiseService("referee_hit_service",&Blackboard::RefereeHitCB,this);
-    referee_game_state_service_ = nh.advertiseService("referee_game_state_service",&Blackboard::RefereeGameStateCB,this);
-    referee_penalty_service_ = nh.advertiseService("referee_penalty_service",&Blackboard::RefereePenaltyCB,this);
-    referee_buff_service_ = nh.advertiseService("referee_buff_service",&Blackboard::RefereeBuffCB,this);
-    referee_reload_service_ = nh.advertiseService("referee_reload_service",&Blackboard::RefereeReloadCB,this);
+    referee_game_status = nh.subscribe("game_status",1,&Blackboard::GameStatusCB,this);
+    referee_game_result = nh.subscribe("game_result",1,&Blackboard::GameResultCB,this);
+    referee_game_survivor = nh.subscribe("game_survivor",1,&Blackboard::GameSurvivorCB,this);
+    referee_bonus_status = nh.subscribe("field_bonus_status",1,&Blackboard::BonusStatusCB,this);
+    referee_supplier_status = nh.subscribe("field_supplier_status",1,&Blackboard::SupplierStatusCB,this);
+    referee_robot_status = nh.subscribe("robot_status",1,&Blackboard::RobotStatusCB,this);
+    referee_robot_heat = nh.subscribe("robot_heat",1,&Blackboard::RobotHeatCB,this);
+    referee_robot_bonus = nh.subscribe("robot_bonus",1,&Blackboard::RobotBonusCB,this);
+    referee_robot_damage = nh.subscribe("robot_damage",1,&Blackboard::RobotDamageCB,this);
+    //referee_robot_shoot = nh.subscribe("robot_shoot",1,&Blackboard::RobotShootCB,this);
+    //referee_projectile_supply = nh.subscribe("projectile_supply",1,&Blackboard::ProjectileSupplyCB,this);
 
-    robot_damage_sub_ = nh.subscribe("robot_damage",10,&Blackboard::RobotDamageCB,this);
+	goal_set = nh.subscribe("goal_set", 1, &Blackboard::GoalSetCB, this);
+	behavior_set = nh.subscribe("behavior_ser", 1, &Blackboard::BehaviorSetCB, this);
+
+
+    enemy_detection_sub_ = nh.subscribe("enemy_info",5,&Blackboard::EnemyDetectionCB,this);
+
+
+
 }
+
+///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
+////*                      callback function                       *///
+///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////
+void Blackboard::GameStatusCB(const roborts_msgs::GameStatus::ConstPtr& msg){
+    game_status = static_cast<icra_roboin_behavior::GameStatus>(msg->game_status);
+    remaining_time = msg->remaining_time;
+	time_passed_from_game_start = 180 - remaining_time;
+}
+
+void Blackboard::GameResultCB(const roborts_msgs::GameResult::ConstPtr& msg){
+    game_result = static_cast<icra_roboin_behavior::GameResult>(msg->result);
+}
+
+void Blackboard::GameSurvivorCB(const roborts_msgs::GameSurvivor::ConstPtr& msg){
+    if(my_id == RobotId::RED3){
+        my_id = static_cast<icra_roboin_behavior::RobotId>(msg->red3);
+        ally_id = static_cast<icra_roboin_behavior::RobotId>(msg->red4);
+        enemy1_id = static_cast<icra_roboin_behavior::RobotId>(msg->blue3);
+        enemy2_id = static_cast<icra_roboin_behavior::RobotId>(msg->blue4);
+
+                my_teamtype = TeamType::RED_TEAM;
+                ally_teamtype = TeamType::RED_TEAM;
+                enemy1_teamtype = TeamType::BLUE_TEAM;
+                enemy2_teamtype = TeamType::BLUE_TEAM;
+    }
+    else if(my_id == RobotId::RED4){
+        my_id = static_cast<icra_roboin_behavior::RobotId>(msg->red4);
+        ally_id = static_cast<icra_roboin_behavior::RobotId>(msg->red3);
+        enemy1_id = static_cast<icra_roboin_behavior::RobotId>(msg->blue3);
+        enemy2_id = static_cast<icra_roboin_behavior::RobotId>(msg->blue4);
+
+                my_teamtype = TeamType::RED_TEAM;
+                ally_teamtype = TeamType::RED_TEAM;
+                enemy1_teamtype = TeamType::BLUE_TEAM;
+                enemy2_teamtype = TeamType::BLUE_TEAM;
+    }
+    else if(my_id == RobotId::BLUE3){
+        my_id = static_cast<icra_roboin_behavior::RobotId>(msg->blue3);
+        ally_id = static_cast<icra_roboin_behavior::RobotId>(msg->blue4);
+        enemy1_id = static_cast<icra_roboin_behavior::RobotId>(msg->red3);
+        enemy2_id = static_cast<icra_roboin_behavior::RobotId>(msg->red4);
+
+                my_teamtype = TeamType::BLUE_TEAM;
+                ally_teamtype = TeamType::BLUE_TEAM;
+                enemy1_teamtype = TeamType::RED_TEAM;
+                enemy2_teamtype = TeamType::RED_TEAM;
+    }
+    else if(my_id == RobotId::BLUE4){
+        my_id = static_cast<icra_roboin_behavior::RobotId>(msg->blue4);
+        ally_id = static_cast<icra_roboin_behavior::RobotId>(msg->blue3);
+        enemy1_id = static_cast<icra_roboin_behavior::RobotId>(msg->red3);
+        enemy2_id = static_cast<icra_roboin_behavior::RobotId>(msg->red4);
+
+                my_teamtype = TeamType::BLUE_TEAM;
+                ally_teamtype = TeamType::BLUE_TEAM;
+                enemy1_teamtype = TeamType::RED_TEAM;
+                enemy2_teamtype = TeamType::RED_TEAM;
+    }
+}
+
+
+void Blackboard::BonusStatusCB(const roborts_msgs::BonusStatus::ConstPtr& msg){
+    if(my_id == RobotId::RED3 || my_id == RobotId::RED4){
+        my_bonus_zone = static_cast<icra_roboin_behavior::BonusZone>(msg->red_bonus);
+        ally_bonus_zone = static_cast<icra_roboin_behavior::BonusZone>(msg->red_bonus);
+        enemy1_bonus_zone = static_cast<icra_roboin_behavior::BonusZone>(msg->blue_bonus);
+        enemy2_bonus_zone = static_cast<icra_roboin_behavior::BonusZone>(msg->blue_bonus);
+		
+                if (my_bonus_zone == BonusZone::OCCUPIED) {
+			last_buff_time = time_passed_from_game_start;
+		}
+
+                if (enemy1_bonus_zone == BonusZone::OCCUPIED) {
+			enemy_last_buff_time = time_passed_from_game_start;
+		}
+
+    }
+    else if(my_id == RobotId::BLUE3 || my_id == RobotId::BLUE4){
+        my_bonus_zone = static_cast<icra_roboin_behavior::BonusZone>(msg->blue_bonus);
+        ally_bonus_zone = static_cast<icra_roboin_behavior::BonusZone>(msg->blue_bonus);
+        enemy1_bonus_zone = static_cast<icra_roboin_behavior::BonusZone>(msg->red_bonus);
+        enemy2_bonus_zone = static_cast<icra_roboin_behavior::BonusZone>(msg->red_bonus);
+
+                if (ally_bonus_zone == BonusZone::BEING_OCCUPIED) {
+			last_buff_time = time_passed_from_game_start;
+		}
+
+                if (enemy1_bonus_zone == BonusZone::BEING_OCCUPIED) {
+			enemy_last_buff_time = time_passed_from_game_start;
+		}
+    }
+}
+
+void Blackboard::SupplierStatusCB(const roborts_msgs::SupplierStatus::ConstPtr& msg){
+    supplier_status = static_cast<icra_roboin_behavior::SupplierStatus>(msg->status);
+        if (supplier_status == SupplierStatus::SUPPLYING) {
+		last_supply_time = time_passed_from_game_start;
+	}
+}
+
+void Blackboard::RobotStatusCB(const roborts_msgs::RobotStatus::ConstPtr& msg){
+    my_id = static_cast<icra_roboin_behavior::RobotId>(msg->id);
+    my_hp = msg->remain_hp;
+    heat_cooling_rate = msg->heat_cooling_rate;
+    gimbal_output = msg->gimbal_output;
+    chassis_output = msg->chassis_output;
+    shooter_output = msg->shooter_output;
+}
+
+void Blackboard::RobotHeatCB(const roborts_msgs::RobotHeat::ConstPtr& msg){
+    chassis_volt = msg->chassis_volt;
+    chassis_current = msg->chassis_current;
+    chassis_power = msg->chassis_power;
+    chassis_power_buffer = msg->chassis_power_buffer;
+    shooter_heat = msg->shooter_heat;
+}
+
+void Blackboard::RobotBonusCB(const roborts_msgs::RobotBonus::ConstPtr& msg){
+    robot_bonus = static_cast<icra_roboin_behavior::RobotBonus>(msg->bonus);
+}
+
+void Blackboard::RobotDamageCB(const roborts_msgs::RobotDamage::ConstPtr& msg){
+    robot_damage_type = static_cast<icra_roboin_behavior::RobotDamageType>(msg->damage_type);
+    robot_damage_armor = static_cast<icra_roboin_behavior::RobotDamageArmor>(msg->damage_source);
+}
+
+void Blackboard::GoalSetCB(const geometry_msgs::PoseStamped::ConstPtr& msg) {
+	goal.header = msg->header;
+	goal.pose = msg->pose;
+}
+
+void Blackboard::BehaviorSetCB(const std_msgs::Int32::ConstPtr& msg) {
+        behavior_style = static_cast<icra_roboin_behavior::BehaviorStyle>(msg->data);
+}
+
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,97 +184,89 @@ Blackboard::Blackboard(TeamType team = TeamType::BLUE_TEAM, RuleType rule = Rule
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
 /*   Referee Info Interface   */
+        GameStatus Blackboard::GetGameStatus() const {
 
-//Game State Info
-ros::Time Blackboard::GetTimeGameStarted() const{
-    return time_game_started_;
-}  
-const ros::Duration Blackboard::GetTimePassedFromGameStart() {
-    UpdateTime();
-    return time_passed_from_game_start_;
-}  
-GameState Blackboard::GetGameState() const{
-    return game_state_;
-}
-//Zone Info
-bool Blackboard::GetIsBuffZoneOnline() const{
-    return is_buff_zone_online_;
-}
-ros::Time Blackboard::GetTimeLastBuffed() const{
-    return time_last_buffed_;
-}  
-const ros::Duration Blackboard::GetTimeLeftForBuffZoneToOnline() {
-    UpdateTime();
-    return time_left_for_buff_zone_to_online_;
-}  
-bool Blackboard::GetIsReloadZoneOnline() const{
-    return is_reload_zone_online_;
-}
-ros::Time Blackboard::GetTimeLastReloaded() const{
-    return time_last_reloaded_;
-}  
-const ros::Duration Blackboard::GetTimeLeftForReloadZoneToOnline() {
-    UpdateTime();
-    return time_left_for_reload_zone_to_online_;
-}  
-//HP Info
-int Blackboard::GetMyHealth() const{
-    return my_health_;
-}
-bool Blackboard::GetIsHitFastResponse() const{
-    return is_hit_fast_response_;
-}
-bool Blackboard::GetHitConfirmedFastResponse() const{
-    return hit_confirmed_fast_response_;
-} 
-void Blackboard::ConfirmHitFastResponse(){
-    is_hit_fast_response_ = false;
-    hit_confirmed_fast_response_ = true;
-}
-bool Blackboard::GetIsHitSmartResponse() const{
-    return is_hit_smart_response_;
-} 
-bool Blackboard::GetHitConfirmedSmartResponse() const{
-    return hit_confirmed_smart_response_;
-} 
-void Blackboard::ConfirmHitSmartResponse(){
-    is_hit_smart_response_ = false;
-    hit_confirmed_smart_response_ = true;
-}
-ArmorType Blackboard::GetWhichArmorHit() const {
-    return which_armor_hit_;
-}  
-ros::Time Blackboard::GetTimeLastHit() const{
-    return time_last_hit_;
-}  
-//Defense Buff Info
-bool Blackboard::GetHasBuff() const{
-    return has_buff_;
-}
-const ros::Duration Blackboard::GetTimeBuffLeft() {
-    UpdateTime();
-    return time_buff_left_;
-} 
-//Ammunition Info
-int Blackboard::GetAmmo() const{
-    return ammo_;
-}
-bool Blackboard::GetIsReloading() const{
-    return is_reloading_;
-}
+		return game_status;
+	}
 
-/*   Team Info Interface   */
-geometry_msgs::PoseStamped Blackboard::GetAllyPose() const{
-    return ally_pose_;
-}
-TeamType Blackboard::GetMyTeam() const{
-    return my_team_;
-}
-bool Blackboard::GetIsAllyAlive() const{
-    return is_ally_alive_;
-}
+	int Blackboard::GetTimeGameRemaining() const {
+		return remaining_time;
+	}
 
+	int Blackboard::GetTimePassedFromGameStart() {
+		return time_passed_from_game_start;
+	}
+
+	BonusZone Blackboard::GetBonusZoneState() const {
+                return my_bonus_zone;
+	}
+
+	int Blackboard::GetTimeLastBuffed() const {
+		return last_buff_time;
+	}
+
+	int Blackboard::GetTimeLeftForBuffZoneToOnline() {
+		return ((last_buff_time + 30) - time_passed_from_game_start);
+	}
+
+	BonusZone Blackboard::GetEnemyBonusZoneState() const {
+                return enemy1_bonus_zone;
+	}
+
+	int Blackboard::GetEnemyTimeLastBuffed() const {
+		return enemy_last_buff_time;
+	}
+
+	int Blackboard::GetEnemyTimeLeftForBuffZoneToOnline() {
+		return ((enemy_last_buff_time + 30) - time_passed_from_game_start);
+	}
+
+	SupplierStatus Blackboard::GetIsSupplyZoneOnline() const {
+		return supplier_status;
+	}
+
+	int Blackboard::GetTimeLastSupply() const {
+		return last_supply_time;
+	}
+	int Blackboard::GetTimeLeftForSupplyZoneToOnline() {
+		return ((last_supply_time + 30) - time_passed_from_game_start);
+	}
+
+	int Blackboard::GetMyHealth() const {
+                return my_hp;
+	}
+
+	RobotDamageArmor Blackboard::GetWhichArmorHit() const {
+                return robot_damage_armor;
+	}
+
+	RobotBonus Blackboard::GetRobotBonusState() const {
+		return robot_bonus;
+	}
+
+	int Blackboard::GetTimeBuffLeft() {
+		return (time_passed_from_game_start - last_buff_time);
+	}
+
+	int Blackboard::GetAmmo() const {
+		return ammo;
+	}
+
+	geometry_msgs::PoseStamped Blackboard::GetAllyPose() const {
+		return ally_pose_;
+	}
+	TeamType Blackboard::GetMyTeam() const {
+                return my_teamtype;
+	}
+        RobotLife Blackboard::GetIsAllyAlive() const {
+                return ally_life;
+	}
+
+	//////////////////////////////////
+	   	  
 /*   Perception Info Interface   */
 const geometry_msgs::PoseStamped Blackboard::GetMyPose(){
     UpdateMyPose();
@@ -215,55 +353,16 @@ ros::Time Blackboard::GetTimeLastSeen(PlayerType who) const{
     }
 }
 
-/*   Behavior Info Interface   */
-PlayerType Blackboard::GetLockedOnEnemy() const{
-    return locked_on_enemy_;
-}
-bool Blackboard::GetIsNewLockonTarget() const{
-    return is_new_lockon_target_;
-}
-bool Blackboard::IsNewLockonTarget(){
-    if(is_new_lockon_target_){
-        is_new_lockon_target_ = false;
-        return true;
-    } else {
-        return false;
-    }
-}
-bool Blackboard::GetIsNewGoal() const{
-    return is_new_goal_;
-}
-bool Blackboard::IsNewGoal(){
-    if(is_new_goal_){
-        is_new_goal_ = false;
-        return true;
-    } else {
-        return false;
-    }
-}
-icra_roboin_msgs::GoalDescription Blackboard::GetGoal() const{
-    return goal_;
-}
-const geometry_msgs::PoseStamped Blackboard::GetGoalPoseQuaternion(){
-    TransformGoalPoseQuaternion();
-    return goal_pose_quaternion_;    
+
+/////////////////////////////
+
+geometry_msgs::PoseStamped Blackboard::GetGoal() const{
+    return goal;
 }
 
 BehaviorStyle Blackboard::GetBehaviorStyle() const{
-    return behavior_style_;
+    return behavior_style;
 }
-BehaviorProcess Blackboard::GetBehaviorProcess() const{
-    return behavior_process_;
-}
-
-/*   Smart Decision and Tactics Info Interface   */
-PlayerType Blackboard::GetEnemyPriority() const{
-    return enemy_priority_;
-}
-
-
-
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -274,35 +373,8 @@ PlayerType Blackboard::GetEnemyPriority() const{
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-void Blackboard::SetGoal(const icra_roboin_msgs::GoalDescription new_goal){
-    goal_ = new_goal;
-    is_new_goal_ = true;
-}
-void Blackboard::SetBehaviorStyle(const BehaviorStyle new_style){
-    behavior_style_ = new_style;
-}
-void Blackboard::SetBehaviorProcess(const BehaviorProcess process){
-    behavior_process_ = process;
-}
-
-void Blackboard::SetEnemyPriority(const PlayerType who){
-    enemy_priority_ = who;
-}
-
-void Blackboard::SetLockedOnEnemy(const PlayerType who) {
-    if(who != PlayerType::ALLY && who != PlayerType::ENEMY_ONE && who != PlayerType::ENEMY_TWO && who != PlayerType::ENEMY_ANY && who != PlayerType::UNKNOWN){
-        throw std::invalid_argument( "wrong enemy type" );
-        ROS_ERROR("blackboard set enenmy lockon error: wrong enemy type");
-    }
-    locked_on_enemy_ = who;
-}
-
 void Blackboard::AmmoMinusOne() {
-    ammo_ --;
-}
-
-void Blackboard::SetIsReloading(const bool flag) {
-    is_reloading_ = flag;
+    ammo--;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -326,35 +398,8 @@ void Blackboard::UpdateMyPose(){
         ROS_ERROR("blackboard UpdateMyPose error :%s", ex.what());
     }
 }
-void Blackboard::UpdateTime(){
-    time_passed_from_game_start_ = ros::Time::now() - time_game_started_;
-    if(is_buff_zone_online_){
-        time_left_for_buff_zone_to_online_ = ros::Duration(0);
-    } else {
-        time_left_for_buff_zone_to_online_ = ros::Duration(60)-ros::Duration((time_passed_from_game_start_.sec % 60),time_passed_from_game_start_.nsec) ; //buffzone opens every 1min
-    }
-    time_buff_left_ = ros::Duration(BUFF_DURATION) + (time_last_buffed_-ros::Time::now());
-    if(time_buff_left_.toSec() <= 0){
-        time_buff_left_ = ros::Duration(0);
-    }
-    time_left_for_reload_zone_to_online_ = ros::Duration(RELOADING_DURATION) + (time_last_buffed_-ros::Time::now());
-    if(time_left_for_reload_zone_to_online_.toSec() <= 0){
-        time_left_for_reload_zone_to_online_ = ros::Duration(0);
-    }
-}
-void Blackboard::TransformGoalPoseQuaternion(){
-    goal_pose_quaternion_.header = goal_.header;
-    goal_pose_quaternion_.pose.position.x = goal_.x;
-    goal_pose_quaternion_.pose.position.y = goal_.y;
-    goal_pose_quaternion_.pose.position.z = 1;
-    goal_pose_quaternion_.pose.orientation = tf::createQuaternionMsgFromYaw(goal_.yaw);
-}
 
 
-
-void Blackboard::EnemyAlert(){
-    //TODO
-}
 
 
 
@@ -365,75 +410,6 @@ void Blackboard::EnemyAlert(){
 /*                                                                                             */
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
-void Blackboard::RobotDamageCB(const roborts_msgs::RobotDamage::ConstPtr& msg){
-    if(msg->damage_type != msg->ARMOR) return;
-    is_hit_fast_response_ = true;
-    is_hit_smart_response_ = true;
-    time_last_hit_ = ros::Time::now();
-    my_health_ -= DAMAGE;
-    which_armor_hit_ = static_cast<ArmorType>(msg -> damage_source);
-}
-
-
-
-/* DEPRECATED
-
-bool Blackboard::RefereeHitCB(icra_roboin_msgs::RefereeHit::Request& req, 
-                    icra_roboin_msgs::RefereeHit::Response& resp){
-    is_hit_fast_response_ = true;
-    is_hit_smart_response_ = true;
-    time_last_hit_ = req.header.stamp;
-    my_health_ -= req.damage;
-    if(my_health_ != req.your_hp) ROS_WARN("blackboard: referee hp and blackboard hp is different!");
-    which_armor_hit_ = static_cast<ArmorType>(req.which_armor);
-    resp.success = true;
-    return true;
-}
-
-*/
-
-bool Blackboard::RefereeGameStateCB(icra_roboin_msgs::RefereeGameState::Request& req,
-                            icra_roboin_msgs::RefereeGameState::Response& resp){
-    GameState tmp = game_state_;
-    game_state_ = static_cast<GameState>(req.game_state);
-    //ROS_WARN("%d, %d",int(tmp),int(game_state_));
-    if( tmp == GameState::READY && game_state_ == GameState::PLAY ){
-        //ROS_WARN("called!!");
-        time_game_started_ = req.header.stamp;
-        time_passed_from_game_start_ = ros::Duration(0);
-        my_health_=START_HEALTH;
-        ammo_=START_AMMO;
-    }
-    resp.success = true;
-    return true;
-}
-                       
-bool Blackboard::RefereePenaltyCB(icra_roboin_msgs::RefereePenalty::Request& req, 
-                    icra_roboin_msgs::RefereePenalty::Response& resp){
-    penalty_received_ = static_cast<PenaltyType>(req.penalty);
-    my_health_ -= req.damage;
-    resp.success = true;
-    return true;
-}  
-                     
-bool Blackboard::RefereeBuffCB(icra_roboin_msgs::RefereeBuff::Request& req,
-                            icra_roboin_msgs::RefereeBuff::Response& resp){
-    if(req.buff_type == 0){
-        time_last_buffed_ = req.header.stamp;
-    }
-    resp.success = true;
-    return true;
-}
-
-bool Blackboard::RefereeReloadCB(icra_roboin_msgs::RefereeReload::Request& req,
-                            icra_roboin_msgs::RefereeReload::Response& resp){
-    is_reloading_ = false;
-    ammo_ = START_AMMO;
-    time_last_reloaded_ = req.header.stamp;
-    resp.success = true;
-    return true;
-}
-
 
 void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::ConstPtr& yolo){
     //TODO change camera frame id from base_link to camera link
@@ -493,7 +469,6 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
             is_enemy_1_detected_ = true;
             time_enemy_last_seen_ = yolo->stamp;
             time_enemy_1_last_seen_ = yolo->stamp;
-            EnemyAlert();
             //ROS_INFO("Enemy 1 Detected!");
             number_of_detected_enemies_++;
             //tf transform code
@@ -524,10 +499,7 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
             catch (tf::TransformException& ex) {
                 ROS_ERROR("blackboard enemy detection callback tf error");
             }
-            
-            if(GetEnemyPriority() == PlayerType::ENEMY_ONE | GetEnemyPriority() == PlayerType::ENEMY_ANY) {
-                SetLockedOnEnemy(PlayerType::ENEMY_ONE);
-            }
+
             
         } else {
             is_enemy_1_detected_ = false;
@@ -546,7 +518,6 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
             is_enemy_2_detected_ = true;
             time_enemy_last_seen_ = yolo->stamp;
             time_enemy_2_last_seen_ = yolo->stamp;
-            EnemyAlert();
             //ROS_INFO("Enemy 2 Detected!");
             number_of_detected_enemies_++;
             //tf transform code
@@ -577,10 +548,7 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
             catch (tf::TransformException& ex) {
                 ROS_ERROR("blackboard enemy detection callback tf error");
             }
-            
-            if(GetEnemyPriority() == PlayerType::ENEMY_TWO | GetEnemyPriority() == PlayerType::ENEMY_ANY) {
-                SetLockedOnEnemy(PlayerType::ENEMY_TWO);
-            }
+
             
         } else {
             is_enemy_2_detected_ = false;
@@ -598,17 +566,19 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
     }
 }
 
+geometry_msgs::PoseStamped Blackboard::transform_goal() {
+	real_goal.header = goal.header;
+	real_goal.pose.position = goal.pose.position;
+	double distance_x = real_goal.pose.position.x - my_pose_.pose.position.x;
+	double distance_y = real_goal.pose.position.y - my_pose_.pose.position.y;
+        double distance = icra_roboin_behavior::tools::GetPlanarDistance(real_goal, my_pose_);
+	real_goal.pose.orientation.w = 0;
+	real_goal.pose.orientation.x = distance_x/distance;
+	real_goal.pose.orientation.y = distance_y/distance;
+	real_goal.pose.orientation.z = 0;
 
-
-
-
-
-
-
-
-
-
-
+	return real_goal;
+}
 
 
 

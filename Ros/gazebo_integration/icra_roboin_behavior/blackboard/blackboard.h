@@ -7,34 +7,31 @@
 #include <tf/transform_listener.h>
 #include <actionlib/client/simple_action_client.h>
 #include <geometry_msgs/PoseStamped.h>
+#include <std_msgs/Int32.h>
+#include <math.h>
+#include "../tools.h"
 #include <memory>
 #include <vector>
 #include <array>
 #include <algorithm>
 #include "../enums.h"
 #include "../constants.h"
-#include "icra_roboin_msgs/YoloDetectionInfo.h"
-#include "icra_roboin_msgs/GoalDescription.h"
-#include "icra_roboin_msgs/RefereeGameState.h"
-#include "icra_roboin_msgs/RefereeHit.h"
-#include "icra_roboin_msgs/RefereePenalty.h"
-#include "icra_roboin_msgs/RefereeBuff.h"
-#include "icra_roboin_msgs/RefereeReload.h"
 
-#include "roborts_msgs/RobotDamage.h"
-/*
-#include "roborts_msgs/BonusStatus.h"
-#include "roborts_msgs/GameResult.h"
 #include "roborts_msgs/GameStatus.h"
+#include "roborts_msgs/GameResult.h"
 #include "roborts_msgs/GameSurvivor.h"
-#include "roborts_msgs/ProjectileSupply.h"
+#include "roborts_msgs/BonusStatus.h"
+#include "roborts_msgs/SupplierStatus.h"
+#include "roborts_msgs/RobotStatus.h"
+#include "roborts_msgs/RobotHeat.h"
 #include "roborts_msgs/RobotBonus.h"
 #include "roborts_msgs/RobotDamage.h"
-#include "roborts_msgs/RobotHeat.h"
 #include "roborts_msgs/RobotShoot.h"
-#include "roborts_msgs/RobotStatus.h"
-#include "roborts_msgs/SupplierStatus.h"
-*/
+#include "roborts_msgs/ProjectileSupply.h"
+
+
+#include "icra_roboin_msgs/YoloDetectionInfo.h"
+
 
 
 
@@ -43,46 +40,287 @@ namespace icra_roboin_behavior {
 
 
 class Blackboard {
-    
 
     public: //Interfaces
-        Blackboard(TeamType team, RuleType rule);
+        Blackboard();
         ~Blackboard() = default;
 
-        /*   Referee Info Interface   */
-        //Game State Info
-        ros::Time GetTimeGameStarted() const;  
-        const ros::Duration GetTimePassedFromGameStart();  
-        GameState GetGameState() const;
-        //Zone Info
-        bool GetIsBuffZoneOnline() const;
-        ros::Time GetTimeLastBuffed() const;  
-        const ros::Duration GetTimeLeftForBuffZoneToOnline();  
-        bool GetIsReloadZoneOnline() const;
-        ros::Time GetTimeLastReloaded() const;  
-        const ros::Duration GetTimeLeftForReloadZoneToOnline();  //TODO need to be changed to abide rule
-        //HP Info
+///////////////////////////   callback function   ////////////////////////////////
+    private:
+        ros::Subscriber referee_game_status;
+        ros::Subscriber referee_game_result;
+        ros::Subscriber referee_game_survivor;
+        ros::Subscriber referee_bonus_status;
+        ros::Subscriber referee_supplier_status;
+        ros::Subscriber referee_robot_status;
+        ros::Subscriber referee_robot_heat;
+        ros::Subscriber referee_robot_bonus;
+        ros::Subscriber referee_robot_damage;
+        //ros::Subscriber referee_robot_shoot;
+        //ros::Subscriber referee_projectile_supply; // need more test
+
+		ros::Subscriber goal_set;
+		ros::Subscriber behavior_set;
+
+        void GameStatusCB(const roborts_msgs::GameStatus::ConstPtr& msg);
+        void GameResultCB(const roborts_msgs::GameResult::ConstPtr& msg);
+        void GameSurvivorCB(const roborts_msgs::GameSurvivor::ConstPtr& msg);
+        void BonusStatusCB(const roborts_msgs::BonusStatus::ConstPtr& msg);
+        void SupplierStatusCB(const roborts_msgs::SupplierStatus::ConstPtr& msg);
+        void RobotStatusCB(const roborts_msgs::RobotStatus::ConstPtr& msg);
+        void RobotHeatCB(const roborts_msgs::RobotHeat::ConstPtr& msg);
+        void RobotBonusCB(const roborts_msgs::RobotBonus::ConstPtr& msg);
+        void RobotDamageCB(const roborts_msgs::RobotDamage::ConstPtr& msg);
+        //void RobotShootCB(const roborts_msgs::RobotShoot::ConstPtr& msg);
+        //void ProjectileSupplyCB(const roborts_msgs::ProjectileSupply::ConstPtr& msg);
+
+		void GoalSetCB(const geometry_msgs::PoseStamped::ConstPtr& msg);
+		void BehaviorSetCB(const std_msgs::Int32::ConstPtr& msg);
+
+		void EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::ConstPtr& yolo);  // callback for detection_sub_ Topic name: "enemy_info"
+
+	
+
+//////////////////////////////////////////////////
+//////////*         game info        *////////////
+//////////////////////////////////////////////////
+		
+////////////////      robot info      /////////////
+              private:  RobotId my_id;
+                        RobotLife my_life;
+                        TeamType my_teamtype;
+                        RobotDamageType robot_damage_type;
+                        RobotDamageArmor robot_damage_armor;
+                        BonusZone my_bonus_zone;
+                        int my_hp;
+
+                        bool gimbal_output;
+                        bool chassis_output;
+                        bool shooter_output;
+
+                        int chassis_volt;
+                        int chassis_current;
+                        float chassis_power;
+                        int chassis_power_buffer;
+                        int shooter_heat;
+                        int heat_cooling_rate;
+
+
+                        RobotId ally_id;
+                        RobotLife ally_life;
+                        BonusZone ally_bonus_zone;
+                        TeamType ally_teamtype;
+
+
+                        RobotId enemy1_id;
+                        RobotLife enemy1_life;
+                        BonusZone enemy1_bonus_zone;
+                        TeamType enemy1_teamtype;
+
+
+                        RobotId enemy2_id;
+                        RobotLife enemy2_life;
+                        BonusZone enemy2_bonus_zone;
+                        TeamType enemy2_teamtype;
+
+   /* public:
+
+                class my_info {
+                public:
+
+                        my_info();
+                        ~my_info() = default;
+
+                        static RobotId my_id;
+                        static RobotLife my_life;
+                        static TeamType teamtype;
+                        static RobotDamageType robot_damage_type;
+                        static RobotDamageArmor robot_damage_armor;
+                        static BonusZone ally_bonus_zone;
+                        static int my_hp;
+
+                        static bool gimbal_output;
+                        static bool chassis_output;
+                        static bool shooter_output;
+
+                        static int chassis_volt;
+                        static int chassis_current;
+                        static float chassis_power;
+                        static int chassis_power_buffer;
+                        static int shooter_heat;
+                        static int heat_cooling_rate;
+
+                };
+
+                class ally_info {
+                public:
+
+                        ally_info();
+                        ~ally_info() = default;
+
+                        static RobotId ally_id;
+                        static RobotLife ally_life;
+                        static BonusZone ally_bonus_zone;
+                        static TeamType teamtype;
+
+                };
+
+                class enemy1_info {
+                public:
+
+                        enemy1_info();
+                        ~enemy1_info() = default;
+
+                        static RobotId enemy1_id;
+                        static RobotLife enemy1_life;
+                        static BonusZone enemy_bonus_zone;
+                        static TeamType teamtype;
+                };
+
+                class enemy2_info {
+                public:
+
+                        enemy2_info();
+                        ~enemy2_info() = default;
+
+                        static RobotId enemy2_id;
+                        static RobotLife enemy2_life;
+                        static BonusZone enemy_bonus_zone;
+                        static TeamType teamtype;
+                };*/
+
+	private:
+
+                GameStatus game_status;
+		RobotBonus robot_bonus;
+        GameResult game_result;
+        SupplierStatus supplier_status;
+
+        int heat_cooling_limit;
+        int robot_max_hp;
+
+        int remaining_time;
+		int time_passed_from_game_start;
+
+        int last_buff_time;
+        int last_supply_time;
+
+		int enemy_last_buff_time;
+
+        int ammo;
+
+		geometry_msgs::PoseStamped goal;
+		geometry_msgs::PoseStamped real_goal;
+		BehaviorStyle behavior_style;
+
+
+
+		
+
+
+        //bool projectile_supply=0;
+
+
+	private: //Team Info
+
+		geometry_msgs::PoseStamped ally_pose_;
+
+	private: // Perception Info
+
+		//My Pose
+		geometry_msgs::PoseStamped my_pose_;
+		geometry_msgs::PoseStamped amcl_pose_;
+		geometry_msgs::PoseStamped uwb_pose_;
+
+		//Enemy Pose
+		geometry_msgs::PoseStamped enemy_pose_1_;  //real pose from vision
+		geometry_msgs::PoseStamped enemy_pose_2_;
+		geometry_msgs::PoseStamped enemy_pose_1_ghost_;  //last seen location
+		geometry_msgs::PoseStamped enemy_pose_2_ghost_;
+		geometry_msgs::PoseStamped enemy_pose_1_estim_;  //approximate enemy location estimated by AI
+		geometry_msgs::PoseStamped enemy_pose_2_estim_;
+                ros::Time time_enemy_1_last_seen_;
+                ros::Time time_enemy_2_last_seen_;
+                ros::Time time_enemy_last_seen_;
+
+		//Ally Pose
+		geometry_msgs::PoseStamped ally_pose_from_vision_;  //ally pose from vision
+                ros::Time time_ally_last_seen_;
+
+		//Unknown Pose
+		geometry_msgs::PoseStamped unknown_pose_;  //real pose from vision  
+		geometry_msgs::PoseStamped unknown_pose_ghost_;  //last seen location
+		geometry_msgs::PoseStamped unknown_pose_estim_;  //approximate enemy location estimated by AI
+                ros::Time time_unknown_last_seen_;
+
+
+		//Detection Info
+		int number_of_detection_;
+		int number_of_detected_enemies_;
+
+		bool is_ally_detected_ = false;
+		bool is_enemy_1_detected_ = false;
+		bool is_enemy_2_detected_ = false;
+		bool is_enemy_detected_ = false;
+		bool is_unknown_detected_ = false;
+
+		bool is_new_enemy_ = false;
+
+
+	private: // Smart Decision and Tactics Info
+		PlayerType enemy_priority_;
+
+
+
+//////////////////////////////////////////////////
+//////////*    game info interface   *////////////
+//////////////////////////////////////////////////
+///
+        public:
+        //game state
+        GameStatus GetGameStatus() const;
+
+        //game time
+        int GetTimeGameRemaining() const;
+        int GetTimePassedFromGameStart();
+
+        //buff zone
+        BonusZone GetBonusZoneState() const;
+        int GetTimeLastBuffed() const;
+        int GetTimeLeftForBuffZoneToOnline();
+        BonusZone GetEnemyBonusZoneState() const;
+        int GetEnemyTimeLastBuffed() const;
+        int GetEnemyTimeLeftForBuffZoneToOnline();
+
+        //supplier zone
+        SupplierStatus GetIsSupplyZoneOnline() const;
+        int GetTimeLastSupply() const;
+        int GetTimeLeftForSupplyZoneToOnline();
+
+        //HP
         int GetMyHealth() const;
-        bool GetIsHitFastResponse() const; // read only, got hit by enemy and need urgent behavior-level response 
-        void ConfirmHitFastResponse();  // set is_hit_fast_response to false, set hit_confirmed_fast_response_ true,
-        bool GetHitConfirmedFastResponse() const; // meaning every behavior-level measure ought to be taken when hit is finished
-        bool GetIsHitSmartResponse() const; // read only, got hit by enemy and need intelligent decision-level response
-        void ConfirmHitSmartResponse();  // set is_hit_smart_response to false, set hit_confirmed_smart_response_ true,
-        bool GetHitConfirmedSmartResponse() const; //meaning every decision-level measure ought to be taken when hit is finished
-        ArmorType GetWhichArmorHit() const; 
-        ros::Time GetTimeLastHit() const;  
-        //Defense Buff Info
-        bool GetHasBuff() const;
-        const ros::Duration GetTimeBuffLeft(); 
-        //Ammunition Info
-        int GetAmmo() const;
-        bool GetIsReloading() const;
 
-        /*   Team Info Interface   */
-        geometry_msgs::PoseStamped GetAllyPose() const;
-        TeamType GetMyTeam() const;
-        bool GetIsAllyAlive() const;
+        //damaged armor
+        RobotDamageArmor GetWhichArmorHit() const;
 
+        //buff
+        RobotBonus GetRobotBonusState() const;
+        int GetTimeBuffLeft();
+        //ammo
+        int GetAmmo() const;////////////////////여기까지 th
+
+		/*   Team Info Interface   */
+		geometry_msgs::PoseStamped GetAllyPose() const;
+		TeamType GetMyTeam() const;
+                RobotLife GetIsAllyAlive() const;
+
+
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+///*                      vision                         *///
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+		
         /*   Perception Info Interface   */
         const geometry_msgs::PoseStamped GetMyPose(); // get my pose from TF. lazily updates my_pose_.
         geometry_msgs::PoseStamped GetAllyPoseFromVision() const;
@@ -95,127 +333,14 @@ class Blackboard {
         bool IsNewEnemy(); //when called, is_enemy_new_ is set to false
         ros::Time GetTimeLastSeen(PlayerType who) const;
         
-        /*   Behavior Info Interface   */
-        PlayerType GetLockedOnEnemy() const; 
-        bool GetIsNewLockonTarget() const; //read only
-        bool IsNewLockonTarget(); //when called, is_new_lockon_target_ is set to false
-        bool GetIsNewGoal() const; //read only
-        bool IsNewGoal(); //when called, is_new_goal_ is set to false
-        icra_roboin_msgs::GoalDescription GetGoal() const; // goal for current behavior
-        const geometry_msgs::PoseStamped GetGoalPoseQuaternion(); // transform goal pose into quaternion lazily.
+		/*   behavior interface   */
+		geometry_msgs::PoseStamped GetGoal() const; // goal for current behavior
         BehaviorStyle GetBehaviorStyle() const;
-        BehaviorProcess GetBehaviorProcess() const;
-
-        /*   Smart Decision and Tactics Info Interface   */
-        PlayerType GetEnemyPriority() const;
-
-
-
-        /*   External Set Interface   */
-        void SetGoal(const icra_roboin_msgs::GoalDescription goal);
-        void SetBehaviorStyle(const BehaviorStyle new_style);
-        void SetBehaviorProcess(const BehaviorProcess process);
-        void SetEnemyPriority(const PlayerType who);
-        void SetLockedOnEnemy(const PlayerType who); //who: ALLY, ENEMY_ONE ENEMY_TWO       ALLY means do not lock on
-        void AmmoMinusOne();
-        void SetIsReloading(const bool flag);
-
-
-    private: // Referee Info
-
-        //Game State Info
-        ros::Time time_game_started_;  
-        ros::Duration time_passed_from_game_start_;  
-        GameState game_state_;
-        RuleType game_rule_; //1vs1, 2vs2...
-        PenaltyType penalty_received_;
-
-        //Zone Info
-        bool is_buff_zone_online_=true;
-        ros::Time time_last_buffed_; 
-        ros::Duration time_left_for_buff_zone_to_online_;  
-        bool is_reload_zone_online_=true;
-        ros::Time time_last_reloaded_;  
-        ros::Duration time_left_for_reload_zone_to_online_;  
-
-        //HP Info
-        int my_health_;
-        bool is_hit_fast_response_=false;
-        bool is_hit_smart_response_=false;
-        bool hit_confirmed_fast_response_=false;
-        bool hit_confirmed_smart_response_=false;
-        ArmorType which_armor_hit_;
-        ros::Time time_last_hit_; 
-
-        //Defense Buff Info
-        bool has_buff_=false;
-        ros::Duration time_buff_left_;
-        bool has_enemy_buff_=false;
-        ros::Duration time_enemy_buff_left_;
-        std::array<double,3> enemy_buff_time_estimation_moments_; //variance, skewness, kurtosis
-
-        //Ammunition Info
-        int ammo_;
-        bool is_reloading_ = false;
-
-    private: //Team Info
-        geometry_msgs::PoseStamped ally_pose_;
-        TeamType my_team_;
-        bool is_ally_alive_=false;
         
-    private: // Perception Info
+       /*   External Set Interface   */
+        void AmmoMinusOne();
+///////////////////////////////////////////////////////////////////////
 
-        //My Pose
-        geometry_msgs::PoseStamped my_pose_;
-        geometry_msgs::PoseStamped amcl_pose_;
-        geometry_msgs::PoseStamped uwb_pose_;
-
-        //Enemy Pose
-        geometry_msgs::PoseStamped enemy_pose_1_;  //real pose from vision
-        geometry_msgs::PoseStamped enemy_pose_2_;  
-        geometry_msgs::PoseStamped enemy_pose_1_ghost_;  //last seen location
-        geometry_msgs::PoseStamped enemy_pose_2_ghost_;
-        geometry_msgs::PoseStamped enemy_pose_1_estim_;  //approximate enemy location estimated by AI
-        geometry_msgs::PoseStamped enemy_pose_2_estim_;
-        ros::Time time_enemy_1_last_seen_;  
-        ros::Time time_enemy_2_last_seen_;  
-        ros::Time time_enemy_last_seen_;  
-
-        //Ally Pose
-        geometry_msgs::PoseStamped ally_pose_from_vision_;  //ally pose from vision
-        ros::Time time_ally_last_seen_;  
-
-        //Unknown Pose
-        geometry_msgs::PoseStamped unknown_pose_;  //real pose from vision  
-        geometry_msgs::PoseStamped unknown_pose_ghost_;  //last seen location
-        geometry_msgs::PoseStamped unknown_pose_estim_;  //approximate enemy location estimated by AI
-        ros::Time time_unknown_last_seen_;  
-
-
-        //Detection Info
-        int number_of_detection_;
-        int number_of_detected_enemies_;
-
-        bool is_ally_detected_=false;
-        bool is_enemy_1_detected_=false;
-        bool is_enemy_2_detected_=false;
-        bool is_enemy_detected_=false;
-        bool is_unknown_detected_=false;
-
-        bool is_new_enemy_=false;
-
-    private: // Behavior Info
-
-        PlayerType locked_on_enemy_; // who: ALLY, ENEMY_ONE ENEMY_TWO       ALLY means do not lock on
-        bool is_new_lockon_target_=false;
-        bool is_new_goal_=false;
-        icra_roboin_msgs::GoalDescription goal_;
-        geometry_msgs::PoseStamped goal_pose_quaternion_;
-        BehaviorStyle behavior_style_;
-        BehaviorProcess behavior_process_;
-
-    private: // Smart Decision and Tactics Info
-        PlayerType enemy_priority_;
 
 
 
@@ -230,70 +355,13 @@ class Blackboard {
         ros::Subscriber enemy_detection_sub_;  // receives Yolo detection result.   Topic name:"enemy_info"
         std::string namespace_;  // ROS namespace of this node
 
-
-        /* DEPRECATED
-        // update HP of robot according to referee hit judgement and record it.    Service name: "referee_hit_service"
-        ros::ServiceServer referee_hit_service_; 
-        */
-
-        // update game state according to referee request.   Service name: "referee_game_state_service"
-        ros::ServiceServer referee_game_state_service_; 
-        // service to receive referee penalty.    Service name: "referee_penalty_service"
-        ros::ServiceServer referee_penalty_service_; 
-        // service for getting buffstate from referee.   Service name: "referee_buff_service"
-        ros::ServiceServer referee_buff_service_;
-        // service for getting reload state from referee.   Service name: "referee_reload_service"
-        ros::ServiceServer referee_reload_service_;
-
-
-        ros::Subscriber robot_damage_sub_;
-        /*
-        ros::Subscriber referee_bonus_status_sub_;
-        ros::Subscriber referee_game_result_sub_;
-        ros::Subscriber referee_game_status_sub_;
-        ros::Subscriber referee_game_survivor_sub_;
-        ros::Subscriber referee_projectile_supply_sub_;
-        ros::Subscriber referee_robot_bonus_sub_;
-        ros::Subscriber referee_robot_damage_sub_;
-        ros::Subscriber referee_robot_heat_sub_;
-        ros::Subscriber referee_robot_shoot_sub_;
-        ros::Subscriber referee_robot_status_sub_;
-        ros::Subscriber referee_supplier_status_sub_;
-        */
-
-
-
-    
-    public: // Callback functions
-        void EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::ConstPtr& yolo);  // callback for detection_sub_ Topic name: "enemy_info"
-        void RobotDamageCB(const roborts_msgs::RobotDamage::ConstPtr& msg);
-
-        
+   	
 
     private: //Private Member Functions
         void UpdateMyPose();
-        void UpdateTime();
-        void TransformGoalPoseQuaternion();
-        void EnemyAlert();
-        
-        /* DEPRECATED
-        // callback for referee_hit_service_ Service name: "referee_hit_service"
-        bool RefereeHitCB(icra_roboin_msgs::RefereeHit::Request& req, 
-                            icra_roboin_msgs::RefereeHit::Response& resp);  
-        */
 
-        // callback for referee_game_state_service_ Service name: "referee_game_state_service"
-        bool RefereeGameStateCB(icra_roboin_msgs::RefereeGameState::Request& req,
-                                 icra_roboin_msgs::RefereeGameState::Response& resp);
-        // callback for referee_penalty_service_ Service name: "referee_penalty_service"                          
-        bool RefereePenaltyCB(icra_roboin_msgs::RefereePenalty::Request& req, 
-                            icra_roboin_msgs::RefereePenalty::Response& resp);  
-        // callback for referee_buff_service_ Service name: "referee_buff_service"                      
-        bool RefereeBuffCB(icra_roboin_msgs::RefereeBuff::Request& req,
-                                 icra_roboin_msgs::RefereeBuff::Response& resp); 
-        // callback for referee_reload_service_ Service name: "referee_reload_service"                      
-        bool RefereeReloadCB(icra_roboin_msgs::RefereeReload::Request& req,
-                                 icra_roboin_msgs::RefereeReload::Response& resp);
+    public:
+        geometry_msgs::PoseStamped transform_goal();
 };
 
 
