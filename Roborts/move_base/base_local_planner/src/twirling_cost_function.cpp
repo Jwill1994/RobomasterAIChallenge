@@ -12,7 +12,8 @@
 namespace base_local_planner {
 
 double TwirlingCostFunction::scoreTrajectory(Trajectory &traj) {
-  return fabs(traj.thetav_ - traj.target_omega);  // add cost for making the robot spin
+  ROS_ERROR("TwirlingCostFunction::scoreTrajectory ThetaV : %f, Target Omega : %f", traj.thetav_, traj.target_omega);
+  return fabs(traj.thetav_ - traj.target_omega); // add cost for making the robot spin
 }
 
 } /* namespace base_local_planner */

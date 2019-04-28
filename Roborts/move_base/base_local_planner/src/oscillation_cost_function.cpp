@@ -164,6 +164,7 @@ bool OscillationCostFunction::setOscillationFlags(base_local_planner::Trajectory
 }
 
 double OscillationCostFunction::scoreTrajectory(Trajectory &traj) {
+  ROS_ERROR("OscillationCostFunction::scoreTrajectory");
   if ((forward_pos_only_ && traj.xv_ < 0.0) ||
       (forward_neg_only_ && traj.xv_ > 0.0) ||
       (strafe_pos_only_  && traj.yv_ < 0.0) ||

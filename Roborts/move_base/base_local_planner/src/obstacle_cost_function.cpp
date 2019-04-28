@@ -75,6 +75,7 @@ double ObstacleCostFunction::scoreTrajectory(Trajectory &traj) {
   double cost = 0;
   double scale = getScalingFactor(traj, scaling_speed_, max_trans_vel_, max_scaling_factor_);
   double px, py, pth;
+  
   if (footprint_spec_.size() == 0) {
     // Bug, should never happen
     ROS_ERROR("Footprint spec is empty, maybe missing call to setFootprint?");
@@ -88,7 +89,8 @@ double ObstacleCostFunction::scoreTrajectory(Trajectory &traj) {
         costmap_, world_model_);
 
     if(f_cost < 0){
-        return f_cost;
+      // ROS_ERROR("ObstacleCostFunction::scoreTrajectory Cost : %f", f_cost);
+      return f_cost;
     }
 
     if(sum_scores_)
@@ -96,6 +98,7 @@ double ObstacleCostFunction::scoreTrajectory(Trajectory &traj) {
     else
         cost = f_cost;
   }
+  // ROS_ERROR("ObstacleCostFunction::scoreTrajectory Cost : %f",cost);
   return cost;
 }
 

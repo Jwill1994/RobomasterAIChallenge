@@ -55,6 +55,8 @@
 
 #include "timed_elastic_band/teb_optimal.h"
 
+#include <stdexcept>
+
 namespace roborts_local_planner {
 TebOptimal::TebOptimal() : obstacles_(NULL), visualization_(NULL),via_points_(NULL), cost_(HUGE_VAL), prefer_rotdir_(RotType::NONE)
     ,robot_model_(new PointRobotFootprint()), initialized_(false), optimized_(false) {
@@ -854,6 +856,14 @@ void TebOptimal::ComputeCurrentCost(double obst_cost_scale, double viapoint_cost
     VelocityEdge* edge_velocity = dynamic_cast<VelocityEdge*>(*it);
     if (edge_velocity!=NULL) {
       cost_ += edge_velocity->GetError().squaredNorm();
+      throw std::invalid_argument( "received negative value" );
+      continue;
+    }
+
+    VelocityHolonomicEdge* edge_holonomic_velocity = dynamic_cast<VelocityHolonomicEdge*>(*it);
+    if (edge_holonomic_velocity!=NULL) {
+      cost_ += edge_holonomic_velocity->GetError().squaredNorm();
+      // throw std::invalid_argument( "received negative value" );
       continue;
     }
 

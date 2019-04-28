@@ -129,6 +129,7 @@ bool HomotopyClassPlanner::plan(const PoseSE2& start, const PoseSE2& goal, const
 
 bool HomotopyClassPlanner::getVelocityCommand(double& vx, double& vy, double& omega) const
 {
+  ROS_ERROR("HomotopyClassPlanner::getVelocityCommand");
   TebOptimalPlannerConstPtr best_teb = bestTeb();
   if (!best_teb)
   {
@@ -530,6 +531,8 @@ TebOptimalPlannerPtr HomotopyClassPlanner::getInitialPlanTEB()
 
 TebOptimalPlannerPtr HomotopyClassPlanner::selectBestTeb()
 {
+
+    ROS_ERROR("HomotopyClassPlanner::selectBestTeb");
     double min_cost = std::numeric_limits<double>::max(); // maximum cost
     double min_cost_last_best = std::numeric_limits<double>::max();
     double min_cost_initial_plan_teb = std::numeric_limits<double>::max();

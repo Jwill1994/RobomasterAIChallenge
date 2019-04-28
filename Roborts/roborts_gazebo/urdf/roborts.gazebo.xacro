@@ -70,9 +70,9 @@
     </plugin>
   </gazebo>
 
-  <gazebo>
+  <!--<gazebo>
     <plugin name="realsense_plugin" filename="libRealSensePlugin.so"/>
-  </gazebo>
+  </gazebo>-->
 
   <!-- camera -->
   <!--<gazebo reference="camera_Link">

@@ -45,42 +45,48 @@ namespace base_local_planner {
     max_samples_ = max_samples;
     gen_list_ = gen_list;
     critics_ = critics;
-  }
+    }
 
   double SimpleScoredSamplingPlanner::scoreTrajectory(Trajectory& traj, double best_traj_cost) {
     double traj_cost = 0;
     int gen_id = 0;
+    // ROS_ERROR("SimpleScoredSamplingPlanner::scoreTrajectory");
     for(std::vector<TrajectoryCostFunction*>::iterator score_function = critics_.begin(); score_function != critics_.end(); ++score_function) {
       TrajectoryCostFunction* score_function_p = *score_function;
       if (score_function_p->getScale() == 0) {
+        ROS_ERROR("SCALE is 0, continue");
         continue;
       }
       double cost = score_function_p->scoreTrajectory(traj);
       if (cost < 0) {
-        ROS_DEBUG("Velocity %.3lf, %.3lf, %.3lf discarded by cost function  %d with cost: %f", traj.xv_, traj.yv_, traj.thetav_, gen_id, cost);
+        ROS_ERROR("Velocity %.3lf, %.3lf, %.3lf discarded by cost function  %d with cost: %f", traj.xv_, traj.yv_, traj.thetav_, gen_id, cost);
         traj_cost = cost;
         break;
       }
       if (cost != 0) {
+        
         cost *= score_function_p->getScale();
+        ROS_ERROR("Cost after Scale : %f", cost);
       }
       traj_cost += cost;
       if (best_traj_cost > 0) {
         // since we keep adding positives, once we are worse than the best, we will stay worse
         if (traj_cost > best_traj_cost) {
+          ROS_ERROR("NOT BEST TRAJ - Traj COST: %f", traj_cost);
           break;
         }
       }
       gen_id ++;
     }
 
-
+    ROS_ERROR("ToTal Cost : %f", traj_cost);
     return traj_cost;
   }
 
-  bool SimpleScoredSamplingPlanner::findBestTrajectory(Trajectory& traj, std::vector<Trajectory>* all_explored) {
+  bool SimpleScoredSamplingPlanner::findBestTrajectory(Trajectory& traj, std::vector<Trajectory>* all_explored, const double target_omega) {
     Trajectory loop_traj;
     Trajectory best_traj;
+    ROS_ERROR("SimpleScoredSamplingPlanner::findBestTrajectory Target Omega : %f", target_omega);
     double loop_traj_cost, best_traj_cost = -1;
     bool gen_success;
     int count, count_valid;
@@ -102,6 +108,7 @@ namespace base_local_planner {
           // TODO use this for debugging
           continue;
         }
+        loop_traj.target_omega = target_omega;
         loop_traj_cost = scoreTrajectory(loop_traj, best_traj_cost);
         if (all_explored != NULL) {
           loop_traj.cost_ = loop_traj_cost;

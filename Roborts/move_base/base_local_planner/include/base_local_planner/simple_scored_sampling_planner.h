@@ -91,7 +91,7 @@ public:
    * @param traj The container to write the result to
    * @param all_explored pass NULL or a container to collect all trajectories for debugging (has a penalty)
    */
-  bool findBestTrajectory(Trajectory& traj, std::vector<Trajectory>* all_explored = 0);
+  bool findBestTrajectory(Trajectory& traj, std::vector<Trajectory>* all_explored = 0, const double target_omega = 0.0);
 
 
 private:

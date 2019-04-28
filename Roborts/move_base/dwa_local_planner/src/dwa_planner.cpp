@@ -167,13 +167,13 @@ namespace dwa_local_planner {
     // set up all the cost functions that will be applied in order
     // (any function returning negative values will abort scoring, so the order can improve performance)
     std::vector<base_local_planner::TrajectoryCostFunction*> critics;
-    critics.push_back(&oscillation_costs_); // discards oscillating motions (assisgns cost -1)
+    // critics.push_back(&oscillation_costs_); // discards oscillating motions (assisgns cost -1)
     critics.push_back(&obstacle_costs_); // discards trajectories that move into obstacles
-    critics.push_back(&goal_front_costs_); // prefers trajectories that make the nose go towards (local) nose goal
-    critics.push_back(&alignment_costs_); // prefers trajectories that keep the robot nose on nose path
+    critics.push_back(&twirling_costs_); // optionally prefer trajectories that don't spin
+    // critics.push_back(&goal_front_costs_); // prefers trajectories that make the nose go towards (local) nose goal
+    // critics.push_back(&alignment_costs_); // prefers trajectories that keep the robot nose on nose path
     critics.push_back(&path_costs_); // prefers trajectories on global path
     critics.push_back(&goal_costs_); // prefers trajectories that go towards (local) goal, based on wave propagation
-    critics.push_back(&twirling_costs_); // optionally prefer trajectories that don't spin
 
     // trajectory generators
     std::vector<base_local_planner::TrajectorySampleGenerator*> generator_list;
@@ -304,6 +304,8 @@ namespace dwa_local_planner {
     //make sure that our configuration doesn't change mid-run
     boost::mutex::scoped_lock l(configuration_mutex_);
 
+    ROS_ERROR("DWAPlanner::findBestPath Targaet Omega : %f", target_omega);
+
     Eigen::Vector3f pos(global_pose.getOrigin().getX(), global_pose.getOrigin().getY(), tf::getYaw(global_pose.getRotation()));
     Eigen::Vector3f vel(global_vel.getOrigin().getX(), global_vel.getOrigin().getY(), tf::getYaw(global_vel.getRotation()));
     geometry_msgs::PoseStamped goal_pose = global_plan_.back();
@@ -318,10 +320,9 @@ namespace dwa_local_planner {
         vsamples_);
 
     result_traj_.cost_ = -7;
-    result_traj_.target_omega = target_omega;
     // find best trajectory by sampling and scoring the samples
     std::vector<base_local_planner::Trajectory> all_explored;
-    scored_sampling_planner_.findBestTrajectory(result_traj_, &all_explored);
+    scored_sampling_planner_.findBestTrajectory(result_traj_, &all_explored, target_omega);
 
     if(publish_traj_pc_)
     {

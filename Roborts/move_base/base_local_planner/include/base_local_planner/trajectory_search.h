@@ -56,7 +56,7 @@ public:
    * @param traj The container to write the result to
    * @param all_explored pass NULL or a container to collect all trajectories for debugging (has a penalty)
    */
-  virtual bool findBestTrajectory(Trajectory& traj, std::vector<Trajectory>* all_explored) = 0;
+  virtual bool findBestTrajectory(Trajectory& traj, std::vector<Trajectory>* all_explored, const double target_omega) = 0;
 
   virtual ~TrajectorySearch() {}
 

@@ -1,5 +1,6 @@
 <launch>
-  <arg name="local_planner_algorithm" default="dwa_local_planner/DWAPlannerROS"/>
+  <!--<arg name="local_planner_algorithm" default="dwa_local_planner/DWAPlannerROS"/>-->
+  <arg name="local_planner_algorithm" default="teb_local_planner/TebLocalPlannerROS"/>
 
 
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">

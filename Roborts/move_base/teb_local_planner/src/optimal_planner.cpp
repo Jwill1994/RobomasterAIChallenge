@@ -170,6 +170,8 @@ boost::shared_ptr<g2o::SparseOptimizer> TebOptimalPlanner::initOptimizer()
 bool TebOptimalPlanner::optimizeTEB(int iterations_innerloop, int iterations_outerloop, bool compute_cost_afterwards,
                                     double obst_cost_scale, double viapoint_cost_scale, bool alternative_time_cost)
 {
+
+  ROS_ERROR("TebOptimalPlanner::optimizeTEB");
   if (cfg_->optim.optimization_activate==false) 
     return false;
   
@@ -1133,7 +1135,7 @@ void TebOptimalPlanner::computeCurrentCost(double obst_cost_scale, double viapoi
       continue;
     }
   }
-
+  ROS_ERROR("TebOptimalPlanner::computeCurrentCost Cost : %f", cost_);
   // delete temporary created graph
   if (!graph_exist_flag) 
     clearGraph();

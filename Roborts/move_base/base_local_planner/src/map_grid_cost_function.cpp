@@ -105,8 +105,10 @@ double MapGridCostFunction::scoreTrajectory(Trajectory &traj) {
     //if a point on this trajectory has no clear path to the goal... it may be invalid
     if (stop_on_failure_) {
       if (grid_dist == map_.obstacleCosts()) {
+        // ROS_ERROR("MapGridCostFunction::scoreTrajectory Cost : -3.0");
         return -3.0;
       } else if (grid_dist == map_.unreachableCellCosts()) {
+        // ROS_ERROR("MapGridCostFunction::scoreTrajectory Cost : -2.0");
         return -2.0;
       }
     }
@@ -125,6 +127,7 @@ double MapGridCostFunction::scoreTrajectory(Trajectory &traj) {
       break;
     }
   }
+  // ROS_ERROR("MapGridCostFunction::scoreTrajectory Cost : %f", cost);
   return cost;
 }
 

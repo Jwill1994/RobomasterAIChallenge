@@ -52,6 +52,7 @@ public:
     const VertexTimeDiff* deltaT = static_cast<const VertexTimeDiff*>(_vertices[2]);
     
     double omega = g2o::normalize_theta(conf2->theta() - conf1->theta()) / deltaT->estimate();
+    // ROS_ERROR("EdgeOmega Omega : %f", omega);
   
     _error[0] = penaltyBoundToEpsilon(omega, cfg_->robot.target_theta, cfg_->optim.penalty_epsilon);
 
@@ -138,3 +139,5 @@ public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
 };
+}
+#endif

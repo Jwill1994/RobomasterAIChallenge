@@ -40,6 +40,7 @@
 
 #include <base_local_planner/trajectory.h>
 #include <base_local_planner/CostStatus.h>
+#include <ros/console.h>
 
 namespace base_local_planner {
 
