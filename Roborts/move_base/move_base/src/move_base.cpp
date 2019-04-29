@@ -264,6 +264,10 @@ namespace move_base {
 
   void MoveBase::poseCB(const base_local_planner::CmdPose::ConstPtr& omega){
     target_omega = omega->omega;
+    ros::NodeHandle pose_nh("~/TebLocalPlannerROS");
+    if(pose_nh.param("target_omega", target_omega, target_omega))
+      pose_nh.setParam("target_omega", target_omega);
+
   }
 
   void MoveBase::goalCB(const geometry_msgs::PoseStamped::ConstPtr& goal){

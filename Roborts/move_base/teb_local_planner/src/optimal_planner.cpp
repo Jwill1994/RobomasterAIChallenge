@@ -974,22 +974,22 @@ void TebOptimalPlanner::AddEdgesPreferRotDir()
 
 void TebOptimalPlanner::AddEdgesOmega()
 {
-  if (cfg_->robot.max_vel_y != 0)
-  {
-    Eigen::Matrix<double,1,1> information_omega;
-    information_omega.fill(cfg_->optim.weight_target_theta);
+  // if (cfg_->robot.max_vel_y != 0)
+  // {
+  //   Eigen::Matrix<double,1,1> information_omega;
+  //   information_omega.fill(cfg_->optim.weight_target_theta);
 
-    for(int i=0; i < teb_.sizePoses() - 1; i++)
-    {
-      EdgeOmega* omega_edge = new EdgeOmega;
-      omega_edge->setVertex(0,teb_.PoseVertex(i));
-      omega_edge->setVertex(1,teb_.PoseVertex(i+1));
-      omega_edge->setVertex(2,teb_.TimeDiffVertex(i));
-      omega_edge->setInformation(information_omega);
-      omega_edge->setTebConfig(*cfg_);
-      optimizer_->addEdge(omega_edge);
-    }
-  }
+  //   for(int i=0; i < teb_.sizePoses() - 1; i++)
+  //   {
+  //     EdgeOmega* omega_edge = new EdgeOmega;
+  //     omega_edge->setVertex(0,teb_.PoseVertex(i));
+  //     omega_edge->setVertex(1,teb_.PoseVertex(i+1));
+  //     omega_edge->setVertex(2,teb_.TimeDiffVertex(i));
+  //     omega_edge->setInformation(information_omega);
+  //     omega_edge->setTebConfig(*cfg_);
+  //     optimizer_->addEdge(omega_edge);
+  //   }
+  // }
 }
 
 void TebOptimalPlanner::computeCurrentCost(double obst_cost_scale, double viapoint_cost_scale, bool alternative_time_cost)

@@ -218,7 +218,7 @@ bool TebLocalPlannerROS::computeVelocityCommands(geometry_msgs::Twist& cmd_vel, 
     ROS_ERROR("teb_local_planner has not been initialized, please call initialize() before using this planner");
     return false;
   }
-  ROS_ERROR("TebLocalPlannerROS::computeVelocityCommands Target Omega : %f", target_omega);
+  // ROS_ERROR("TebLocalPlannerROS::computeVelocityCommands Target Omega : %f", target_omega);
 
   cmd_vel.linear.x = 0;
   cmd_vel.linear.y = 0;

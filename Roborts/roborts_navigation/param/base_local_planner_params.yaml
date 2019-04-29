@@ -1,37 +1,37 @@
 
 DWAPlannerROS:
-  acc_lim_x: 5.0
-  acc_lim_y: 5.0
-  acc_lim_th: 50.0
-  acc_limit_trans: 5.0
+  acc_lim_x: 2.6
+  acc_lim_y: 2.6
+  acc_lim_th: 2.6
+  acc_limit_trans: 2.6
   
-  max_trans_vel: 2.0
+  max_trans_vel: 2.5
   min_trans_vel: 0
-  max_vel_x: 2.0
-  min_vel_x: -2.0
-  max_vel_y: 2.0
-  min_vel_y: -2.0
-  max_rot_vel: 5
+  max_vel_x: 2.5
+  min_vel_x: -2.5
+  max_vel_y: 2.5
+  min_vel_y: -2.5
+  max_rot_vel: 2.5
   min_rot_vel: 0
 
   trans_stopped_vel: 0.1
   theta_stopped_vel: 0.1
 
-  yaw_goal_tolerance: 100
+  yaw_goal_tolerance: 10.0
   xy_goal_tolerance: 0.1
   latch_xy_goal_tolerance: false
   
-  sim_time: 0.1
+  sim_time: 0.2
   sim_granularity: 0.025
   angular_sim_granularity: 0.1
-  vx_samples: 3
-  vy_samples: 3
-  vth_samples: 5
+  vx_samples: 5
+  vy_samples: 5
+  vth_samples: 10
   controller_frequency: 10.0
 
-  path_distance_bias: 64
+  path_distance_bias: 32
   goal_distance_bias: 24
-  occdist_scale: 0.03
+  occdist_scale: 0.01
   forward_point_distance: 0.4
   stop_time_buffer: 0.2
   scaling_speed: 0.25
@@ -62,43 +62,54 @@ TebLocalPlannerROS:
  # Trajectory
   
  teb_autosize: True
- dt_ref: 0.3
- dt_hysteresis: 0.1
+ dt_ref: 0.15
+ dt_hysteresis: 0.01
  global_plan_overwrite_orientation: True
  allow_init_with_backwards_motion: False
- max_global_plan_lookahead_dist: 3.0
+ max_global_plan_lookahead_dist: 2.0
  feasibility_check_no_poses: 5
-    
+ publish_feedback: False
+ min_samples: 3
+ max_samples: 200
+ force_reinit_new_goal_dist: 0.8
+ exact_arc_length: False
+ global_plan_viapoint_sep: 1.5
+
  # Robot
          
- max_vel_x: 0.4
- max_vel_x_backwards: 0.2
- max_vel_y: 0.1
- max_vel_theta: 0.3
+ max_vel_x: 2.5
+ max_vel_x_backwards: 2.5
+ max_vel_y: 2.5
+ max_vel_theta: 2.5
  target_theta: 0.5
- acc_lim_x: 0.5
- acc_lim_y: 0.2
- acc_lim_theta: 0.5
+ acc_lim_x: 2.6
+ acc_lim_y: 2.6
+ acc_lim_theta: 2.6
  min_turning_radius: 0.0 # omni-drive robot (can turn on place!)
+ wheelbase: 0.0
+ cmd_angle_instead_rotvel: False
 
  footprint_model:
    type: "point"
 
  # GoalTolerance
     
- xy_goal_tolerance: 0.2
- yaw_goal_tolerance: 0.1
+ xy_goal_tolerance: 0.1
+ yaw_goal_tolerance: 10.0
  free_goal_vel: False
     
  # Obstacles
     
- min_obstacle_dist: 0.25 # This value must also include our robot radius, since footprint_model is set to "point".
+ min_obstacle_dist: 0.32 # This value must also include our robot radius, since footprint_model is set to "point".
  include_costmap_obstacles: True
- costmap_obstacles_behind_robot_dist: 1.0
+ costmap_obstacles_behind_robot_dist: 0.1
  obstacle_poses_affected: 30
+ legacy_obstacle_association: False
+ obstacle_association_cutoff_factor: 5.0
+ obstacle_association_force_inclusion_factor: 1.5
  costmap_converter_plugin: ""
  costmap_converter_spin_thread: True
- costmap_converter_rate: 5
+ costmap_converter_rate: 5.0
 
  # Optimization
     
@@ -107,17 +118,22 @@ TebLocalPlannerROS:
  optimization_activate: True
  optimization_verbose: False
  penalty_epsilon: 0.1
- weight_max_vel_x: 2
- weight_max_vel_y: 2
- weight_max_vel_theta: 1
+ weight_max_vel_x: 1
+ weight_max_vel_y: 1
+ weight_max_vel_theta: 3
  weight_acc_lim_x: 1
  weight_acc_lim_y: 1
- weight_acc_lim_theta: 1
+ weight_acc_lim_theta: 3
  weight_kinematics_nh: 1 # WE HAVE A HOLONOMIC ROBOT, JUST ADD A SMALL PENALTY
- weight_kinematics_forward_drive: 1
- weight_kinematics_turning_radius: 1
+ weight_kinematics_forward_drive: 0.0
+ weight_kinematics_turning_radius: 0.0
  weight_optimaltime: 1
  weight_obstacle: 50
+ weight_prefer_rotdir: 0
+ weight_inflation: 0.1
+ weight_dynamic_obstacle: 10
+ weight_viapoint: 10
+ weight_adapt_factor: 2.0
 
  # Homotopy Class Planner
 

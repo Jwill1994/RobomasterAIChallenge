@@ -254,7 +254,10 @@ public:
     
     _error[0] = penaltyBoundToInterval(vx, -cfg_->robot.max_vel_x_backwards, cfg_->robot.max_vel_x, cfg_->optim.penalty_epsilon);
     _error[1] = penaltyBoundToInterval(vy, cfg_->robot.max_vel_y, 0.0); // we do not apply the penalty epsilon here, since the velocity could be close to zero
-    _error[2] = penaltyBoundToInterval(omega, cfg_->robot.max_vel_theta,cfg_->optim.penalty_epsilon);
+    _error[2] = penaltyBoundToEpsilon(omega, cfg_->robot.target_theta,cfg_->optim.penalty_epsilon);
+
+    ROS_ERROR("EdgeVelocityHolonomic Omega : %f Target Theta : %f", omega, cfg_->robot.target_theta);
+    ROS_ERROR("EDgeVeloityHolonomic Error : %f, %f, %f", _error[0], _error[1], _error[2]);
 
     ROS_ASSERT_MSG(std::isfinite(_error[0]) && std::isfinite(_error[1]) && std::isfinite(_error[2]),
                    "EdgeVelocityHolonomic::computeError() _error[0]=%f _error[1]=%f _error[2]=%f\n",_error[0],_error[1],_error[2]);

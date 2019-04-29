@@ -27,6 +27,7 @@ catkin_package(
   DEPENDS
     roscpp
     gazebo_ros
+    roborts_msgs
 )
 
 include_directories(

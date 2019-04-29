@@ -129,7 +129,7 @@ bool HomotopyClassPlanner::plan(const PoseSE2& start, const PoseSE2& goal, const
 
 bool HomotopyClassPlanner::getVelocityCommand(double& vx, double& vy, double& omega) const
 {
-  ROS_ERROR("HomotopyClassPlanner::getVelocityCommand");
+  // ROS_ERROR("HomotopyClassPlanner::getVelocityCommand");
   TebOptimalPlannerConstPtr best_teb = bestTeb();
   if (!best_teb)
   {

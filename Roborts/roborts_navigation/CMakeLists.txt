@@ -21,6 +21,7 @@ catkin_package(
   DEPENDS
     roscpp
     gazebo_ros
+    roborts_msgs
 )
 
 include_directories(${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS})
