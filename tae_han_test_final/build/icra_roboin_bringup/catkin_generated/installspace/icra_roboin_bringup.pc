@@ -1,0 +1,8 @@
+prefix=/home/nvidia/Desktop/tae_han_test_final/install
+
+Name: icra_roboin_bringup
+Description: Description of icra_roboin_bringup
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/nvidia/Desktop/tae_han_test_final/install/lib 
+Requires: 
