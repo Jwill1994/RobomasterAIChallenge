@@ -31,3 +31,4 @@ add_executable(contact_to_damage src/contact_to_damage.cpp)
 target_link_libraries(contact_to_damage
   ${catkin_LIBRARIES})
 
+add_dependencies(contact_to_damage roborts_msgs_generate_messages)

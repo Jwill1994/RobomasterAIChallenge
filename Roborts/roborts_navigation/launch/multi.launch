@@ -31,12 +31,20 @@
 	  
 	  <node pkg="roborts_localization" type="localization_node" name="localization_node" respawn="false" />
 
-    <include file="$(find roborts_navigation)/launch/move_base.launch" />
+    <!--<include file="$(find roborts_navigation)/launch/move_base.launch" />-->
+
+    <node pkg="roborts_planning" type="global_planner_node" name="global_planner_node" respawn="false" /> 
+
+    <node pkg="roborts_planning" type="local_planner_node" name="local_planner_node" respawn="false" /> 
+
+    <node pkg="roborts_planning" type="vel_converter" name="vel_converter_node" respawn="false" />
+
+    <!--<node pkg="roborts_decision" type="behavior_test_node" name="behavior_test_node" respawn="false" />-->
 
   </group>
 
 
-  <group ns="roborts_Blue_1">
+  <!--<group ns="roborts_Blue_1">
     <param name="tf_prefix" value="roborts_Blue_1" />
 
     <node name="map_server" pkg="map_server" type="map_server" args="$(find roborts_bringup)/maps/icra2019.yaml" respawn="false" />
@@ -68,6 +76,6 @@
 
     <include file="$(find roborts_navigation)/launch/move_base.launch" />
 
-  </group>
+  </group>-->
 
 </launch>
