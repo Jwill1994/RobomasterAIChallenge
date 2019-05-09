@@ -1,6 +1,6 @@
 local_costmap:
-  global_frame: odom
-  robot_base_frame: base_link
+  global_frame: "odom"
+  robot_base_frame: "base_link"
 
   footprint: [[0.3,0.225],[-0.3,0.225],[-0.3,-0.225],[0.3,-0.225]]
   footprint_padding: 0.05
