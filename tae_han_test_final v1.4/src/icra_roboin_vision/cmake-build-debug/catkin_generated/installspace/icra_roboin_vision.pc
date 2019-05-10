@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: icra_roboin_vision
+Description: Description of icra_roboin_vision
+Version: 1.0.0
+Cflags: 
+Libs: -L/usr/local/lib 
+Requires: 
