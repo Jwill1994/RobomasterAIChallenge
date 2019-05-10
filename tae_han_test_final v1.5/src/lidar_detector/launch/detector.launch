@@ -1,0 +1,8 @@
+<launch>
+  <node pkg="lidar_detector" name="lidar_detector_node" type="lidar_detector_node">
+    <param name="covariance_threshold"  type="double" value="100.0"/> 
+    <param name="speed_threshold"  type="double" value="0.5"/>
+    <param name="validation_threshold"  type="double" value="0.4"/>
+    <param name="new_clear"  type="int" value="1"/>
+  </node>
+</launch>
