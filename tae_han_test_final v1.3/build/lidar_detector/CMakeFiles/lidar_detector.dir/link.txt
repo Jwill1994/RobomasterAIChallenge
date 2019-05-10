@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC   -shared -Wl,-soname,liblidar_detector.so -o /home/nvidia/Desktop/tae_han_test_final/devel/lib/liblidar_detector.so CMakeFiles/lidar_detector.dir/src/lidar_detector.cpp.o 

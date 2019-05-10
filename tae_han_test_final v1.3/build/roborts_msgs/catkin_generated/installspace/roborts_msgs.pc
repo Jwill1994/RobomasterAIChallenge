@@ -1,0 +1,8 @@
+prefix=/home/nvidia/Desktop/tae_han_test_final/install
+
+Name: roborts_msgs
+Description: Description of roborts_msgs
+Version: 1.0.0
+Cflags: -I/home/nvidia/Desktop/tae_han_test_final/install/include
+Libs: -L/home/nvidia/Desktop/tae_han_test_final/install/lib 
+Requires: 
