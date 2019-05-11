@@ -117,7 +117,7 @@ class rules():
             # 버프 남은 시간이 5초 이하일 경우 매우 높은 value
             if buff_left < 5:
                 self.pm.square_assign_gradient(p[0], p[1], p[2]*10, value/3,2)
-                self.pm.square_assign(p[0], p[1], p[2], value, mode='abs')
+                self.pm.square_assign(p[0], p[1], p[2]/2, value, mode='abs')
             # 버프 남은 시간이 5~10초일 경우 근처에서 value가 높지만 미리 점령하면 안되므로 점령 지점은 value가 낮음
             elif buff_left < 10:
                 self.pm.square_assign_gradient(p[0], p[1], p[2]*10, value,2)               
@@ -167,10 +167,11 @@ class rules():
             rc = 1.5       
         self.pm.sector_assign(e1[0], e1[1], 0, p2p[0]/math.cos(p*bisector)/2, p2p[1], 2*p*bisector*rc, -value/constant)
         self.pm.sector_assign(e2[0], e2[1], 0, p2p[0]/math.cos(p*bisector)/2, p2p[2], 2*p*bisector*rc, -value/constant)
-        
-    def reload_zone(self, stance, game_time, ammo_left, bullets, value):
-        our = [4.000,0.600,0.100]
-        enemy = [4.000,4.400,0.500]
+    
+    #(robot.stance, reload_count, robot.ammo, rz)     
+    def reload_zone(self, stance, reload_count, bullets, value):
+        our = [4.000,0.600,0.0]
+        enemy = [4.000,4.400,0.5]
         if self.team == 'red':
             our[1], enemy[1] = enemy[1], our[1]
         else:
@@ -181,9 +182,11 @@ class rules():
         
         if stance == 'passive' or stance == 'aggressive_low_ammo':
             value = value * 2
-        
-        if game_time > 58 and ammo_left > 0:
+
+        if reload_count > 0 and bullets < 10:
             self.pm.square_assign(our[0], our[1], our[2], value)  
+            
+        
             
     def move_cost(self, stance, my_pos, value):
         x = my_pos[0]
@@ -219,7 +222,7 @@ class rules():
         self.pm.sector_assign(minimum[0], minimum[1], r1[0], r2, r1[2], gamma, value/constant)
         
     def first_occupy(self, my_pos):
-        self.pm.circle_assign(my_pos[0], my_pos[1], self.robot_radius*2, 0, mode='abs')
+        self.pm.circle_assign(my_pos[0], my_pos[1], self.robot_radius*3, 0, mode='abs')
     
     def robot_diff(self, my_pos):
         self.pm.circle_assign(my_pos[0], my_pos[1], .2, -20, mode = 'abs')
@@ -228,7 +231,7 @@ class rules():
         self.pm.square_assign(my_pos[0], my_pos[1], self.robot_radius, -10, mode='abs')
     
     def enemy_occupy(self, pos):
-        self.pm.square_assign(pos[0], pos[1], self.robot_radius/2, 0, mode='abs')
+        self.pm.square_assign(pos[0], pos[1], self.robot_radius/2, -10)
         
     def enemy_random(self, value):
         self.pm.random_assign(value)
@@ -278,8 +281,8 @@ class rules():
         last = min(n, 16)
         try:
             target = list(itertools.islice(self.pos_set, 0, last))
-            value_scaled = value * (10-np.sum(np.var(target, axis=0))) / 10
-            self.pm.circle_assign(pos[0], pos[1], self.robot_radius/2, -value_scaled)
+            value_scaled = value * (1-np.sum(np.var(target, axis=0)))
+            self.pm.circle_assign(pos[0], pos[1], self.robot_radius, -value_scaled)
             return value_scaled
         except:
             pass
