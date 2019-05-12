@@ -42,26 +42,33 @@ def now_time(start):
 
 def robot_setting_1(robot, time, team_pos, e1_pos, e2_pos, ez, mc, eo, wc, cz):
     robot.set_stance(robot.health, robot.ammo, time)
-    robot.init(robot.pos)        
+    robot.init()        
     robot.enemy_zone_diff(robot.stance, e1_pos, 100, 1.7, ez)
     robot.enemy_zone_diff(robot.stance, e2_pos, 100, 1.7, ez)
-    robot.move_cost(robot.stance, robot.pos, mc)
+    robot.move_cost(robot.stance, mc)
     robot.enemy_overlap(e1_pos, e2_pos, eo)
-    robot.wall_cover(robot.stance, e1_pos, robot.pos, wc)
-    robot.wall_cover(robot.stance, e2_pos, robot.pos, wc)
+    robot.wall_cover(robot.stance, e1_pos, wc)
+    robot.wall_cover(robot.stance, e2_pos, wc)
     robot.enemy_occupy(e1_pos)
     robot.enemy_occupy(e2_pos)
-    robot.current_zone(robot.pos, 10 , cz)
+    robot.current_zone(10 , cz)
     
 def robot_setting_2(robot, time,team_pos, team_buff_time, team_buff_count, team_has_buff, reload_count, bz, rz):
     robot.bonus_zone(team_pos, team_buff_time, team_buff_count, team_has_buff, bz)
     robot.reload_zone(robot.stance, team_pos, reload_count, robot.ammo, rz) 
+    out = robot.stuck_recovery(10, 300)
+    
     robot.first_occupy(team_pos)
     robot.wall_limit()
+    if out == 1:
+        out = 'Good'
+    
+    return out
         
-def robot_set_goal(robot, robot_number, robot_move):    
+def robot_set_goal(robot, robot_move):    
     score = robot.raw().getValue(robot.pos)
     value = robot.raw().getPoint()
+    robot_number = robot.robot_num
     
     if score + thres < value[0] and robot_move:
         behav = 2
@@ -99,10 +106,10 @@ if __name__ == '__main__':
     robots = ['empty','robot_0', 'robot_1', 'robot_2', 'robot_3']
     team2 = 'blue'
     team1 = 'red'
-    robot1 = rules.rules([100,160], team1)
-    robot2 = rules.rules([100,160], team1)
-    robot3 = rules.rules([100,160], team2)   
-    robot4 = rules.rules([100,160], team2)
+    robot1 = rules.rules([100,160], team1, 1)
+    robot2 = rules.rules([100,160], team1, 2)
+    robot3 = rules.rules([100,160], team2, 3)   
+    robot4 = rules.rules([100,160], team2, 4)
 
     r1_pos = [.5,4.5]
     r2_pos = [7.5, 4.5]
@@ -141,7 +148,7 @@ if __name__ == '__main__':
     bz = [150,150,150,150,150]
     rz = [100,100,100,100,100]
     cz = [25,25,25,25,25]    
-    thres = 20    
+    thres = 30    
     
     
     while now < 180:      
@@ -162,41 +169,41 @@ if __name__ == '__main__':
         robot1.pos = r1_pos
         robot2.pos = r2_pos
         robot3.pos = r3_pos
-        robot4_pos = r4_pos                 
+        robot4.pos = r4_pos                 
                   
         getinfotime = round(now_time(startTime) - now,5)
         # ===================================================================================================================================
         #r1
         if decision_order(robot1, robot2):
             robot_setting_1(robot1, now, r2_pos, r3_pos, r4_pos, ez[1], mc[1], eo[1], wc[1], cz[1])
-            robot_setting_2(robot1, now, r2_pos, team1_buff_time, team1_buff_count, team1_has_buff, r1_reload_count, bz[1], rz[1])                 
-            r1_behav, r1_score, r1_value = robot_set_goal(robot1, 1, robot_move)           
+            r1_report = robot_setting_2(robot1, now, r2_pos, team1_buff_time, team1_buff_count, team1_has_buff, r1_reload_count, bz[1], rz[1])                 
+            r1_behav, r1_score, r1_value = robot_set_goal(robot1, robot_move)           
         #r2                 
         robot_setting_1(robot2, now, r1_pos, r3_pos, r4_pos, ez[2], mc[2], eo[2], wc[2], cz[2])
-        robot_setting_2(robot2, now, r1_pos, team1_buff_time, team1_buff_count, team1_has_buff, r2_reload_count, bz[2], rz[2])
-        r2_behav, r2_score, r2_value = robot_set_goal(robot2, 2, robot_move)    
+        r2_report = robot_setting_2(robot2, now, r1_pos, team1_buff_time, team1_buff_count, team1_has_buff, r2_reload_count, bz[2], rz[2])
+        r2_behav, r2_score, r2_value = robot_set_goal(robot2, robot_move)    
         #r1 - reverse order
         if not decision_order(robot1, robot2):
             robot_setting_1(robot1, now, r2_pos, r3_pos, r4_pos, ez[1], mc[1], eo[1], wc[1], cz[1])
-            robot_setting_2(robot1, now, r2_pos, team1_buff_time, team1_buff_count, team1_has_buff, r1_reload_count, bz[1], rz[1])                 
-            r1_behav, r1_score, r1_value = robot_set_goal(robot1, 1, robot_move)              
+            r1_report = robot_setting_2(robot1, now, r2_pos, team1_buff_time, team1_buff_count, team1_has_buff, r1_reload_count, bz[1], rz[1])                 
+            r1_behav, r1_score, r1_value = robot_set_goal(robot1, robot_move)              
         #r3
         if decision_order(robot3, robot4):
             robot3.enemy_random(20)
             robot_setting_1(robot3, now, r4_pos, r1_pos, r2_pos, ez[3], mc[3], eo[3], wc[3], cz[3])
-            robot_setting_2(robot3, now, r4_pos, team2_buff_time, team2_buff_count, team2_has_buff, r3_reload_count, bz[3], rz[3])         
-            r3_behav, r3_score, r3_value = robot_set_goal(robot3, 3, robot_move)           
+            r3_report = robot_setting_2(robot3, now, r4_pos, team2_buff_time, team2_buff_count, team2_has_buff, r3_reload_count, bz[3], rz[3])         
+            r3_behav, r3_score, r3_value = robot_set_goal(robot3, robot_move)           
         #r4
         robot4.enemy_random(20)
         robot_setting_1(robot4, now, r3_pos, r1_pos, r2_pos, ez[4], mc[4], eo[4], wc[4], cz[4])
-        robot_setting_2(robot4, now, r3_pos, team2_buff_time, team2_buff_count, team2_has_buff, r4_reload_count, bz[4], rz[4]) 
-        r4_behav, r4_score, r4_value = robot_set_goal(robot4, 4, robot_move)
+        r4_report = robot_setting_2(robot4, now, r3_pos, team2_buff_time, team2_buff_count, team2_has_buff, r4_reload_count, bz[4], rz[4]) 
+        r4_behav, r4_score, r4_value = robot_set_goal(robot4, robot_move)
         #r3 - reverse order
         if not decision_order(robot3, robot4):
             robot3.enemy_random(20)
             robot_setting_1(robot3, now, r4_pos, r1_pos, r2_pos, ez[3], mc[3], eo[3], wc[3], cz[3])
-            robot_setting_2(robot3, now, r4_pos, team2_buff_time, team2_buff_count, team2_has_buff, r3_reload_count, bz[3], rz[3])         
-            r3_behav, r3_score, r3_value = robot_set_goal(robot3, 3, robot_move)   
+            r3_report = robot_setting_2(robot3, now, r4_pos, team2_buff_time, team2_buff_count, team2_has_buff, r3_reload_count, bz[3], rz[3])         
+            r3_behav, r3_score, r3_value = robot_set_goal(robot3, robot_move)   
         
         
         decisiontime = round(now_time(startTime) - now,5)          
@@ -287,9 +294,13 @@ if __name__ == '__main__':
                         
         plt.pause(update_time)
         
+        
         out1 = np.hstack((robot1.out(),robot2.out()))
         out2 = np.hstack((robot3.out(),robot4.out()))
         out = np.vstack((out2, out1))
+        x, y = np.shape(out)
+        bar = 300*np.ones(y)
+        out = np.vstack((out, bar))
         
         image = np.flip(out, axis=0)
         plt.imshow(image, 'hot')
@@ -302,6 +313,7 @@ if __name__ == '__main__':
         print('r2_behav', r2_behav, 'pos : ', round(r2_score,2), np.round(r2_pos,2), 'Max :' , round(r2_value[0],2), np.round(r2_value[1],2), 'ammo', robot2.ammo)
         print('r3_behav', r3_behav, 'pos : ', round(r3_score,2), np.round(r3_pos,2), 'Max :' , round(r3_value[0],2), np.round(r3_value[1],2), 'ammo', robot3.ammo)
         print('r4_behav', r4_behav, 'pos : ', round(r4_score,2), np.round(r4_pos,2), 'Max :' , round(r4_value[0],2), np.round(r4_value[1],2), 'ammo', robot4.ammo)
+        print(r1_report, r2_report, r3_report, r4_report)        
         print(getinfotime, decisiontime, refereetime, visualizetime)   
         
         # force reload - no attack 
