@@ -13,7 +13,7 @@ class rules():
     def __init__(self, size, team):
         self.pm = va.potentialField(size) # pm : potential mplot        
         self.pm.rectangular_assign(0, 8.000, 0, 5.000, 50, mode='abs')
-        self.robot_radius = 0.350
+        self.robot_radius = 0.38
         self.team = team
         self.inner_wall_tuple = ((1.200,2.200, 3.750,4.000), (1.400,1.600,1.400,2.400), (3.250,3.500,0,1.000),(3.500,4.500,2.375,2.625),(5.800,6.800,1.000,1.250),(6.350,6.600,2.600,3.600),(4.500,4.750,4.000,5.000))
         
@@ -21,7 +21,7 @@ class rules():
         self.health = 2000
         self.ammo = 40
         self.pos = [0, 0]   
-        self.pos_set = deque([], 16)        
+        self.pos_set = deque([], 16)  
         
     def out(self):
         return self.pm.out()
@@ -104,14 +104,14 @@ class rules():
             self.pm.rectangular_assign(x1,x2,y1,y2, -50, mode='abs')
                 
                 
-    def bonus_zone(self, buff_left, buff_zone_count, has_buff, value):
+    def bonus_zone(self, team_pos, buff_left, buff_zone_count, has_buff, value):
         p = [1.700,3.250,0.200]
         e = [6.300,1.750,0.200] 
         if self.team == 'red':
             p, e = e, p         
         
         if not has_buff:
-            value = value * 2 #버프가 없을 경우 가치가 2배. 단, 정확히 작동한다면 처음 5초 외에 버프가 없는 시간이 거의 없음
+            value = value * 1.2 
             
         if buff_zone_count > 0:
             # 버프 남은 시간이 5초 이하일 경우 매우 높은 value
@@ -169,25 +169,22 @@ class rules():
         self.pm.sector_assign(e2[0], e2[1], 0, p2p[0]/math.cos(p*bisector)/2, p2p[2], 2*p*bisector*rc, -value/constant)
     
     #(robot.stance, reload_count, robot.ammo, rz)     
-    def reload_zone(self, stance, reload_count, bullets, value):
-        our = [4.000,0.600,0.0]
-        enemy = [4.000,4.400,0.5]
+    def reload_zone(self, stance, team_pos, reload_count, bullets, value):
+        our = [4,0.6,0.1]
+        enemy = [4,4.4,0.5]
         if self.team == 'red':
             our[1], enemy[1] = enemy[1], our[1]
         else:
-            pass
-            
+            pass           
         # 적 재장전 존 패널티 : 2번 이상 들어가면 실격
-        self.pm.square_assign(enemy[0], enemy[1], enemy[2], 0, mode='abs')
+        self.pm.square_assign(enemy[0], enemy[1], enemy[2], -50, mode='abs')
         
         if stance == 'passive' or stance == 'aggressive_low_ammo':
             value = value * 2
 
         if reload_count > 0 and bullets < 10:
-            self.pm.square_assign(our[0], our[1], our[2], value)  
-            
+            self.pm.square_assign(our[0], our[1], our[2], value)              
         
-            
     def move_cost(self, stance, my_pos, value):
         x = my_pos[0]
         y = my_pos[1]
@@ -286,31 +283,3 @@ class rules():
             return value_scaled
         except:
             pass
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-           
-       
-           
