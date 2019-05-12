@@ -85,19 +85,16 @@ def decision_order(_robot1, _robot2):
 
     r1 = _robot1.raw().p2pRelation(_robot1.pos, p)[0]
     r2 = _robot2.raw().p2pRelation(_robot2.pos, p)[0]
-    print(_robot1.team, r1, r2)
     if r1 > r2:        
         return False
     else:
-        return True
-        
-        
+        return True       
                 
 if __name__ == '__main__':
     # initial setting
     pos_view = False 
     robot_move = True
-    update_time = 0.25
+    update_time = 0.1
     rospy.init_node('decision_test')
     robots = ['empty','robot_0', 'robot_1', 'robot_2', 'robot_3']
     team2 = 'blue'
@@ -178,6 +175,7 @@ if __name__ == '__main__':
         robot_setting_1(robot2, now, r1_pos, r3_pos, r4_pos, ez[2], mc[2], eo[2], wc[2], cz[2])
         robot_setting_2(robot2, now, r1_pos, team1_buff_time, team1_buff_count, team1_has_buff, r2_reload_count, bz[2], rz[2])
         r2_behav, r2_score, r2_value = robot_set_goal(robot2, 2, robot_move)    
+        #r1 - reverse order
         if not decision_order(robot1, robot2):
             robot_setting_1(robot1, now, r2_pos, r3_pos, r4_pos, ez[1], mc[1], eo[1], wc[1], cz[1])
             robot_setting_2(robot1, now, r2_pos, team1_buff_time, team1_buff_count, team1_has_buff, r1_reload_count, bz[1], rz[1])                 
@@ -193,7 +191,7 @@ if __name__ == '__main__':
         robot_setting_1(robot4, now, r3_pos, r1_pos, r2_pos, ez[4], mc[4], eo[4], wc[4], cz[4])
         robot_setting_2(robot4, now, r3_pos, team2_buff_time, team2_buff_count, team2_has_buff, r4_reload_count, bz[4], rz[4]) 
         r4_behav, r4_score, r4_value = robot_set_goal(robot4, 4, robot_move)
-        
+        #r3 - reverse order
         if not decision_order(robot3, robot4):
             robot3.enemy_random(20)
             robot_setting_1(robot3, now, r4_pos, r1_pos, r2_pos, ez[3], mc[3], eo[3], wc[3], cz[3])
@@ -278,7 +276,7 @@ if __name__ == '__main__':
             robot1.robot_diff(r2_pos)
             robot1.enemy_occupy(r3_pos)
             robot1.enemy_occupy(r4_pos)
-            
+            25
             robot3.pos_view(r1_pos)
             robot3.pos_view(r2_pos)
             robot3.pos_view(r3_pos)

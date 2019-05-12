@@ -125,7 +125,7 @@ class rules():
             else:                
                 self.pm.square_assign(p[0], p[1], p[2]*2.5, -10)
             # 버프를 활성화 시키면 안될 때에는 일단 막고 있음
-            # 혹시 상대 버프를 일부러 활성화 시켜야할지도?
+           
         self.pm.square_assign(e[0], e[1], e[2]*2.5, -30)
                
     def enemy_zone(self, stance, enemy_pos, percentage, distance, value):
@@ -172,6 +172,8 @@ class rules():
     def reload_zone(self, stance, team_pos, reload_count, bullets, value):
         our = [4,0.6,0.1]
         enemy = [4,4.4,0.5]
+        distance= self.robot_radius*2.5
+        constant = 2.5
         if self.team == 'red':
             our[1], enemy[1] = enemy[1], our[1]
         else:
@@ -179,11 +181,15 @@ class rules():
         # 적 재장전 존 패널티 : 2번 이상 들어가면 실격
         self.pm.square_assign(enemy[0], enemy[1], enemy[2], -50, mode='abs')
         
-        if stance == 'passive' or stance == 'aggressive_low_ammo':
-            value = value * 2
-
-        if reload_count > 0 and bullets < 10:
-            self.pm.square_assign(our[0], our[1], our[2], value)              
+        #if stance == 'passive' or stance == 'aggressive_low_ammo':
+        #   value = value * 2        
+        
+        if self.isIn(team_pos, team_pos, self.team, 'reload'):
+            self.pm.circle_assign_gradient(team_pos[0], team_pos[1], distance*constant, value/constant, constant*2)
+            self.pm.circle_assign_gradient(team_pos[0], team_pos[1], distance, -1*value/constant, constant)
+        else:
+            if reload_count > 0 and bullets < 10:
+                self.pm.square_assign(our[0], our[1], our[2], value)      
         
     def move_cost(self, stance, my_pos, value):
         x = my_pos[0]
@@ -219,7 +225,7 @@ class rules():
         self.pm.sector_assign(minimum[0], minimum[1], r1[0], r2, r1[2], gamma, value/constant)
         
     def first_occupy(self, my_pos):
-        self.pm.circle_assign(my_pos[0], my_pos[1], self.robot_radius*3, 0, mode='abs')
+        self.pm.circle_assign(my_pos[0], my_pos[1], self.robot_radius*2.7, 0, mode='abs')
     
     def robot_diff(self, my_pos):
         self.pm.circle_assign(my_pos[0], my_pos[1], .2, -20, mode = 'abs')
