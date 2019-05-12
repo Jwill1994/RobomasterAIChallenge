@@ -1,0 +1,8 @@
+prefix=/home/nvidia/Desktop/tae_han_test_final/devel
+
+Name: icra_roboin_behavior
+Description: Description of icra_roboin_behavior
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/nvidia/Desktop/tae_han_test_final/devel/lib 
+Requires: 

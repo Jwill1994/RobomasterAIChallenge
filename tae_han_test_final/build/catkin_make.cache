@@ -1,0 +1,2 @@
+icra_roboin_behavior:icra_roboin_msgs:roborts_msgs
+-DCATKIN_DEVEL_PREFIX=/home/nvidia/Desktop/tae_han_test_final/devel -DCMAKE_INSTALL_PREFIX=/home/nvidia/Desktop/tae_han_test_final/install -DCATKIN_WHITELIST_PACKAGES=icra_roboin_behavior;icra_roboin_msgs;roborts_msgs -G Unix Makefiles
