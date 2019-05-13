@@ -24,6 +24,7 @@ catkin_package(
     roborts_msgs
 )
 
+
 include_directories(
   include ${catkin_INCLUDE_DIRS}${Boost_INCLUDE_DIR} ${catkin_INCLUDE_DIRS} ${GAZEBO_INCLUDE_DIRS})
 link_directories(${GAZEBO_LIBRARY_DIRS})
@@ -37,8 +38,9 @@ add_dependencies(contact_to_damage roborts_msgs_generate_messages)
 
 add_executable(omega_converter
   src/omega_converter.cpp
+  src/pid.cpp
 )
-add_dependencies(omega_converter ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(omega_converter ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS} roborts_msgs_generate_messages)
 target_link_libraries(omega_converter
   ${catkin_LIBRARIES}
 )
