@@ -642,8 +642,8 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
 
 geometry_msgs::PoseStamped Blackboard::transform_goal() {
 	real_goal.header = goal.header;
-        //real_goal.header.frame_id = "/map";
         real_goal.header.frame_id = "map";
+        //real_goal.header.frame_id = "robot_1/map";
 	real_goal.pose.position = goal.pose.position;
 	double distance_x = real_goal.pose.position.x - my_pose_.pose.position.x;
 	double distance_y = real_goal.pose.position.y - my_pose_.pose.position.y;

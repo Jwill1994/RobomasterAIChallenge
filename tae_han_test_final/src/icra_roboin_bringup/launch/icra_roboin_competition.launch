@@ -8,19 +8,18 @@
 	<remap from="map" to="referee_map" />
   </node>
 
-  <include file="$(find icra_roboin_bringup)/launch/base.launch">
-  </include>
+  <include file="$(find icra_roboin_bringup)/launch/base.launch" />
 
 
-  <node pkg="tf2_ros" type="static_transform_publisher" name="map_static_tf1" args="0.0  0.0 0.0  0.0  0.0 0.0 referee_map robot_0/map" />
+<!--  <node pkg="tf2_ros" type="static_transform_publisher" name="map_static_tf1" args="0.0  0.0 0.0  0.0  0.0 0.0 referee_map robot_0/map" /> -->
 
 
 
-<group ns="robot_0">
+ <group ns="robot_0"> 
 
   <!-- map server -->
   <node name="map_server" pkg="map_server" type="map_server" args="$(find icra_roboin_navigation)/maps/$(arg map).yaml" respawn="false">
-        <param name="frame_id" value="robot_0"/>
+        <param name="frame_id" value="referee_map"/> 
   </node>
 
   <!-- rplidar -->
@@ -31,6 +30,8 @@
       <param name="inverted" type="bool" value="false"/>
       <param name="angle_compensate" type="bool" value="true"/>
   </node>
+
+
    <include file="$(find icra_roboin_navigation)/launch/navigation_base.launch">
 
 
@@ -65,7 +66,7 @@
   	<arg name="initial_pose_a" default="0"/>
 
   </include>
-</group>
+ </group>
 
 
 

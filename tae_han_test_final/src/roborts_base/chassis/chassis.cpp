@@ -7,8 +7,8 @@
  *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
@@ -73,8 +73,6 @@ void Chassis::SDK_Init(){
 
 }
 void Chassis::ROS_Init(){
-
-  ros::NodeHandle ros_nh_("robot_0");
   //ros publisher
   ros_odom_pub_ = ros_nh_.advertise<nav_msgs::Odometry>("odom", 30);
   ros_uwb_pub_ = ros_nh_.advertise<geometry_msgs::PoseStamped>("uwb", 30);
@@ -84,13 +82,13 @@ void Chassis::ROS_Init(){
 
 
   //ros_message_init
-  odom_.header.frame_id = "robot_0/odom";
-  odom_.child_frame_id = "robot_0/base_link";
+  odom_.header.frame_id = "odom";
+  odom_.child_frame_id = "base_link";
 
-  odom_tf_.header.frame_id = "robot_0/odom";
-  odom_tf_.child_frame_id = "robot_0/base_link";
+  odom_tf_.header.frame_id = "odom";
+  odom_tf_.child_frame_id = "base_link";
 
-  uwb_data_.header.frame_id = "robot_0/uwb";
+  uwb_data_.header.frame_id = "uwb";
 }
 void Chassis::ChassisInfoCallback(const std::shared_ptr<roborts_sdk::cmd_chassis_info> chassis_info){
 

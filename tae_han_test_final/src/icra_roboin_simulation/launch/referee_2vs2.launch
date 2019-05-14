@@ -33,7 +33,7 @@
 
 	<!-- map server -->
 	<node name="map_server" pkg="map_server" type="map_server" args="$(find icra_roboin_simulation)/maps/$(arg map).yaml" respawn="false">
-		<param name="frame_id" value="robot_0/map"/>
+		<param name="frame_id" value="map"/>
 	</node>
 
 	<!-- amcl -->
@@ -84,7 +84,7 @@
 
 	<!-- map server -->
 	<node name="map_server" pkg="map_server" type="map_server" args="$(find icra_roboin_simulation)/maps/$(arg map).yaml" respawn="false">
-		<param name="frame_id" value="robot_1/map"/>
+		<param name="frame_id" value="map"/>
 	</node>
 
 	<!-- amcl -->
@@ -135,7 +135,7 @@
 
 	<!-- map server -->
 	<node name="map_server" pkg="map_server" type="map_server" args="$(find icra_roboin_simulation)/maps/$(arg map).yaml" respawn="false">
-		<param name="frame_id" value="robot_1/map"/>
+		<param name="frame_id" value="map"/>
 	</node>
 
 	<!-- amcl -->
@@ -186,7 +186,7 @@
 
 	<!-- map server -->
 	<node name="map_server" pkg="map_server" type="map_server" args="$(find icra_roboin_simulation)/maps/$(arg map).yaml" respawn="false">
-		<param name="frame_id" value="robot_3/map"/>
+		<param name="frame_id" value="map"/>
 	</node>
 
 	<!-- amcl -->

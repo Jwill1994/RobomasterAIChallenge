@@ -7,8 +7,8 @@
  *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
@@ -102,9 +102,8 @@ class Gimbal {
   //! sdk publisher for gimbal shoot control
   std::shared_ptr<roborts_sdk::Publisher<roborts_sdk::cmd_shoot_info>>       gimbal_shoot_pub_;
 
-
   //! ros node handler
-
+  ros::NodeHandle    ros_nh_;
   //! ros subscriber for gimbal angle control
   ros::Subscriber    ros_sub_cmd_gimbal_angle_;
   //! ros service server for gimbal mode set
@@ -117,6 +116,8 @@ class Gimbal {
   geometry_msgs::TransformStamped gimbal_tf_;
   //! ros gimbal tf broadcaster
   tf::TransformBroadcaster        tf_broadcaster_;
+
+  ros::Publisher ros_yaw_angle_pub_;
 
 };
 }

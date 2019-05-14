@@ -71,7 +71,6 @@ void RefereeSystem::SDK_Init() {
 
 }
 void RefereeSystem::ROS_Init() {
-  ros::NodeHandle ros_nh_("robot_0");
   //ros publisher
   ros_game_status_pub_ = ros_nh_.advertise<roborts_msgs::GameStatus>("game_status", 30);
   ros_game_result_pub_ = ros_nh_.advertise<roborts_msgs::GameResult>("game_result", 30);

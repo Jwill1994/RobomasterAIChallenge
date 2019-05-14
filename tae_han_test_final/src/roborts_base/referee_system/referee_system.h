@@ -61,7 +61,7 @@ class RefereeSystem {
   std::shared_ptr<roborts_sdk::Publisher<roborts_sdk::cmd_supply_projectile_booking>>     projectile_supply_pub_;
 
   //! ros node handler
-
+  ros::NodeHandle ros_nh_;
   //! ros subscriber for projectile supply
   ros::Subscriber ros_sub_projectile_supply_;
 

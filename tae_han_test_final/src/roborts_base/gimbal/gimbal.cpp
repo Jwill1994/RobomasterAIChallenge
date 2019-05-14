@@ -7,8 +7,8 @@
  *  (at your option) any later version.
  *
  *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
@@ -17,6 +17,7 @@
 
 #include "gimbal.h"
 #include "../roborts_sdk/sdk.h"
+
 
 namespace roborts_base{
 Gimbal::Gimbal(std::shared_ptr<roborts_sdk::Handle> handle):
@@ -76,8 +77,6 @@ void Gimbal::SDK_Init(){
 
 void Gimbal::ROS_Init(){
 
-  ros::NodeHandle    ros_nh_("robot_0");
-
   //ros subscriber
   ros_sub_cmd_gimbal_angle_ = ros_nh_.subscribe("cmd_gimbal_angle", 1, &Gimbal::GimbalAngleCtrlCallback, this);
 
@@ -86,8 +85,9 @@ void Gimbal::ROS_Init(){
   ros_ctrl_fric_wheel_srv_ = ros_nh_.advertiseService("cmd_fric_wheel", &Gimbal::CtrlFricWheelService, this);
   ros_ctrl_shoot_srv_ = ros_nh_.advertiseService("cmd_shoot", &Gimbal::CtrlShootService, this);
   //ros_message_init
-  gimbal_tf_.header.frame_id = "robot_0/base_link";
-  gimbal_tf_.child_frame_id = "robot_0/gimbal";
+  gimbal_tf_.header.frame_id = "base_link";
+  gimbal_tf_.child_frame_id = "gimbal";
+
 
 }
 
@@ -97,6 +97,7 @@ void Gimbal::GimbalInfoCallback(const std::shared_ptr<roborts_sdk::cmd_gimbal_in
   geometry_msgs::Quaternion q = tf::createQuaternionMsgFromRollPitchYaw(0.0,
                                                                         gimbal_info->pitch_ecd_angle / 1800.0 * M_PI,
                                                                         gimbal_info->yaw_ecd_angle / 1800.0 * M_PI);
+
   gimbal_tf_.header.stamp = current_time;
   gimbal_tf_.transform.rotation = q;
   gimbal_tf_.transform.translation.x = 0;

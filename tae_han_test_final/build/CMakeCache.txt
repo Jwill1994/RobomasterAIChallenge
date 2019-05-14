@@ -37,7 +37,7 @@ CATKIN_SKIP_TESTING:BOOL=OFF
 CATKIN_SYMLINK_INSTALL:BOOL=OFF
 
 //List of ';' separated packages to build
-CATKIN_WHITELIST_PACKAGES:STRING=icra_roboin_behavior;icra_roboin_msgs;roborts_msgs
+CATKIN_WHITELIST_PACKAGES:STRING=
 
 //Path to a program.
 CMAKE_AR:FILEPATH=/usr/bin/ar
@@ -451,11 +451,23 @@ icra_roboin_simulation_BINARY_DIR:STATIC=/home/nvidia/Desktop/tae_han_test_final
 //Value Computed by CMake
 icra_roboin_simulation_SOURCE_DIR:STATIC=/home/nvidia/Desktop/tae_han_test_final/src/icra_roboin_simulation
 
+//Value Computed by CMake
+icra_roboin_vision_BINARY_DIR:STATIC=/home/nvidia/Desktop/tae_han_test_final/build/icra_roboin_vision
+
+//Value Computed by CMake
+icra_roboin_vision_SOURCE_DIR:STATIC=/home/nvidia/Desktop/tae_han_test_final/src/icra_roboin_vision
+
 //The directory containing a CMake configuration file for image_transport.
 image_transport_DIR:PATH=/opt/ros/kinetic/share/image_transport/cmake
 
 //Path to a library.
 lib:FILEPATH=/opt/ros/kinetic/lib/libdynamic_reconfigure_config_init_mutex.so
+
+//Value Computed by CMake
+lidar_detector_BINARY_DIR:STATIC=/home/nvidia/Desktop/tae_han_test_final/build/lidar_detector
+
+//Value Computed by CMake
+lidar_detector_SOURCE_DIR:STATIC=/home/nvidia/Desktop/tae_han_test_final/src/lidar_detector
 
 //The directory containing a CMake configuration file for message_filters.
 message_filters_DIR:PATH=/opt/ros/kinetic/share/message_filters/cmake
@@ -680,7 +692,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=6
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=14
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
