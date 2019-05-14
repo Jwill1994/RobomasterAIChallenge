@@ -7,4 +7,10 @@
 # new environment variables
 
 # modified environment variables
+export CMAKE_PREFIX_PATH="/home/nvidia/Desktop/tae_han_test_final/devel:$CMAKE_PREFIX_PATH"
+export LD_LIBRARY_PATH="/home/nvidia/Desktop/tae_han_test_final/devel/lib:$LD_LIBRARY_PATH"
+export PKG_CONFIG_PATH="/home/nvidia/Desktop/tae_han_test_final/devel/lib/pkgconfig:$PKG_CONFIG_PATH"
 export PWD="/home/nvidia/Desktop/tae_han_test_final/build"
+export PYTHONPATH="/home/nvidia/Desktop/tae_han_test_final/devel/lib/python2.7/dist-packages:$PYTHONPATH"
+export ROSLISP_PACKAGE_DIRECTORIES="/home/nvidia/Desktop/tae_han_test_final/devel/share/common-lisp:$ROSLISP_PACKAGE_DIRECTORIES"
+export ROS_PACKAGE_PATH="/home/nvidia/Desktop/tae_han_test_final/src:$ROS_PACKAGE_PATH"

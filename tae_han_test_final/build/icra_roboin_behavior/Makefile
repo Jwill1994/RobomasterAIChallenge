@@ -56,17 +56,17 @@ CMAKE_BINARY_DIR = /home/nvidia/Desktop/tae_han_test_final/build
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
 
-# Special rule for the target install/local
-install/local/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local/fast
+# Special rule for the target install/strip
+install/strip/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip/fast
 
 # Special rule for the target install
 install: preinstall
@@ -80,18 +80,6 @@ install/fast: preinstall/fast
 	/usr/local/bin/cmake -P cmake_install.cmake
 .PHONY : install/fast
 
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/usr/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/usr/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip/fast
-
 # Special rule for the target list_install_components
 list_install_components:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
@@ -102,16 +90,17 @@ list_install_components/fast: list_install_components
 
 .PHONY : list_install_components/fast
 
-# Special rule for the target test
-test:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
-	/usr/local/bin/ctest --force-new-ctest-process $(ARGS)
-.PHONY : test
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
 
-# Special rule for the target test
-test/fast: test
-
-.PHONY : test/fast
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
 
 # Special rule for the target rebuild_cache
 rebuild_cache:
@@ -123,6 +112,17 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 
 .PHONY : rebuild_cache/fast
+
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running tests..."
+	/usr/local/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+
+.PHONY : test/fast
 
 # Special rule for the target edit_cache
 edit_cache:
@@ -168,6 +168,96 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
+icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_lisp.dir/rule:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f CMakeFiles/Makefile2 icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_lisp.dir/rule
+.PHONY : icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_lisp.dir/rule
+
+# Convenience name for target.
+dynamic_reconfigure_generate_messages_lisp: icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_lisp.dir/rule
+
+.PHONY : dynamic_reconfigure_generate_messages_lisp
+
+# fast build rule for target.
+dynamic_reconfigure_generate_messages_lisp/fast:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_lisp.dir/build.make icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_lisp.dir/build
+.PHONY : dynamic_reconfigure_generate_messages_lisp/fast
+
+# Convenience name for target.
+icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_eus.dir/rule:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f CMakeFiles/Makefile2 icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_eus.dir/rule
+.PHONY : icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_eus.dir/rule
+
+# Convenience name for target.
+dynamic_reconfigure_generate_messages_eus: icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_eus.dir/rule
+
+.PHONY : dynamic_reconfigure_generate_messages_eus
+
+# fast build rule for target.
+dynamic_reconfigure_generate_messages_eus/fast:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_eus.dir/build.make icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_eus.dir/build
+.PHONY : dynamic_reconfigure_generate_messages_eus/fast
+
+# Convenience name for target.
+icra_roboin_behavior/CMakeFiles/move_base_gencfg.dir/rule:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f CMakeFiles/Makefile2 icra_roboin_behavior/CMakeFiles/move_base_gencfg.dir/rule
+.PHONY : icra_roboin_behavior/CMakeFiles/move_base_gencfg.dir/rule
+
+# Convenience name for target.
+move_base_gencfg: icra_roboin_behavior/CMakeFiles/move_base_gencfg.dir/rule
+
+.PHONY : move_base_gencfg
+
+# fast build rule for target.
+move_base_gencfg/fast:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f icra_roboin_behavior/CMakeFiles/move_base_gencfg.dir/build.make icra_roboin_behavior/CMakeFiles/move_base_gencfg.dir/build
+.PHONY : move_base_gencfg/fast
+
+# Convenience name for target.
+icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_nodejs.dir/rule:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f CMakeFiles/Makefile2 icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_nodejs.dir/rule
+.PHONY : icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_nodejs.dir/rule
+
+# Convenience name for target.
+dynamic_reconfigure_generate_messages_nodejs: icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_nodejs.dir/rule
+
+.PHONY : dynamic_reconfigure_generate_messages_nodejs
+
+# fast build rule for target.
+dynamic_reconfigure_generate_messages_nodejs/fast:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_nodejs.dir/build.make icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_nodejs.dir/build
+.PHONY : dynamic_reconfigure_generate_messages_nodejs/fast
+
+# Convenience name for target.
+icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_gencfg.dir/rule:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f CMakeFiles/Makefile2 icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_gencfg.dir/rule
+.PHONY : icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_gencfg.dir/rule
+
+# Convenience name for target.
+dynamic_reconfigure_gencfg: icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_gencfg.dir/rule
+
+.PHONY : dynamic_reconfigure_gencfg
+
+# fast build rule for target.
+dynamic_reconfigure_gencfg/fast:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_gencfg.dir/build.make icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_gencfg.dir/build
+.PHONY : dynamic_reconfigure_gencfg/fast
+
+# Convenience name for target.
+icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_py.dir/rule:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f CMakeFiles/Makefile2 icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_py.dir/rule
+.PHONY : icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_py.dir/rule
+
+# Convenience name for target.
+dynamic_reconfigure_generate_messages_py: icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_py.dir/rule
+
+.PHONY : dynamic_reconfigure_generate_messages_py
+
+# fast build rule for target.
+dynamic_reconfigure_generate_messages_py/fast:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_py.dir/build.make icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_py.dir/build
+.PHONY : dynamic_reconfigure_generate_messages_py/fast
+
+# Convenience name for target.
 icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_eus.dir/rule:
 	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f CMakeFiles/Makefile2 icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_eus.dir/rule
 .PHONY : icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_eus.dir/rule
@@ -198,49 +288,19 @@ move_base_msgs_generate_messages_lisp/fast:
 .PHONY : move_base_msgs_generate_messages_lisp/fast
 
 # Convenience name for target.
-icra_roboin_behavior/CMakeFiles/move_base_gencfg.dir/rule:
-	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f CMakeFiles/Makefile2 icra_roboin_behavior/CMakeFiles/move_base_gencfg.dir/rule
-.PHONY : icra_roboin_behavior/CMakeFiles/move_base_gencfg.dir/rule
+icra_roboin_behavior/CMakeFiles/behavior_node.dir/rule:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f CMakeFiles/Makefile2 icra_roboin_behavior/CMakeFiles/behavior_node.dir/rule
+.PHONY : icra_roboin_behavior/CMakeFiles/behavior_node.dir/rule
 
 # Convenience name for target.
-move_base_gencfg: icra_roboin_behavior/CMakeFiles/move_base_gencfg.dir/rule
+behavior_node: icra_roboin_behavior/CMakeFiles/behavior_node.dir/rule
 
-.PHONY : move_base_gencfg
+.PHONY : behavior_node
 
 # fast build rule for target.
-move_base_gencfg/fast:
-	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f icra_roboin_behavior/CMakeFiles/move_base_gencfg.dir/build.make icra_roboin_behavior/CMakeFiles/move_base_gencfg.dir/build
-.PHONY : move_base_gencfg/fast
-
-# Convenience name for target.
-icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_nodejs.dir/rule:
-	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f CMakeFiles/Makefile2 icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_nodejs.dir/rule
-.PHONY : icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_nodejs.dir/rule
-
-# Convenience name for target.
-move_base_msgs_generate_messages_nodejs: icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_nodejs.dir/rule
-
-.PHONY : move_base_msgs_generate_messages_nodejs
-
-# fast build rule for target.
-move_base_msgs_generate_messages_nodejs/fast:
-	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_nodejs.dir/build.make icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_nodejs.dir/build
-.PHONY : move_base_msgs_generate_messages_nodejs/fast
-
-# Convenience name for target.
-icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_py.dir/rule:
-	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f CMakeFiles/Makefile2 icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_py.dir/rule
-.PHONY : icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_py.dir/rule
-
-# Convenience name for target.
-move_base_msgs_generate_messages_py: icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_py.dir/rule
-
-.PHONY : move_base_msgs_generate_messages_py
-
-# fast build rule for target.
-move_base_msgs_generate_messages_py/fast:
-	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_py.dir/build.make icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_py.dir/build
-.PHONY : move_base_msgs_generate_messages_py/fast
+behavior_node/fast:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f icra_roboin_behavior/CMakeFiles/behavior_node.dir/build.make icra_roboin_behavior/CMakeFiles/behavior_node.dir/build
+.PHONY : behavior_node/fast
 
 # Convenience name for target.
 icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_cpp.dir/rule:
@@ -258,19 +318,49 @@ move_base_msgs_generate_messages_cpp/fast:
 .PHONY : move_base_msgs_generate_messages_cpp/fast
 
 # Convenience name for target.
-icra_roboin_behavior/CMakeFiles/behavior_node.dir/rule:
-	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f CMakeFiles/Makefile2 icra_roboin_behavior/CMakeFiles/behavior_node.dir/rule
-.PHONY : icra_roboin_behavior/CMakeFiles/behavior_node.dir/rule
+icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_nodejs.dir/rule:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f CMakeFiles/Makefile2 icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_nodejs.dir/rule
+.PHONY : icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_nodejs.dir/rule
 
 # Convenience name for target.
-behavior_node: icra_roboin_behavior/CMakeFiles/behavior_node.dir/rule
+move_base_msgs_generate_messages_nodejs: icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_nodejs.dir/rule
 
-.PHONY : behavior_node
+.PHONY : move_base_msgs_generate_messages_nodejs
 
 # fast build rule for target.
-behavior_node/fast:
-	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f icra_roboin_behavior/CMakeFiles/behavior_node.dir/build.make icra_roboin_behavior/CMakeFiles/behavior_node.dir/build
-.PHONY : behavior_node/fast
+move_base_msgs_generate_messages_nodejs/fast:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_nodejs.dir/build.make icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_nodejs.dir/build
+.PHONY : move_base_msgs_generate_messages_nodejs/fast
+
+# Convenience name for target.
+icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_cpp.dir/rule:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f CMakeFiles/Makefile2 icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_cpp.dir/rule
+.PHONY : icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_cpp.dir/rule
+
+# Convenience name for target.
+dynamic_reconfigure_generate_messages_cpp: icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_cpp.dir/rule
+
+.PHONY : dynamic_reconfigure_generate_messages_cpp
+
+# fast build rule for target.
+dynamic_reconfigure_generate_messages_cpp/fast:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_cpp.dir/build.make icra_roboin_behavior/CMakeFiles/dynamic_reconfigure_generate_messages_cpp.dir/build
+.PHONY : dynamic_reconfigure_generate_messages_cpp/fast
+
+# Convenience name for target.
+icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_py.dir/rule:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f CMakeFiles/Makefile2 icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_py.dir/rule
+.PHONY : icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_py.dir/rule
+
+# Convenience name for target.
+move_base_msgs_generate_messages_py: icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_py.dir/rule
+
+.PHONY : move_base_msgs_generate_messages_py
+
+# fast build rule for target.
+move_base_msgs_generate_messages_py/fast:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_py.dir/build.make icra_roboin_behavior/CMakeFiles/move_base_msgs_generate_messages_py.dir/build
+.PHONY : move_base_msgs_generate_messages_py/fast
 
 behavior_interface.o: behavior_interface.cpp.o
 
@@ -386,19 +476,25 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... install/local"
-	@echo "... install"
 	@echo "... install/strip"
+	@echo "... install"
 	@echo "... list_install_components"
-	@echo "... move_base_msgs_generate_messages_eus"
-	@echo "... test"
-	@echo "... move_base_msgs_generate_messages_lisp"
+	@echo "... dynamic_reconfigure_generate_messages_lisp"
+	@echo "... dynamic_reconfigure_generate_messages_eus"
 	@echo "... move_base_gencfg"
-	@echo "... move_base_msgs_generate_messages_nodejs"
-	@echo "... move_base_msgs_generate_messages_py"
-	@echo "... move_base_msgs_generate_messages_cpp"
+	@echo "... dynamic_reconfigure_generate_messages_nodejs"
+	@echo "... dynamic_reconfigure_gencfg"
+	@echo "... dynamic_reconfigure_generate_messages_py"
+	@echo "... move_base_msgs_generate_messages_eus"
+	@echo "... move_base_msgs_generate_messages_lisp"
+	@echo "... install/local"
 	@echo "... behavior_node"
+	@echo "... move_base_msgs_generate_messages_cpp"
+	@echo "... move_base_msgs_generate_messages_nodejs"
+	@echo "... dynamic_reconfigure_generate_messages_cpp"
+	@echo "... move_base_msgs_generate_messages_py"
 	@echo "... rebuild_cache"
+	@echo "... test"
 	@echo "... edit_cache"
 	@echo "... behavior_interface.o"
 	@echo "... behavior_interface.i"

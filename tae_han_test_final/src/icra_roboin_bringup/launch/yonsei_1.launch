@@ -3,14 +3,18 @@
   <master auto="restart"/>
 
 
-  
-  <node name="map_server" pkg="map_server" type="map_server" args="$(find icra_roboin_navigation)/maps/$(arg map).yaml" respawn="false">
+
+
+
+  <!-- map server -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find icra_roboin_navigation)/maps/$(arg map).yaml" respawn="true">
   	<param name="frame_id" value="map"/>
   </node>
 
 
-   <include file="$(find icra_roboin_bringup)/launch/base.launch" />
+   <include file="$(find roborts_bringup)/launch/base.launch" />
 
+    <!--static_transform_publisher x y z yaw pitch roll frame_id child_frame_id-->
     <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_base_laser_link_broadcaster"
           args="0.17 0.0 0.05 3.1415 0.0 0 base_link base_laser_link" />
 
@@ -19,9 +23,8 @@
 
   <node pkg="lidar_detector" type="lidar_filter_node" name="lidar_filter_node"/>
 
-
-  <node name="rplidar_node" pkg="rplidar_ros" type="rplidarNode" output="screen">
-      <param name="serial_port" type="string" value="/dev/rplidar"/>
+  <node name="rplidar_node" pkg="rplidar_ros" type="rplidarNode" output="screen" respawn="true">
+      <param name="serial_port" type="string" value="/dev/ttyUSB0"/>
       <param name="serial_baudrate" type="int" value="115200"/>
       <param name="frame_id" type="string" value="base_laser_link"/>
       <param name="inverted" type="bool" value="false"/>
@@ -33,21 +36,21 @@
 
 
 
-  
+  <!-- amcl -->
   <include file="$(find icra_roboin_navigation)/launch/amcl.launch">
 
-  	<arg name="odom_frame_id"     value="odom"/>
-        <arg name="base_frame_id"     value="base_link"/>
-  	<arg name="global_frame_id"     value="map"/>
+  	<arg name="odom_frame_id"     default="odom"/>
+  	<arg name="base_frame_id"     default="base_link"/>
+  	<arg name="global_frame_id"     default="map"/>
 
-  	<arg name="scan_topic_name"     value="scan"/>
-  	<arg name="map_topic_name"     value="map"/>
+  	<arg name="scan_topic_name"     default="scan"/>
+  	<arg name="map_topic_name"     default="map"/>
 
-  	<arg name="initial_pose_x" value="1"/>
-  	<arg name="initial_pose_y" value="1"/>
-  	<arg name="initial_pose_a" value="0"/>
+  	<arg name="initial_pose_x" default="1"/>
+  	<arg name="initial_pose_y" default="1"/>
+  	<arg name="initial_pose_a" default="0"/>
 
-  </include> 
+  </include>
 
 
   <include file="$(find icra_roboin_navigation)/launch/navigation_base.launch">
@@ -58,10 +61,12 @@
   </include>
 
 
+  <!-- behavior interface node -->
   <node pkg="icra_roboin_behavior" type="behavior_node" name="behavior_node" respawn="false" output="screen">
   	<param name="team" value="red_team"/>
   	<param name="rule" value="1vs1"/>
   </node>
+
 
   <!-- rviz -->
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find icra_roboin_bringup)/rviz/yonsei1.rviz" />

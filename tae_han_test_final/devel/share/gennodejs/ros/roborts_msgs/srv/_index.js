@@ -2,11 +2,11 @@
 "use strict";
 
 let ShootCmd = require('./ShootCmd.js')
-let GimbalMode = require('./GimbalMode.js')
 let FricWhl = require('./FricWhl.js')
+let GimbalMode = require('./GimbalMode.js')
 
 module.exports = {
   ShootCmd: ShootCmd,
-  GimbalMode: GimbalMode,
   FricWhl: FricWhl,
+  GimbalMode: GimbalMode,
 };

@@ -56,6 +56,40 @@ CMAKE_BINARY_DIR = /home/nvidia/Desktop/tae_han_test_final/build
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
+
+# Special rule for the target install/strip
+install/strip/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
+	/usr/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip/fast
+
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/local/bin/cmake -P cmake_install.cmake
+.PHONY : install
+
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/local/bin/cmake -P cmake_install.cmake
+.PHONY : install/fast
+
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+
+.PHONY : list_install_components/fast
+
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
@@ -66,6 +100,18 @@ rebuild_cache:
 rebuild_cache/fast: rebuild_cache
 
 .PHONY : rebuild_cache/fast
+
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
 
 # Special rule for the target test
 test:
@@ -88,52 +134,6 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
-
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/usr/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/usr/local/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip/fast
-
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
-.PHONY : list_install_components
-
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
-
-.PHONY : list_install_components/fast
-
-# Special rule for the target install
-install: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	/usr/local/bin/cmake -P cmake_install.cmake
-.PHONY : install
-
-# Special rule for the target install
-install/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	/usr/local/bin/cmake -P cmake_install.cmake
-.PHONY : install/fast
-
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
-
-# Special rule for the target install/local
-install/local/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/local/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -168,19 +168,19 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-lidar_detector/CMakeFiles/lidar_detector_node.dir/rule:
-	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f CMakeFiles/Makefile2 lidar_detector/CMakeFiles/lidar_detector_node.dir/rule
-.PHONY : lidar_detector/CMakeFiles/lidar_detector_node.dir/rule
+lidar_detector/CMakeFiles/lidar_detector.dir/rule:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f CMakeFiles/Makefile2 lidar_detector/CMakeFiles/lidar_detector.dir/rule
+.PHONY : lidar_detector/CMakeFiles/lidar_detector.dir/rule
 
 # Convenience name for target.
-lidar_detector_node: lidar_detector/CMakeFiles/lidar_detector_node.dir/rule
+lidar_detector: lidar_detector/CMakeFiles/lidar_detector.dir/rule
 
-.PHONY : lidar_detector_node
+.PHONY : lidar_detector
 
 # fast build rule for target.
-lidar_detector_node/fast:
-	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f lidar_detector/CMakeFiles/lidar_detector_node.dir/build.make lidar_detector/CMakeFiles/lidar_detector_node.dir/build
-.PHONY : lidar_detector_node/fast
+lidar_detector/fast:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f lidar_detector/CMakeFiles/lidar_detector.dir/build.make lidar_detector/CMakeFiles/lidar_detector.dir/build
+.PHONY : lidar_detector/fast
 
 # Convenience name for target.
 lidar_detector/CMakeFiles/lidar_filter.dir/rule:
@@ -198,19 +198,19 @@ lidar_filter/fast:
 .PHONY : lidar_filter/fast
 
 # Convenience name for target.
-lidar_detector/CMakeFiles/lidar_detector.dir/rule:
-	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f CMakeFiles/Makefile2 lidar_detector/CMakeFiles/lidar_detector.dir/rule
-.PHONY : lidar_detector/CMakeFiles/lidar_detector.dir/rule
+lidar_detector/CMakeFiles/lidar_detector_node.dir/rule:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f CMakeFiles/Makefile2 lidar_detector/CMakeFiles/lidar_detector_node.dir/rule
+.PHONY : lidar_detector/CMakeFiles/lidar_detector_node.dir/rule
 
 # Convenience name for target.
-lidar_detector: lidar_detector/CMakeFiles/lidar_detector.dir/rule
+lidar_detector_node: lidar_detector/CMakeFiles/lidar_detector_node.dir/rule
 
-.PHONY : lidar_detector
+.PHONY : lidar_detector_node
 
 # fast build rule for target.
-lidar_detector/fast:
-	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f lidar_detector/CMakeFiles/lidar_detector.dir/build.make lidar_detector/CMakeFiles/lidar_detector.dir/build
-.PHONY : lidar_detector/fast
+lidar_detector_node/fast:
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f lidar_detector/CMakeFiles/lidar_detector_node.dir/build.make lidar_detector/CMakeFiles/lidar_detector_node.dir/build
+.PHONY : lidar_detector_node/fast
 
 # Convenience name for target.
 lidar_detector/CMakeFiles/lidar_filter_node.dir/rule:
@@ -293,8 +293,8 @@ src/lidar_detector.o: src/lidar_detector.cpp.o
 
 # target to build an object file
 src/lidar_detector.cpp.o:
-	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f lidar_detector/CMakeFiles/lidar_detector_node.dir/build.make lidar_detector/CMakeFiles/lidar_detector_node.dir/src/lidar_detector.cpp.o
 	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f lidar_detector/CMakeFiles/lidar_detector.dir/build.make lidar_detector/CMakeFiles/lidar_detector.dir/src/lidar_detector.cpp.o
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f lidar_detector/CMakeFiles/lidar_detector_node.dir/build.make lidar_detector/CMakeFiles/lidar_detector_node.dir/src/lidar_detector.cpp.o
 .PHONY : src/lidar_detector.cpp.o
 
 src/lidar_detector.i: src/lidar_detector.cpp.i
@@ -303,8 +303,8 @@ src/lidar_detector.i: src/lidar_detector.cpp.i
 
 # target to preprocess a source file
 src/lidar_detector.cpp.i:
-	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f lidar_detector/CMakeFiles/lidar_detector_node.dir/build.make lidar_detector/CMakeFiles/lidar_detector_node.dir/src/lidar_detector.cpp.i
 	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f lidar_detector/CMakeFiles/lidar_detector.dir/build.make lidar_detector/CMakeFiles/lidar_detector.dir/src/lidar_detector.cpp.i
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f lidar_detector/CMakeFiles/lidar_detector_node.dir/build.make lidar_detector/CMakeFiles/lidar_detector_node.dir/src/lidar_detector.cpp.i
 .PHONY : src/lidar_detector.cpp.i
 
 src/lidar_detector.s: src/lidar_detector.cpp.s
@@ -313,8 +313,8 @@ src/lidar_detector.s: src/lidar_detector.cpp.s
 
 # target to generate assembly for a file
 src/lidar_detector.cpp.s:
-	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f lidar_detector/CMakeFiles/lidar_detector_node.dir/build.make lidar_detector/CMakeFiles/lidar_detector_node.dir/src/lidar_detector.cpp.s
 	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f lidar_detector/CMakeFiles/lidar_detector.dir/build.make lidar_detector/CMakeFiles/lidar_detector.dir/src/lidar_detector.cpp.s
+	cd /home/nvidia/Desktop/tae_han_test_final/build && $(MAKE) -f lidar_detector/CMakeFiles/lidar_detector_node.dir/build.make lidar_detector/CMakeFiles/lidar_detector_node.dir/src/lidar_detector.cpp.s
 .PHONY : src/lidar_detector.cpp.s
 
 src/lidar_filter.o: src/lidar_filter.cpp.o
@@ -353,17 +353,17 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... rebuild_cache"
-	@echo "... lidar_detector_node"
-	@echo "... lidar_filter"
-	@echo "... lidar_detector"
-	@echo "... test"
-	@echo "... edit_cache"
 	@echo "... install/strip"
-	@echo "... list_install_components"
 	@echo "... install"
-	@echo "... lidar_filter_node"
+	@echo "... list_install_components"
+	@echo "... rebuild_cache"
 	@echo "... install/local"
+	@echo "... test"
+	@echo "... lidar_detector"
+	@echo "... lidar_filter"
+	@echo "... lidar_detector_node"
+	@echo "... lidar_filter_node"
+	@echo "... edit_cache"
 	@echo "... src/hcsr04.o"
 	@echo "... src/hcsr04.i"
 	@echo "... src/hcsr04.s"
