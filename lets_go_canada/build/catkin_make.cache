@@ -1,0 +1,2 @@
+icra_roboin_behavior:icra_roboin_bringup:icra_roboin_decision:icra_roboin_msgs:icra_roboin_navigation:icra_roboin_simulation:roborts_base:roborts_msgs
+-DCATKIN_DEVEL_PREFIX=/home/kimtaehan/Desktop/lets_go_canada/devel -DCMAKE_INSTALL_PREFIX=/home/kimtaehan/Desktop/lets_go_canada/install -G Unix Makefiles

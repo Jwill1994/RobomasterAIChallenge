@@ -1,0 +1,8 @@
+prefix=/home/kimtaehan/Desktop/lets_go_canada/devel
+
+Name: icra_roboin_simulation
+Description: Description of icra_roboin_simulation
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/kimtaehan/Desktop/lets_go_canada/devel/lib 
+Requires: 

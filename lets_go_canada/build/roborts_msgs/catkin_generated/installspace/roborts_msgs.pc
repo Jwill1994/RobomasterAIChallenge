@@ -1,0 +1,8 @@
+prefix=/home/kimtaehan/Desktop/lets_go_canada/install
+
+Name: roborts_msgs
+Description: Description of roborts_msgs
+Version: 1.0.0
+Cflags: -I/home/kimtaehan/Desktop/lets_go_canada/install/include
+Libs: -L/home/kimtaehan/Desktop/lets_go_canada/install/lib 
+Requires: 

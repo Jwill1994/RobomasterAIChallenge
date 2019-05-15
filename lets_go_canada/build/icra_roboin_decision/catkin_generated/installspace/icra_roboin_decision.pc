@@ -1,0 +1,8 @@
+prefix=/home/kimtaehan/Desktop/lets_go_canada/install
+
+Name: icra_roboin_decision
+Description: Description of icra_roboin_decision
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/kimtaehan/Desktop/lets_go_canada/install/lib 
+Requires: 

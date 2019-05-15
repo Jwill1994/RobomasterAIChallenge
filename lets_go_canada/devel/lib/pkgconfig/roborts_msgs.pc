@@ -1,0 +1,8 @@
+prefix=/home/kimtaehan/Desktop/lets_go_canada/devel
+
+Name: roborts_msgs
+Description: Description of roborts_msgs
+Version: 1.0.0
+Cflags: -I/home/kimtaehan/Desktop/lets_go_canada/devel/include
+Libs: -L/home/kimtaehan/Desktop/lets_go_canada/devel/lib 
+Requires: 

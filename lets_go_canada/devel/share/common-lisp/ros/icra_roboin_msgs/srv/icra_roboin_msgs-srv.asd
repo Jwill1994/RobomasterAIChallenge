@@ -1,0 +1,36 @@
+
+(cl:in-package :asdf)
+
+(defsystem "icra_roboin_msgs-srv"
+  :depends-on (:roslisp-msg-protocol :roslisp-utils :geometry_msgs-msg
+               :icra_roboin_msgs-msg
+               :std_msgs-msg
+)
+  :components ((:file "_package")
+    (:file "AmmoConsume" :depends-on ("_package_AmmoConsume"))
+    (:file "_package_AmmoConsume" :depends-on ("_package"))
+    (:file "BehaviorStyleSet" :depends-on ("_package_BehaviorStyleSet"))
+    (:file "_package_BehaviorStyleSet" :depends-on ("_package"))
+    (:file "BlackboardGeneralInfo" :depends-on ("_package_BlackboardGeneralInfo"))
+    (:file "_package_BlackboardGeneralInfo" :depends-on ("_package"))
+    (:file "ConfirmHit" :depends-on ("_package_ConfirmHit"))
+    (:file "_package_ConfirmHit" :depends-on ("_package"))
+    (:file "RefereeBuff" :depends-on ("_package_RefereeBuff"))
+    (:file "_package_RefereeBuff" :depends-on ("_package"))
+    (:file "RefereeGameState" :depends-on ("_package_RefereeGameState"))
+    (:file "_package_RefereeGameState" :depends-on ("_package"))
+    (:file "RefereeHit" :depends-on ("_package_RefereeHit"))
+    (:file "_package_RefereeHit" :depends-on ("_package"))
+    (:file "RefereePenalty" :depends-on ("_package_RefereePenalty"))
+    (:file "_package_RefereePenalty" :depends-on ("_package"))
+    (:file "RefereeReload" :depends-on ("_package_RefereeReload"))
+    (:file "_package_RefereeReload" :depends-on ("_package"))
+    (:file "RefereeShoot" :depends-on ("_package_RefereeShoot"))
+    (:file "_package_RefereeShoot" :depends-on ("_package"))
+    (:file "RefereeTag" :depends-on ("_package_RefereeTag"))
+    (:file "_package_RefereeTag" :depends-on ("_package"))
+    (:file "SetEnemyPriority" :depends-on ("_package_SetEnemyPriority"))
+    (:file "_package_SetEnemyPriority" :depends-on ("_package"))
+    (:file "SetGoal_2" :depends-on ("_package_SetGoal_2"))
+    (:file "_package_SetGoal_2" :depends-on ("_package"))
+  ))
