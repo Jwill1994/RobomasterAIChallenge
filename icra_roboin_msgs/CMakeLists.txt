@@ -18,9 +18,6 @@ add_message_files(
   GoalDescription.msg
   LockonSpeedControl.msg
   LockonSpeedControl.msg
-  SegmentObstacle.msg
-  CircleObstacle.msg
-  Obstacles.msg
 )
 
 add_service_files(
