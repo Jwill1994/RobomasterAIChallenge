@@ -70,6 +70,7 @@ enum class BehaviorStyle {
     RELOAD=5,
     GET_BUFF=6,
     BACKBOOT=7,
+    SPECIFIC_ANGLE=8,
     //////////experimental//////////
     FORCE_SEARCH_MOVE,
     FORCE_LOCKON_MOVE,

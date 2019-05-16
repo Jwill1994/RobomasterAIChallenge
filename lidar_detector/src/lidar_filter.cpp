@@ -83,14 +83,14 @@ int getkey() {
 void exec_ultra(HCSR04 *hcsr04) { 
     if(getkey() != 27){
         unsigned int duration = hcsr04->pingMedian(5) ;
-        cout<<"sonic working";
-        if (duration != NO_ECHO) {sonic_dist = duration / 5800.0; sonic_ok = true; cout<<"getting length\n";}}
-}
+        if (duration != NO_ECHO) {sonic_dist = duration / 5800.0; sonic_ok = true;std::cout<<"yes value\n";}
+        else if (duration == NO_ECHO) {std::cout<<"no value\n";}
+}}
 #endif
 
 int main(int argc, char **argv) {
     #ifdef SONIC
-    HCSR04 *hcsr04 = new HCSR04(gpio394,gpio393);
+    HCSR04 *hcsr04 = new HCSR04(gpio395,gpio388);
     hcsr04->exportGPIO();
     hcsr04->setDirection();
     #endif
@@ -103,7 +103,6 @@ int main(int argc, char **argv) {
         exec_ultra(hcsr04);
         #endif
 		ros::spinOnce();
-        cout<<"looping";
 		if (pub_ok) {lidar_pub.publish(scan_pub); pub_ok = false;}
 	}
     return 0;

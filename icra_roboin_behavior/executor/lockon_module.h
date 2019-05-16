@@ -93,13 +93,13 @@ class LockonModule {
     private:
         void SetTargetAngularVelocity(double target) {
             //ROS_INFO("target_ang_vel: %f",target);
-            target_angular_velocity_ = target;
+            target_angular_velocity_ = 0.5 * target;
         }
         void SetTargetAngle(double target){
             target_angle_ = target;
             //ROS_INFO("target angle: %f",target);
             if(target > 0.1 | target < -0.1){
-                SetTargetAngularVelocity( tools::Clip(2*target_angle_,-3.0,3.0) );
+                SetTargetAngularVelocity( tools::Clip(2.0*target_angle_,-3.0,3.0) );
             } else {
                 SetTargetAngularVelocity(0);
             }
@@ -120,7 +120,7 @@ class LockonModule {
                 //ROS_INFO("%f, %f, %f, %f,%f,%d",sentry_flag_ * (0.3 + cos( 1.570796 * (target/sentry_angle_) )),target/sentry_angle_, target,sentry_angle_,target_angle_,sentry_flag_ );
                 SetTargetAngularVelocity(sentry_flag_ * (0.3 + cos( 1.570796 * (target/sentry_angle_)) ));
             } else {
-                SetTargetAngularVelocity( tools::Clip(2*target_angle_,-3.0,3.0) );
+                SetTargetAngularVelocity( tools::Clip(2.0*target_angle_,-3.0,3.0) );
             }
             
         }
@@ -155,8 +155,21 @@ class LockonModule {
         void SetTargetGoal(){
                 auto goal = blackboard_ -> GetGoal();
                 auto my_pose = blackboard_->GetMyPose();
+
+                if ( ((goal.x-my_pose.pose.position.x)*(goal.x-my_pose.pose.position.x)) + ((goal.y-my_pose.pose.position.y)*(goal.y-my_pose.pose.position.y)) > 1 ){
                 SetTargetGlobalYaw( atan2((goal.y - my_pose.pose.position.y), 
                                 (goal.x - my_pose.pose.position.x)) );
+
+                } else {
+
+                SetTargetAngularVelocity( 0 );
+
+
+                }
+
+    
+
+
         }
 
 

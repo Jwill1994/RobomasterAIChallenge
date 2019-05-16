@@ -18,7 +18,7 @@ const double resolution = 0.05;
 /*라이다 위치*/
 float pose[3] = {1.0,1.0,pi};
 /*최저 확률*/
-int prob_threshold = 60;
+int prob_threshold = 25;
 /*프레임 이름*/
 std::string frame = "map";
 /*받은 점들의 위치*/

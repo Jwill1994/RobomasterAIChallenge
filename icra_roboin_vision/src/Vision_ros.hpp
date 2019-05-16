@@ -23,8 +23,8 @@ void vision_ros::pubEnemyInfo(data_control& CT_data) {
 			if (CT_data.dataset.robot_id[i] == engage_enemy_id) {ros_msg.enemy_detected[i] = engage_id;}
 			else if (CT_data.dataset.robot_id[i] == enemy_id) {ros_msg.enemy_detected[i] = enemy_id;}
 			else if (CT_data.dataset.robot_id[i] == dead_id) {ros_msg.enemy_detected[i] = dead_id;}
-			ros_msg.angle_hori[i] = CT_data.dataset.angle_hori[i];
-			ros_msg.distance[i] = CT_data.dataset.distance[i];
+                        ros_msg.angle_hori[i] = CT_data.dataset.angle_hori[i];
+                        ros_msg.distance[i] = CT_data.dataset.distance[i]*1000;
 		}
 	this->enemy_info_pub.publish(ros_msg);
 }

@@ -1,9 +1,0 @@
-<launch>
-  <include file="$(find lidar_detector)/launch/obstacle_detection.launch" />
-
-  <node pkg="obstacle_detector" type="obstacle_visualizer" name="obstacle_visualizer" output="screen">
-    <remap from="obstacles" to="obst"/>
-  </node>
-
-
-</launch>

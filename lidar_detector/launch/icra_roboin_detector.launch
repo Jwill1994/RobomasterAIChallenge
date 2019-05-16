@@ -25,4 +25,9 @@
     <param name="max_y_range"          value="2.0"/>
     <param name="min_y_range"          value="-2.0"/>
   </node>
+
+  <node pkg="lidar_detector" type="lidar_detector_node" name="lidar_detector_node"/>
+
+  <node pkg="lidar_detector" type="lidar_controller_node" name="lidar_controller_node"/>
+
 </launch>

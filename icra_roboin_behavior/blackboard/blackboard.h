@@ -257,7 +257,7 @@ class Blackboard {
         BehaviorProcess behavior_process_;
 
     private: // Smart Decision and Tactics Info
-        PlayerType enemy_priority_ = PlayerType::ENEMY_ANY;
+        PlayerType enemy_priority_ = PlayerType::ENEMY_ONE;
 
 
 

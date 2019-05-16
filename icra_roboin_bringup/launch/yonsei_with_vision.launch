@@ -21,7 +21,6 @@
     <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_camera_link_broadcaster"
           args="0.105  0.0 -0.065  0.0  0.0 0.0 gimbal camera" />
 
-  <!-- <node pkg="lidar_detector" type="lidar_filter_node" name="lidar_filter_node"/> -->
 
   <node name="rplidar_node" pkg="rplidar_ros" type="rplidarNode" output="screen" respawn="true">
       <param name="serial_port" type="string" value="/dev/ttyUSB0"/>
@@ -32,7 +31,7 @@
   </node>
 
 
-
+ <!-- <include file="$(find lidar_detector)/launch/icra_roboin_lidar.launch"/>-->
 
 
   <!-- amcl -->
@@ -66,8 +65,10 @@
   	<param name="rule" value="1vs1"/>
   </node>
 
+  <node pkg="icra_roboin_vision" type="roboin_vision_node" name="vision_node" respawn="true" />
 
-  <!--<node pkg="icra_roboin_vision" type="roboin_vision_node" name="vision_node" respawn="false" /> -->
+  <include file="$(find realsense2_camera)/launch/icra_roboin_vision.launch" />
+
 
 
 </launch>

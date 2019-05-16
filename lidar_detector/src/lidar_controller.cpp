@@ -30,18 +30,9 @@ void reload_control() {
     lidar_ok = false;
 }
 
-void box_control() {
-    if (lidar_ok == false) {return;}
-
-
-    lidar_ok = false;
-}
-
 /*callback function*/
 void command_input(const std_msgs::Int8::ConstPtr& msg) {
-    int cmd_ = msg->data;
-    if (cmd_ == 0) {reload_control();}
-    else if (cmd_ == 1) {box_control();}
+    behave = msg->data;
 }
 
 void lidar_input(const sensor_msgs::LaserScan::ConstPtr& msg) {
@@ -55,8 +46,10 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, "lidar_controller");
     ros::NodeHandle n;
     lidar_sub_ = n.subscribe("scan", 1, lidar_input);
-    command_sub_ = n.subscribe("cmd", 1, command_input);
-	vel_pub_ = n.advertise<geometry_msgs::Twist>("cmd_vel", 3);
-    ros::spin();
+    command_sub_ = n.subscribe("reload_lidar_command", 1, command_input);
+    vel_pub_ = n.advertise<geometry_msgs::Twist>("cmd_vel", 3);
+    while(ros::ok()) {
+        ros::spinOnce();
+        if (behave == 1) {reload_control();}}
     return 0;
 }

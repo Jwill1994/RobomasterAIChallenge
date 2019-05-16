@@ -137,9 +137,11 @@ void data_control::assign_robot(short num, bbox_t info) {
     this->dataset.height[index] = info.h;
     this->dataset.distance[index] = assign_distance(this->dataset.Center_X[index], this->dataset.Center_Y[index]);
     this->dataset.number_of_robot += 1;
-	double x = (this->dataset.Center_X[index] - 320)*this->dataset.distance[index]*0.00156;
-	double f = sqrt(pow(this->dataset.distance[index],2.0)-pow(x,2.0));
-	this->dataset.angle_hori[index] = atan2(x,f);}
+        //double x = (this->dataset.Center_X[index] - 320)*this->dataset.distance[index]*0.00156;
+        //double f = sqrt(pow(this->dataset.distance[index],2.0)-pow(x,2.0));
+        //this->dataset.angle_hori[index] = atan2(x,f);}
+        this->dataset.angle_hori[index] = 100*180 / 3.141592 * atan2(this->dataset.Center_X[index] - 320, 320/tan(3.141592/180*0.5*69.4)   );
+    }
 
 void data_control::assign_data(std::string obj, bbox_t info) {
     if(obj == robot_str) {assign_robot(robot_id, info);}

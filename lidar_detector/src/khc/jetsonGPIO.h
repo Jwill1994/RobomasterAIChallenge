@@ -70,7 +70,9 @@ enum pinValues {
 
 enum jetsonGPIONumber {
 	gpio393 = 393,    // J3A2 - Pin 55
-	gpio394 = 394     // J3A2 - Pin 58
+	gpio394 = 394,     // J3A2 - Pin 58
+	gpio388 = 388,     // J3A2 - Pin 58
+	gpio395 = 395     // J3A2 - Pin 58
 }  ;
 
 
