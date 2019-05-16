@@ -128,14 +128,16 @@ cv::Mat vision_detector::draw_boxes(data_control& CT_data, cv::Mat mat_img, cv::
 
 void vision_detector::vision_detector_run(data_control& CT_data,Detector& detector) {
     CT_data.runing_initialize();
-    this->detect_Data = detector.detect(CT_data.dataset.detectimg , confThreshold, false);
-    cv::Mat dept = CT_data.dataset.depth_img.clone();
-    cv::Mat boxed_img = this->draw_boxes(CT_data, CT_data.dataset.display, dept, this->detect_Data, this->obj_names);
-    CT_data.after_assign(); // robot color check using armour
+    try {
+        this->detect_Data = detector.detect(CT_data.dataset.detectimg , confThreshold, false);
+        cv::Mat dept = CT_data.dataset.depth_img.clone();
+        cv::Mat boxed_img = this->draw_boxes(CT_data, CT_data.dataset.display, dept, this->detect_Data, this->obj_names);
+        CT_data.after_assign(); // robot color check using armour
 #ifdef DISPLAY
-    cv::imshow("Display window" , boxed_img);
-    //cv::imshow("Depth window", dept);
+        cv::imshow("Display window" , boxed_img);
+        //cv::imshow("Depth window", dept);
 #endif //!DISPLAY
+    }catch(std::runtime_error) {std::cout<<"catched an error\n";}
 #ifdef DEBUG
 	std::cout << " (vision_detector::vision_detector_run)" << std::endl;
 #endif //!DEBUG

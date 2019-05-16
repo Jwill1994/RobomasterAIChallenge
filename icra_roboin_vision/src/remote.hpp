@@ -43,14 +43,14 @@ public:
                 else if (9 < num_img < 100) {img_name << "/home/nvidia/img/" << "000" << num_img << ".jpg";}
                 else if (99 < num_img < 1000) {img_name << "/home/nvidia/img/" << "00" << num_img << ".jpg";}
                 else if (999 < num_img < 10000) {img_name << "/home/nvidia/img/" << "0" << num_img << ".jpg";}
-                else {img_name << "/home/nvidia/img/" << num_img << ".jpg";}
+                else if (9999 < num_img) {img_name << "/home/nvidia/img/" << num_img << ".jpg";}
                 num_img++; flag = exists_test3(img_name.str());}
 #endif
             if (num_img < 10) {img_name << "/home/nvidia/img/" << "0000" << num_img << ".jpg";}
             else if (9 < num_img < 100) {img_name << "/home/nvidia/img/" << "000" <<num_img << ".jpg";}
             else if (99 < num_img < 1000) {img_name << "/home/nvidia/img/" << "00" << num_img << ".jpg";}
             else if (999 < num_img < 10000) {img_name << "/home/nvidia/img/" << "0" << num_img << ".jpg";}
-            else {img_name << "/home/nvidia/img/" <<num_img << ".jpg";}
+            else if (9999 < num_img) {img_name << "/home/nvidia/img/" <<num_img << ".jpg";}
             num_img++; cv::imwrite(img_name.str(), CT_ptr->dataset.detectimg);
 #endif
         }
@@ -61,6 +61,9 @@ public:
         try {// 16UC1 - short // 64FC1 - double
             cv_ptr_depth = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::TYPE_64FC1);
             cv::Mat dm = cv_ptr_depth->image;
+            /*640X480*/
+            dm =dm(cv::Rect(100,100,404,303));
+            cv::resize(dm,dm,cv::Size(imgWidth,imgHeight));
             CT_ptr->dataset.depth_img = dm;
             get_data = true;
         }
