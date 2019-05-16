@@ -134,7 +134,7 @@ void vision_detector::vision_detector_run(data_control& CT_data,Detector& detect
     CT_data.after_assign(); // robot color check using armour
 #ifdef DISPLAY
     cv::imshow("Display window" , boxed_img);
-    //cv::imshow("Depth window", dept);
+    cv::imshow("Depth window", dept);
 #endif //!DISPLAY
 #ifdef DEBUG
 	std::cout << " (vision_detector::vision_detector_run)" << std::endl;
