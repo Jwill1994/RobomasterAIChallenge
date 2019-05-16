@@ -50,6 +50,7 @@ rule_param = "solo";
     auto hold_sentry_behavior = std::make_shared<icra_roboin_behavior::HoldSentryBehavior>(chassis_executor,gimbal_executor,lockon_module,blackboard);
     auto manual_speed_control_behavior = std::make_shared<icra_roboin_behavior::ManualSpeedControlBehavior>(chassis_executor,gimbal_executor,lockon_module,blackboard);
     auto ready_behavior = std::make_shared<icra_roboin_behavior::ReadyBehavior>(chassis_executor,gimbal_executor,lockon_module,blackboard);
+    auto specific_angle_behavior = std::make_shared<icra_roboin_behavior::SpecificAngleBehavior>(chassis_executor,gimbal_executor,lockon_module,blackboard);
 
 
     std::vector<std::shared_ptr<icra_roboin_behavior::BehaviorBase>> behavior_factory;
@@ -58,6 +59,7 @@ rule_param = "solo";
     behavior_factory.push_back(std::dynamic_pointer_cast<icra_roboin_behavior::BehaviorBase>(hold_sentry_behavior));
     behavior_factory.push_back(std::dynamic_pointer_cast<icra_roboin_behavior::BehaviorBase>(manual_speed_control_behavior));
     behavior_factory.push_back(std::dynamic_pointer_cast<icra_roboin_behavior::BehaviorBase>(ready_behavior));
+    behavior_factory.push_back(std::dynamic_pointer_cast<icra_roboin_behavior::BehaviorBase>(specific_angle_behavior));
     icra_roboin_behavior::BehaviorInterface behavior_interface(chassis_executor,gimbal_executor,lockon_module,blackboard,behavior_factory);
 
     ros::Rate rate(10);
