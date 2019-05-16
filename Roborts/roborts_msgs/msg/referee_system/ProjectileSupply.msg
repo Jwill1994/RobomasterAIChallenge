@@ -1,2 +1,0 @@
-#projectile supply
-bool supply
