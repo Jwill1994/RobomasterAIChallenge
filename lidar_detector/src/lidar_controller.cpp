@@ -6,10 +6,10 @@ void lidar_input(const sensor_msgs::LaserScan::ConstPtr& msg) {
     if (behave != 0) {return;}
     geometry_msgs::Twist vel;
     current_angle = msg->angle_min;
-    counter = 0; angle_counter = 0; left = 0; side_incline = 0;
+    counter = 0; angle_counter = 0; side_incline = 0;
 
     for (short i=0; i<msg->ranges.size(); i++) {
-        if (current_angle => side_start && current_angle =< side_end) {
+        if (current_angle >= side_start && current_angle <= side_end) {
             current_point[0] = msg->ranges[i] * cos(current_angle);
             current_point[1] = msg->ranges[i] * sin(current_angle);
             counter++;}

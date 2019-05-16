@@ -21,7 +21,7 @@ class ImageConverter {
 public:
     ImageConverter(data_control* CT_data) : it_(nh_) {
         color_sub_ = it_.subscribe("/camera/color/image_raw", 1, &ImageConverter::imageColor, this);
-        depth_sub_ = it_.subscribe("/camera/aligned_depth_to_color/image_raw", 1, &ImageConverter::imageDepth, this);
+        depth_sub_ = it_.subscribe("/camera/depth/image_rect_raw", 1, &ImageConverter::imageDepth, this);
         CT_ptr = CT_data;
     }
 
