@@ -7,7 +7,6 @@
 //#define MAKE_IMG   // 이미지를 만들고 싶을때
 #define START_NEW // 이미지 번호를 1번부터 배정
 //#define WATCH_LOOP_TIME
-#define MANUAL_ALLIGN
 
 #include "src/all.hpp"
 

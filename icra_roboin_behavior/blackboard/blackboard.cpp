@@ -167,10 +167,8 @@ ArmorType Blackboard::GetWhichArmorHit() {
 }  
 ros::Time Blackboard::GetTimeLastHit(){
 
-    if(robotdamage.damage_type == 0){
-            time_last_hit_ = this->GetTimePassedFromGameStart();
-    }
-    return time_last_hit_;
+
+    return timer;
 }  
 //Defense Buff Info
 bool Blackboard::GetHasBuff(){
@@ -422,19 +420,24 @@ void Blackboard::UpdateTime(){
 //    int a = 180 - gamestatus.remaining_time;
     int a = time_last_buffed_.toSec() + 30;
     time_passed_from_game_start_ = ros::Time(180 - gamestatus.remaining_time);
-    if(is_buff_zone_online_){
+    if(!is_buff_zone_online_){
         time_left_for_buff_zone_to_online_ = ros::Time(0);
     } else {
 
-        time_left_for_buff_zone_to_online_ = ros::Time(a+180-gamestatus.remaining_time); //buffzone opens every 1min
+        time_left_for_buff_zone_to_online_ = ros::Time(a-time_passed_from_game_start_.toSec()); //buffzone opens every 1min
         if(time_left_for_buff_zone_to_online_ <= ros::Time(0)){
             time_left_for_buff_zone_to_online_ = ros::Time(0);
         }
     }
-    time_buff_left_ = ros::Time(a+180-gamestatus.remaining_time);
-    if(time_buff_left_ <= ros::Time(0)){
+    int b = a - time_passed_from_game_start_.toSec();
+    if(b<=0){
         time_buff_left_ = ros::Time(0);
     }
+    else{
+        time_buff_left_ = ros::Time(b);
+    }
+
+
     if(supplierstatus.status!=0){
         time_left_for_reload_zone_to_online_ = ros::Time(0);
     }
@@ -579,6 +582,10 @@ void Blackboard::RobotDamageCB(const roborts_msgs::RobotDamage::ConstPtr& msg){
     robotdamage.damage_source = msg->damage_source;
     is_hit_fast_response_=true;
     is_hit_smart_response_ = true;
+    if( robotdamage.damage_type == 0){
+    timer = this->GetTimePassedFromGameStart();
+    }
+
 
 /*
         uint8 ARMOR = 0

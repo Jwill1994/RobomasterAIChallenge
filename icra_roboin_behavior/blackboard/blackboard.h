@@ -147,7 +147,7 @@ class Blackboard {
         void AmmoMinusOne();
         void SetIsReloading(const bool flag);
 
-
+        ros::Time timer;
 
 
 

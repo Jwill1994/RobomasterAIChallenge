@@ -7,8 +7,10 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   geometry_msgs
   sensor_msgs
+  nav_msgs
   std_msgs
   roscpp
+  icra_roboin_msgs
 )
 
 catkin_package()
@@ -17,6 +19,10 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
 )
+
+add_library(lidar_detector src/lidar_detector.cpp)
+add_executable(lidar_detector_node src/lidar_detector.cpp)
+target_link_libraries(lidar_detector_node ${catkin_LIBRARIES})
 
 add_library(lidar_filter src/lidar_filter.cpp src/khc/hcsr04.cpp src/khc/jetsonGPIO.cpp)
 add_executable(lidar_filter_node src/lidar_filter.cpp src/khc/hcsr04.cpp src/khc/jetsonGPIO.cpp)
