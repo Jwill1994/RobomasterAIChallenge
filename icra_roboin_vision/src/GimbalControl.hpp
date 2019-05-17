@@ -26,7 +26,7 @@
 //#define X_CENTER_PIXEL 212
 //#define Y_CENTER_PIXEL 120
 
-#define SEARCH_COUNT 25
+#define SEARCH_COUNT 17
 #define ONE_EXP_LOOP 200
 
 
@@ -55,7 +55,7 @@ private:
     //float yaw_gains[2][3] = {{0.00045, 0.000006, 0.000203}, {0.0005, 0.0000003, 0.00103}};
     float yaw_gains[2][3] = {{0.00029, 0.000014, 0.0032}, {0.00022, 0.000013, 0.0035}};  // 기본값 0.0038 0.00001 0.00001
 
-    float SEARCH_VEL = 0.02;  // SEARCH_VEL * SEARCH_COUNT = total angle (1.5~1.7)
+    float SEARCH_VEL = 0.032;  // SEARCH_VEL * SEARCH_COUNT = total angle (1.5~1.7)
     bool setCenter = false;
     int search_count = 0;
     short search_dir = 1;
@@ -181,7 +181,7 @@ void GimbalControl::sentry() {
     } else {
         //printf("sentry mode\n");
         gimbal_angle.pitch_mode = false;
-        gimbal_angle.pitch_angle = 0;
+        gimbal_angle.pitch_angle = -0.3;
         gimbal_angle.yaw_mode = false;
         current_angle += SEARCH_VEL * search_dir;
         gimbal_angle.yaw_angle = current_angle;
