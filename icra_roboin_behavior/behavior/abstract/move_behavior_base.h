@@ -59,13 +59,13 @@ class MoveBehaviorBase: public BehaviorBase{
                   blackboard_->ConfirmHitFastResponse();
                   break;
                 case ArmorType::LEFT:
-                  lockon_module_->LockonInterface(LockonMode::ANGULAR_VEL,2);
+                  lockon_module_->LockonInterface(LockonMode::ANGULAR_VEL,1.);
                   break;
                 case ArmorType::RIGHT:
-                  lockon_module_->LockonInterface(LockonMode::ANGULAR_VEL,-2);
+                  lockon_module_->LockonInterface(LockonMode::ANGULAR_VEL,-1.);
                   break;
                 case ArmorType::REAR:
-                  lockon_module_->LockonInterface(LockonMode::ANGULAR_VEL,2);
+                  lockon_module_->LockonInterface(LockonMode::ANGULAR_VEL,1.1);
                   break;
             } 
         }

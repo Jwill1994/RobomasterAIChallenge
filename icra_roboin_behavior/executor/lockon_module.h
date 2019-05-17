@@ -99,7 +99,7 @@ class LockonModule {
             target_angle_ = target;
             //ROS_INFO("target angle: %f",target);
             if(target > 0.1 | target < -0.1){
-                SetTargetAngularVelocity( tools::Clip(2*target_angle_,-1.5,1.5) );
+                SetTargetAngularVelocity( tools::Clip(1.*target_angle_,-1.,1.) );
             } else {
                 SetTargetAngularVelocity(0);
             }
@@ -120,7 +120,7 @@ class LockonModule {
                 //ROS_INFO("%f, %f, %f, %f,%f,%d",sentry_flag_ * (0.3 + cos( 1.570796 * (target/sentry_angle_) )),target/sentry_angle_, target,sentry_angle_,target_angle_,sentry_flag_ );
                 SetTargetAngularVelocity(sentry_flag_ * (0.3 + cos( 1.570796 * (target/sentry_angle_)) ));
             } else {
-                SetTargetAngularVelocity( tools::Clip(2*target_angle_,-3.0,3.0) );
+                SetTargetAngularVelocity( tools::Clip(1.*target_angle_,-1.,1.) );
             }
             
         }

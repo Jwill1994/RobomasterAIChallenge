@@ -9,17 +9,17 @@ NavfnROS:
 
 DWAPlannerROS:
 
-  acc_lim_x: 5.0
-  acc_lim_y: 5.0
+  acc_lim_x: 3.0
+  acc_lim_y: 3.0
   acc_lim_th: 50.0
-  acc_limit_trans: 5.0
+  acc_limit_trans: 3.0
   
-  max_trans_vel: 1.5
+  max_trans_vel: 1.
   min_trans_vel: 0
-  max_vel_x: 1.5
-  min_vel_x: -1.5
-  max_vel_y: 1.5
-  min_vel_y: -1.5
+  max_vel_x: 1.
+  min_vel_x: -1.
+  max_vel_y: 1.
+  min_vel_y: -1.
   max_rot_vel: 10
   min_rot_vel: 0.1
 

@@ -65,7 +65,7 @@ if __name__ == '__main__':
         my_position = [state['my_pose']['pose']['position']['x'], state['my_pose']['pose']['position']['y']]
                 
         f1 = now_time(startTime)
-        e1 = [ state["enemy_pose1"]['pose']['position']['x'], state("robot_0",1)["enemy_pose1"]['pose']['position']['y']]
+        e1 = [ state["enemy_pose1"]['pose']['position']['x'], state("",1)["enemy_pose1"]['pose']['position']['y']]
         
         robot1.init()
         robot1.bonus_zone(buff_time, 2, False, 200)

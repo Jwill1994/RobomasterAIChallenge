@@ -33,7 +33,7 @@ def GetInfoClient():
     rospy.wait_for_service("behavior_node/blackboard/general_info_service")
     try:
         service = rospy.ServiceProxy("behavior_node/blackboard/general_info_service",BlackboardGeneralInfo)
-        resp = service(rospy.Time.now(),str(rosnode.get_node_names()))
+        resp = service(rospy.Time.now(),str(rosnode.get_node_names()),1)
         return rospy_message_converter.convert_ros_message_to_dictionary(resp)
     except rospy.ServiceException, e:
         print "Get Blackboard Info Failed: %s"%e
