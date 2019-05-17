@@ -20,7 +20,7 @@
 #include <atomic>
 #include <mutex>
 #include <algorithm>
-#include <cstring>     // using for KCF tracker
+#include <cstring> // using for KCF tracker
 #include <exception>
 #include <math.h> // for calculate detection anlge control
 #include <condition_variable>

@@ -8,6 +8,7 @@
 #include "Vision_ros.hpp"
 #include "GimbalControl.hpp"
 #include "remote.hpp"
+#include "roborts_msgs/RobotStatus.h"
 #include <time.h>
 #endif // !ALL_HPP
 
