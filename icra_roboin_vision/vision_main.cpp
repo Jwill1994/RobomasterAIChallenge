@@ -18,6 +18,8 @@ int main(int argc, char **argv) {
         n_local.param<std::string>("us_color", us_color, "none");
         //ROS_ERROR("us color is : %s\n", us_color);
         ROS_ERROR("us color is : ", us_color, "\n");
+        ROS_ERROR(us_color[0]);
+        printf(us_color);
 	darknet::Detector detector_yolo(cfg_file, weights_file); // YOLO
 	vision_detector detector(detector_yolo); // object detector class setup
 	send_control send_control; // gimbal에 보낼 정보들
