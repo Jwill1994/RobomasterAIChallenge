@@ -433,7 +433,7 @@ void GimbalControl::run(send_target_info& target) {
             }
             */
 
-            //this->sentry();
+            this->sentry();
 
         }
 

@@ -2,7 +2,7 @@
 #pragma once 
 #ifndef PCH_HPP
 #define PCH_HPP
-//#define US_BLUE // rosparam으로 어케 해야할지 모르겠음... define이 안되어 있으면 우리는 RED인걸로
+#define US_BLUE // rosparam으로 어케 해야할지 모르겠음... define이 안되어 있으면 우리는 RED인걸로
 #define OPENCV // using for yolo_class.hpp
 //cpp basic header file
 //#include <filesystem>  //for c++17

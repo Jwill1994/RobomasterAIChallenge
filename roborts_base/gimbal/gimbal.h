@@ -117,8 +117,6 @@ class Gimbal {
   //! ros gimbal tf broadcaster
   tf::TransformBroadcaster        tf_broadcaster_;
 
-  ros::Publisher ros_yaw_angle_pub_;
-
 };
 }
 #endif //ROBORTS_BASE_GIMBAL_H

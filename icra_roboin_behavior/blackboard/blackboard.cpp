@@ -47,10 +47,12 @@ Blackboard::Blackboard(TeamType team = TeamType::BLUE_TEAM, RuleType rule = Rule
 
 //Game State Info
 ros::Time Blackboard::GetTimeGameStarted() const{
+    ROS_INFO("HI 1");
     return time_game_started_;
 }
 const ros::Time Blackboard::GetTimePassedFromGameStart() {
     UpdateTime();
+    ROS_INFO("HI 2");
     return time_passed_from_game_start_;
 }  
 GameState Blackboard::GetGameState() {
@@ -100,10 +102,12 @@ ros::Time Blackboard::GetTimeLastBuffed() {
         }
     }
     return time_last_buffed_;
+    ROS_INFO("HI 3");
 }  
 const ros::Time Blackboard::GetTimeLeftForBuffZoneToOnline() {
     UpdateTime();
     return time_left_for_buff_zone_to_online_;
+ROS_INFO("HI 4");
 }  
 bool Blackboard::GetIsReloadZoneOnline() {
     if(supplierstatus.status==0){
@@ -120,10 +124,12 @@ ros::Time Blackboard::GetTimeLastReloaded() {
     time_last_reloaded_ = this->GetTimePassedFromGameStart();
     }
     return time_last_reloaded_;
+ROS_INFO("HI 5");
 }  
 const ros::Time Blackboard::GetTimeLeftForReloadZoneToOnline() {
     UpdateTime();
     return time_left_for_reload_zone_to_online_;
+ROS_INFO("HI 6");
 }  
 //HP Info
 int Blackboard::GetMyHealth() {
@@ -169,6 +175,7 @@ ros::Time Blackboard::GetTimeLastHit(){
 
 
     return timer;
+ROS_INFO("HI 7");
 }  
 //Defense Buff Info
 bool Blackboard::GetHasBuff(){
@@ -179,6 +186,7 @@ bool Blackboard::GetHasBuff(){
 const ros::Time Blackboard::GetTimeBuffLeft() {
     UpdateTime();
     return time_buff_left_;
+ROS_INFO("HI 8");
 } 
 //Ammunition Info
 int Blackboard::GetAmmo() const{
@@ -289,6 +297,7 @@ bool Blackboard::IsNewEnemy(){
 
 ros::Time Blackboard::GetTimeLastSeen(PlayerType who) const{
     switch(who){
+ROS_INFO("HI 9");
         case PlayerType::ALLY:
           return time_ally_last_seen_;
         case PlayerType::ENEMY_ONE:
@@ -301,6 +310,7 @@ ros::Time Blackboard::GetTimeLastSeen(PlayerType who) const{
           return time_unknown_last_seen_;
         default:
           return ros::Time(0);
+
     }
 }
 
@@ -419,7 +429,7 @@ void Blackboard::UpdateMyPose(){
 void Blackboard::UpdateTime(){
 //    int a = 180 - gamestatus.remaining_time;
     int a = time_last_buffed_.toSec() + 30;
-    time_passed_from_game_start_ = ros::Time(180 - gamestatus.remaining_time);
+    time_passed_from_game_start_ = ros::Time(180);// - //gamestatus.remaining_time);
     if(!is_buff_zone_online_){
         time_left_for_buff_zone_to_online_ = ros::Time(0);
     } else {
@@ -612,9 +622,10 @@ float64 speed
 }
 
 void Blackboard::ProjectileSupplyCB(const roborts_msgs::ProjectileSupply::ConstPtr& msg){
-    projectilsupply.supply = msg->supply;
+    projectilsupply.number = msg->number;
 /*
 bool supply
+int number
 */
 
 }
