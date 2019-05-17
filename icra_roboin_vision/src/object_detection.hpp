@@ -59,7 +59,7 @@ red_bluesum vision_detector::redbluesum(cv::Mat input_img, int x, int y, int w, 
     cv::inRange(hsv, cv::Scalar(160, 100, 100,0), cv::Scalar(179, 255, 255,0), red2);
     red=red1 | red2;
     /*===extract blue pixel===*/
-    cv::inRange(hsv, cv::Scalar(110,150,150,0),cv::Scalar(130,255,255,0),blue);
+    cv::inRange(hsv, cv::Scalar(100,150,150,0),cv::Scalar(140,255,255,0),blue);
 
     result.bluesum=cv::sum(blue)[0];
     result.redsum=cv::sum(red)[0];

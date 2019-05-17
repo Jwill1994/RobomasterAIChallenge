@@ -48,33 +48,10 @@
 #include <librealsense2/rs.hpp>
 #include <librealsense2/rsutil.h>
 
-
-/*
-*
-* /home/nvidia/weights/420_224_model_with_420_224_image/yolov3-tiny_420_224.backupcc
-*
-*
-*/
-/*Original Network*/
-//const std::string  names_file = "/home/nvidia/CLionProjects/vision_dev/yolo/config_backup/yolo3.names";
-//const std::string  cfg_file = "/home/nvidia/CLionProjects/vision_dev/yolo/config_backup/yolov3.cfg";
-//const std::string  weights_file = "/home/nvidia/CLionProjects/vision_dev/yolo/config_backup/yolov3-tiny.backup";
-	
-/*Yolo v3-tiny 7classes*/
-//const std::string  names_file = "/home/nvidia/weights/420_224_model_with_420_224_image/yolo3.names";
-//const std::string  cfg_file = "/home/nvidia/weights/420_224_model_with_420_224_image/yolov3.cfg";
-//const std::string  weights_file = "/home/nvidia/weights/420_224_model_with_420_224_image/yolov3-tiny_420_224.backup";
-
 /*Yolo v3-tiny 3classes*/
-const std::string  names_file = "/home/nvidia/weights/yolov3-tiny_3c/obj.names";
-const std::string  cfg_file = "/home/nvidia/weights/yolov3-tiny_3c/yolov3-tiny_420_224.cfg";
-const std::string  weights_file = "/home/nvidia/weights/yolov3-tiny_3c/yolov3-tiny_420_224.backup";
-
-/*Yolo v2 3classes*/
-//const std::string names_file = "/home/nvidia/weights/yolov2/obj.names";
-//const std::string cfg_file="/home/nvidia/weights/yolov2/yolov2_test.cfg";
-//const std::string weights_file= "/home/nvidia/weights/yolov2/yolov2.backup";
-
+const std::string  names_file = "/home/nvidia/weights/yolov3-tiny_3c_with640480/obj.names";
+const std::string  cfg_file = "/home/nvidia/weights/yolov3-tiny_3c_with640480/yolov3-tiny_224_224.cfg";
+const std::string  weights_file = "/home/nvidia/weights/yolov3-tiny_3c_with640480/yolov3-tiny_224_224.backup";
 
 bool get_data = false;      // Used to make loop go only when image is received
 const int imgWidth = 640;   // Width of network's input image
