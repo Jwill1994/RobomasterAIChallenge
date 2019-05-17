@@ -1,0 +1,74 @@
+<launch>
+  <arg name="map" value="icra2019"/>
+  <master auto="restart"/>
+
+
+
+
+
+  <!-- map server -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find icra_roboin_navigation)/maps/$(arg map).yaml" respawn="false">
+  	<param name="frame_id" value="map"/>
+  </node>
+
+
+   <include file="$(find roborts_bringup)/launch/base.launch" />
+
+    <!--static_transform_publisher x y z yaw pitch roll frame_id child_frame_id-->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_base_laser_link_broadcaster"
+          args="0.17 0.0 0.05 3.1415 0.0 0 base_link base_laser_link" />
+
+    <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_camera_link_broadcaster"
+          args="0.105  0.0 -0.065  0.0  0.0 0.0 gimbal camera" />
+
+
+  <node name="rplidar_node" pkg="rplidar_ros" type="rplidarNode" output="screen" respawn="true">
+      <param name="serial_port" type="string" value="/dev/ttyUSB0"/>
+      <param name="serial_baudrate" type="int" value="115200"/>
+      <param name="frame_id" type="string" value="base_laser_link"/>
+      <param name="inverted" type="bool" value="false"/>
+      <param name="angle_compensate" type="bool" value="true"/>
+  </node>
+
+
+ <!-- <include file="$(find lidar_detector)/launch/icra_roboin_lidar.launch"/>-->
+
+
+  <!-- amcl -->
+  <include file="$(find icra_roboin_navigation)/launch/amcl.launch">
+
+  	<arg name="odom_frame_id"     default="odom"/>
+  	<arg name="base_frame_id"     default="base_link"/>
+  	<arg name="global_frame_id"     default="map"/>
+
+  	<arg name="scan_topic_name"     default="scan"/>
+  	<arg name="map_topic_name"     default="map"/>
+
+  	<arg name="initial_pose_x" default="1"/>
+  	<arg name="initial_pose_y" default="1"/>
+  	<arg name="initial_pose_a" default="0"/>
+
+  </include>
+
+
+  <include file="$(find icra_roboin_navigation)/launch/navigation_base.launch">
+
+  	<arg name="cmd_vel_topic" default="omni_cmd_vel" />
+  	<arg name="local_planner_algorithm" default="dwa_local_planner/DWAPlannerROS"/>
+
+  </include>
+
+
+  <!-- behavior interface node -->
+  <node pkg="icra_roboin_behavior" type="behavior_node" name="behavior_node" respawn="false" output="screen">
+  	<param name="team" value="red_team"/>
+  	<param name="rule" value="1vs1"/>
+  </node>
+
+  <node pkg="icra_roboin_vision" type="roboin_vision_node" name="vision_node" respawn="true" />
+
+  <include file="$(find realsense2_camera)/launch/icra_roboin_vision.launch" />
+
+
+
+</launch>

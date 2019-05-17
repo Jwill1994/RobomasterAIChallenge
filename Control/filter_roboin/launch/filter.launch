@@ -1,6 +1,0 @@
-<launch>
-  <node pkg="filter_roboin" type="scan_to_scan_filter_chain"
-      name="laser_filter">
-    <rosparam command="load" file="$(find filter_roboin)/my_laser_config.yaml" />
-  </node>
-</launch>
