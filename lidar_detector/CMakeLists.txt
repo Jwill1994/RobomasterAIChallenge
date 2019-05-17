@@ -21,8 +21,3 @@ add_library(lidar_filter src/lidar_filter.cpp src/khc/hcsr04.cpp src/khc/jetsonG
 add_executable(lidar_filter_node src/lidar_filter.cpp src/khc/hcsr04.cpp src/khc/jetsonGPIO.cpp)
 target_link_libraries(lidar_filter_node ${catkin_LIBRARIES})
 
-add_library(lidar_controller src/lidar_controller.cpp)
-add_executable(lidar_controller_node src/lidar_controller.cpp)
-target_link_libraries(lidar_controller_node ${catkin_LIBRARIES})
-
-

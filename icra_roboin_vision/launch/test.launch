@@ -1,0 +1,6 @@
+<launch>
+
+  <include file="$(find roborts_bringup)/launch/base.launch" />
+  <node pkg="icra_roboin_vision" type="roboin_vision_node" name="vision_node" respawn="true" />
+
+</launch>
