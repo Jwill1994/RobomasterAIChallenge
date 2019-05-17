@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
 	ros::init(argc, argv, "vision_node");
 	ros::NodeHandle nh;
         ros::NodeHandle n_local("~");
-        n_local.param<double>("us_color", us_color, "none");
+        n_local.param<std::string>("us_color", us_color, "none");
         std::cout<<"us color is : "<<us_color<<std::endl;
 	darknet::Detector detector_yolo(cfg_file, weights_file); // YOLO
 	vision_detector detector(detector_yolo); // object detector class setup
