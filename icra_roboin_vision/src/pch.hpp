@@ -60,7 +60,7 @@ const int imgWidth = 640;   // Width of network's input image
 const int imgHeight = 480;  // Height of network's input image
 const float PI = 3.14159265358979323846;
 //const float confThreshold = 0.3; // Confidence threshold
-const float confThreshold = 0.1; // Confidence threshold
+const float confThreshold = 0.3; // Confidence threshold
 const float nmsThreshold = 0.4;  // Non-maximum suppression threshold
 
 //creat datatype red_bluesum (to return redsum, bluesum)
