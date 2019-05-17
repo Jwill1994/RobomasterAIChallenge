@@ -16,7 +16,7 @@ int main(int argc, char **argv) {
 	ros::NodeHandle nh;
         ros::NodeHandle n_local("~");
         n_local.param<std::string>("us_color", us_color, "none");
-        std::cout<<"us color is : "<<us_color<<std::endl;
+        ROS_ERROR("us color is : %s\n", us_color);
 	darknet::Detector detector_yolo(cfg_file, weights_file); // YOLO
 	vision_detector detector(detector_yolo); // object detector class setup
 	send_control send_control; // gimbal에 보낼 정보들
