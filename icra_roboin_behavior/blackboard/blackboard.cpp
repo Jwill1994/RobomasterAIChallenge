@@ -33,6 +33,10 @@ Blackboard::Blackboard(TeamType team = TeamType::BLUE_TEAM, RuleType rule = Rule
     referee_projectile_supply = nh.subscribe("projectile_supply",1,&Blackboard::ProjectileSupplyCB,this);
 
     my_pose_setting = nh.subscribe("amcl_pose",1,&Blackboard::MyPoseCB,this);
+
+    gamestatus.remaining_time = 180;
+
+    ammo_server = nh.advertiseService("/ammo",&Blackboard::ammoCB,this);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -429,23 +433,17 @@ void Blackboard::UpdateMyPose(){
 void Blackboard::UpdateTime(){
 //    int a = 180 - gamestatus.remaining_time;
     int a = time_last_buffed_.toSec() + 30;
-    time_passed_from_game_start_ = ros::Time(180);// - //gamestatus.remaining_time);
-    if(!is_buff_zone_online_){
+    time_passed_from_game_start_ = ros::Time(180 - gamestatus.remaining_time);
+    if(is_buff_zone_online_){
         time_left_for_buff_zone_to_online_ = ros::Time(0);
     } else {
 
         time_left_for_buff_zone_to_online_ = ros::Time(a-time_passed_from_game_start_.toSec()); //buffzone opens every 1min
-        if(time_left_for_buff_zone_to_online_ <= ros::Time(0)){
+        if(time_left_for_buff_zone_to_online_.toSec() <= 0){
             time_left_for_buff_zone_to_online_ = ros::Time(0);
         }
     }
-    int b = a - time_passed_from_game_start_.toSec();
-    if(b<=0){
-        time_buff_left_ = ros::Time(0);
-    }
-    else{
-        time_buff_left_ = ros::Time(b);
-    }
+    time_buff_left_ = time_left_for_buff_zone_to_online_;
 
 
     if(supplierstatus.status!=0){
@@ -457,6 +455,9 @@ void Blackboard::UpdateTime(){
         }
         else if(60<time_last_reloaded_.toSec()<120){
             time_left_for_reload_zone_to_online_ = ros::Time(120-time_last_reloaded_.toSec());
+        }
+        else{
+            time_left_for_reload_zone_to_online_ = ros::Time(180 - time_last_reloaded_.toSec());
         }
     }
     }
@@ -521,6 +522,24 @@ void Blackboard::GameSurvivorCB(const roborts_msgs::GameSurvivor::ConstPtr& msg)
 void Blackboard::BonusStatusCB(const roborts_msgs::BonusStatus::ConstPtr& msg){
     bonusstatus.red_bonus = msg->red_bonus;
     bonusstatus.blue_bonus = msg->blue_bonus;
+    if(robotstatus.id==3 || robotstatus.id==4){
+        if(bonusstatus.red_bonus==1){
+           buff_ing = true;
+        }
+        else{
+           buff_ing = false;
+        }
+    }
+
+    else if(robotstatus.id==13 || robotstatus.id==14){
+        if(bonusstatus.blue_bonus==1){
+           buff_ing = true;
+        }
+        else{
+           buff_ing = false;
+    }
+    }
+
 /*
 uint8 UNOCCUPIED = 0
 uint8 BEING_OCCUPIED= 1
@@ -531,6 +550,12 @@ uint8 OCCUPIED = 2
 
 void Blackboard::SupplierStatusCB(const roborts_msgs::SupplierStatus::ConstPtr& msg){
     supplierstatus.status = msg->status;
+    if(supplierstatus.status == 2){
+        reload_ing = true;
+    }
+    else{
+        reload_ing = false;
+    }
 /*
 uint8 CLOSE = 0
 uint8 PREPARING = 1
@@ -637,6 +662,19 @@ void Blackboard::MyPoseCB(const geometry_msgs::PoseWithCovarianceStamped::ConstP
     my_amcl_pose.pose.pose.position.z = msg->pose.pose.orientation.z;
 }
 
+bool Blackboard::ammoCB(icra_roboin_msgs::ammo::Request &req, icra_roboin_msgs::ammo::Response &res){
+    if(req.shoot == 1){
+        this->AmmoMinusOne();
+    }
+
+    if(ammo_>=0){
+        res.remain_bullet = ammo_;
+    }
+    else{
+        res.remain_bullet = 0;
+    }
+    return 1;
+}
 
 
 

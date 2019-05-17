@@ -135,6 +135,9 @@ bool BehaviorInterface::GetGeneralInfoServiceCB(icra_roboin_msgs::BlackboardGene
     resp.goal = blackboard_->GetGoal();
     resp.current_behavior_style = int(blackboard_->GetBehaviorStyle()); 
     resp.current_behavior_process = int(blackboard_->GetBehaviorProcess()); //0,1,2,3 : idle, running, success, failure
+    resp.buff_ing = blackboard_->buff_ing;
+    resp.reload_ing = blackboard_->reload_ing;
+
     return true;
 }
 

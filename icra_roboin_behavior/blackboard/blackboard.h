@@ -20,6 +20,7 @@
 #include "icra_roboin_msgs/RefereePenalty.h"
 #include "icra_roboin_msgs/RefereeBuff.h"
 #include "icra_roboin_msgs/RefereeReload.h"
+#include "icra_roboin_msgs/ammo.h"
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 
 #include "roborts_msgs/GameStatus.h"
@@ -54,6 +55,8 @@ class Blackboard {
         ros::Subscriber referee_projectile_supply;
 
         ros::Subscriber my_pose_setting;
+
+        ros::ServiceServer ammo_server;
 ///////////////////////////////////////////////////////////////
 /////////////////////////  callback  //////////////////////////
 ///////////////////////////////////////////////////////////////
@@ -70,7 +73,8 @@ class Blackboard {
         void ProjectileSupplyCB(const roborts_msgs::ProjectileSupply::ConstPtr& msg);
 
         void MyPoseCB(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg);
-    
+
+        bool ammoCB(icra_roboin_msgs::ammo::Request &req, icra_roboin_msgs::ammo::Response &res);
 
     public: //Interfaces
         Blackboard(TeamType team, RuleType rule);
@@ -156,6 +160,9 @@ class Blackboard {
 
         //fix from here
 
+        bool buff_ing = false;
+        bool reload_ing = false;
+
 
 
 
@@ -197,7 +204,7 @@ class Blackboard {
         std::array<double,3> enemy_buff_time_estimation_moments_; //variance, skewness, kurtosis
 
         //Ammunition Info
-        int ammo_ = 50;
+        int ammo_ = 40;
         bool is_reloading_ = false;
 
     private: //Team Info
@@ -291,6 +298,7 @@ class Blackboard {
         /////////////////////// referee value //////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////////
         roborts_msgs::GameStatus gamestatus;
+
         roborts_msgs::GameResult gameresult;
         roborts_msgs::GameSurvivor gamesurvivor;
         roborts_msgs::BonusStatus bonusstatus;

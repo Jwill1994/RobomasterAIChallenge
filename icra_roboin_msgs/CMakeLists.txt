@@ -39,6 +39,7 @@ add_service_files(
   YawGain.srv
   PitchGain.srv
   XYOffset.srv
+  ammo.srv
 )
 
 add_action_files(

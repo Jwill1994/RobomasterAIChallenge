@@ -27,3 +27,5 @@ uint8 enemy_priority
 icra_roboin_msgs/GoalDescription goal
 uint8 current_behavior_style
 uint8 current_behavior_process
+bool buff_ing
+bool reload_ing
