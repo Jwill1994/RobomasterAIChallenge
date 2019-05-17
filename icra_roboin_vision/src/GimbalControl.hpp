@@ -181,7 +181,7 @@ void GimbalControl::sentry() {
     } else {
         //printf("sentry mode\n");
         gimbal_angle.pitch_mode = false;
-        gimbal_angle.pitch_angle = 0.3;
+        gimbal_angle.pitch_angle = 0.1;
         gimbal_angle.yaw_mode = false;
         current_angle += SEARCH_VEL * search_dir;
         gimbal_angle.yaw_angle = current_angle;
