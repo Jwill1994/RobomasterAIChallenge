@@ -1,3 +1,0 @@
-<launch>
-  <node pkg="lidar_detector" type="lidar_controller_node" name="lidar_controller_node"/>
-</launch>

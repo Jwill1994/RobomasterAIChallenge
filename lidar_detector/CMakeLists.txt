@@ -5,10 +5,9 @@ add_compile_options(-std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS
   message_generation
-  geometry_msgs
   sensor_msgs
-  std_msgs
   roscpp
+  roborts_msgs
 )
 
 catkin_package()
