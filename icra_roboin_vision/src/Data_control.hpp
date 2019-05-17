@@ -144,13 +144,16 @@ void data_control::assign_data(std::string obj, bbox_t info) {
     if(obj == robot_str) {assign_robot(robot_id, info);}
     else if(obj == dead_num1_str) {assign_armour(dead_armour_id, info);}
     else if(obj == dead_num2_str) {assign_armour(dead_armour_id, info);}
-#ifdef US_BLUE
-    else if(obj == red_num1_str) {assign_armour(num1_id, info);}
-    else if(obj == red_num2_str) {assign_armour(num2_id, info);}
-#else // US_RED
-    else if(obj == blue_num1_str) {assign_armour(num1_id, info);}
-    else if(obj == blue_num2_str) {assign_armour(num2_id, info);}
-#endif
+	
+    if (us_color == "blue") {
+        if(obj == red_num1_str) {assign_armour(num1_id, info);}
+        else if(obj == red_num2_str) {assign_armour(num2_id, info);}
+    }
+    else if (us_color == "red") {
+        if(obj == blue_num1_str) {assign_armour(num1_id, info);}
+        else if(obj == blue_num2_str) {assign_armour(num2_id, info);}
+    }
+
 }
 
 void send_control::to_gimbal_clear() {

@@ -72,6 +72,9 @@ cv::Mat vision_detector::draw_boxes(data_control& CT_data, std::vector<bbox_t> r
     int const colors[6][3] = { { 1,0,1 },{ 0,0,1 },{ 0,1,1 },{ 0,1,0 },{ 1,1,0 },{ 1,0,0 } };
     cv::Mat boxed_img;
     boxed_img= CT_data.dataset.detectimg.clone();
+#ifdef DISPLAY
+    cv::rectangle(boxed_img, cv::Rect(i.x, i.y, i.w, i.h), color, 2);
+#endif //!DISPLAY
     for (auto &i : result_vec) {
         cv::Scalar color = darknet:: obj_id_to_color(i.obj_id);
         if (obj_names.size() > i.obj_id) {

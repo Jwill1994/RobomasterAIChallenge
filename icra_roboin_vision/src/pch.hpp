@@ -2,7 +2,6 @@
 #pragma once 
 #ifndef PCH_HPP
 #define PCH_HPP
-#define US_BLUE // rosparam으로 어케 해야할지 모르겠음... define이 안되어 있으면 우리는 RED인걸로
 #define OPENCV // using for yolo_class.hpp
 //cpp basic header file
 //#include <filesystem>  //for c++17
@@ -75,7 +74,7 @@ const std::string  weights_file = "/home/nvidia/weights/yolov3-tiny_3c/yolov3-ti
 //const std::string cfg_file="/home/nvidia/weights/yolov2/yolov2_test.cfg";
 //const std::string weights_file= "/home/nvidia/weights/yolov2/yolov2.backup";
 
-
+std::string us_color = "none"; // 아군 색상
 bool get_data = false;      // Used to make loop go only when image is received
 const int imgWidth = 640;   // Width of network's input image
 const int imgHeight = 480;  // Height of network's input image
