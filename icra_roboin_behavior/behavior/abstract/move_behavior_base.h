@@ -31,7 +31,7 @@ class MoveBehaviorBase: public BehaviorBase{
 
         virtual void RunLockon() {
             if(blackboard_->GetLockedOnEnemy() == PlayerType::ENEMY_ONE | blackboard_->GetLockedOnEnemy() == PlayerType::ENEMY_TWO){
-                if( (ros::Time::now() - (blackboard_->GetTimeLastSeen(blackboard_->GetLockedOnEnemy()))).toSec() > 2 ){
+                if( (ros::Time::now() - (blackboard_->GetTimeLastSeen(blackboard_->GetLockedOnEnemy()))).toSec() > 5. ){
                     blackboard_->ConfirmHitFastResponse();
                     blackboard_->SetLockedOnEnemy(PlayerType::ALLY);
                     NoLockonTargetBehavior();
@@ -59,13 +59,13 @@ class MoveBehaviorBase: public BehaviorBase{
                   blackboard_->ConfirmHitFastResponse();
                   break;
                 case ArmorType::LEFT:
-                  lockon_module_->LockonInterface(LockonMode::ANGULAR_VEL,4);
+                  lockon_module_->LockonInterface(LockonMode::ANGULAR_VEL,2);
                   break;
                 case ArmorType::RIGHT:
-                  lockon_module_->LockonInterface(LockonMode::ANGULAR_VEL,-4);
+                  lockon_module_->LockonInterface(LockonMode::ANGULAR_VEL,-2);
                   break;
                 case ArmorType::REAR:
-                  lockon_module_->LockonInterface(LockonMode::ANGULAR_VEL,4);
+                  lockon_module_->LockonInterface(LockonMode::ANGULAR_VEL,2);
                   break;
             } 
         }

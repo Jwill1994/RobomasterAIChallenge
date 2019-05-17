@@ -28,10 +28,9 @@
       <param name="frame_id" type="string" value="base_laser_link"/>
       <param name="inverted" type="bool" value="false"/>
       <param name="angle_compensate" type="bool" value="true"/>
+      <remap from="/scan" to="/scan_before"/>
   </node>
-
-
- <!-- <include file="$(find lidar_detector)/launch/icra_roboin_lidar.launch"/>-->
+  <node pkg="lidar_detector" type="lidar_filter_node" name="lidar_filter_node"/>
 
 
   <!-- amcl -->

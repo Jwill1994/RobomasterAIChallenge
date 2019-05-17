@@ -19,6 +19,9 @@
 #include "behavior/get_buff_behavior.h"
 #include "behavior/ready_behavior.h"
 #include "behavior/backboot_behavior.h"
+#include "behavior/specific_angle_behavior.h"
+
+
 #include "icra_roboin_msgs/BehaviorStyleSet.h"
 #include "icra_roboin_msgs/SetGoal_2.h"
 #include "icra_roboin_msgs/SetEnemyPriority.h"

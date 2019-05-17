@@ -445,8 +445,8 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
         //////////////////////////////////////////////////////////
         /*                         Ally                         */
         //////////////////////////////////////////////////////////
-
-        if(yolo->enemy_detected[0] == 1){
+/*
+        if(yolo->enemy_detected[0] == 5){
             is_ally_detected_ = true;
             time_ally_last_seen_ = yolo->stamp;
 
@@ -480,7 +480,7 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
         } else {
             is_ally_detected_ = false;
         }
-        
+*/        
 
         //////////////////////////////////////////////////////////
         /*                       Enemy 1                        */
@@ -491,16 +491,17 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
             }
             is_enemy_detected_ = true;
             is_enemy_1_detected_ = true;
-            time_enemy_last_seen_ = yolo->stamp;
-            time_enemy_1_last_seen_ = yolo->stamp;
+            time_enemy_last_seen_ = ros::Time::now();
+            time_enemy_1_last_seen_ = ros::Time::now();
             EnemyAlert();
             //ROS_INFO("Enemy 1 Detected!");
             number_of_detected_enemies_++;
             //tf transform code
             tf::Stamped<tf::Pose> enemy1_cam_tf, enemy1_global_tf;
             geometry_msgs::PoseStamped enemy1_cam_pose, enemy1_global_pose;
-            enemy1_cam_pose.header.frame_id=namespace_ + "/" +"base_link";
-            enemy1_cam_pose.header.stamp = yolo->stamp;
+            //enemy1_cam_pose.header.frame_id=namespace_ + "/" +"base_link";
+            enemy1_cam_pose.header.frame_id="camera";
+            enemy1_cam_pose.header.stamp = ros::Time::now();
             enemy1_cam_pose.pose.position.z = (float(yolo->distance[1])+ROBOT_PERIMETER)/1000 * std::sin((float(yolo->angle_verti[1]) / 100)*3.141592/180);
             double flat_d = ( (float(yolo->distance[1])+ROBOT_PERIMETER)/1000 * std::cos((float(yolo->angle_verti[1]) / 100)*3.141592/180) ) ;   
             enemy1_cam_pose.pose.position.x = flat_d * std::cos((-1*float(yolo->angle_hori[1]) / 100)*3.141592/180);
@@ -516,7 +517,7 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
             enemy1_cam_tf.stamp_ = ros::Time(0);
             try
             {
-                tf_ptr_->transformPose(namespace_ + "/" +"map",enemy1_cam_tf,enemy1_global_tf);
+                tf_ptr_->transformPose("map",enemy1_cam_tf,enemy1_global_tf);
                 tf::poseStampedTFToMsg(enemy1_global_tf,enemy1_global_pose);
                 enemy_pose_1_ = enemy1_global_pose;
                 enemy_pose_1_ghost_ = enemy_pose_1_;
@@ -538,24 +539,25 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
         //////////////////////////////////////////////////////////
         /*                       Enemy 2                        */
         //////////////////////////////////////////////////////////
+
         if(yolo->enemy_detected[2]==1){
             if(is_enemy_2_detected_ != true){
                 is_new_enemy_ = true;
             }
             is_enemy_detected_ = true;
             is_enemy_2_detected_ = true;
-            time_enemy_last_seen_ = yolo->stamp;
-            time_enemy_2_last_seen_ = yolo->stamp;
+            time_enemy_last_seen_ = ros::Time::now();
+            time_enemy_2_last_seen_ = ros::Time::now();
             EnemyAlert();
             //ROS_INFO("Enemy 2 Detected!");
             number_of_detected_enemies_++;
             //tf transform code
             tf::Stamped<tf::Pose> enemy2_cam_tf, enemy2_global_tf;
             geometry_msgs::PoseStamped enemy2_cam_pose, enemy2_global_pose;
-            enemy2_cam_pose.header.frame_id=namespace_ + "/" +"base_link";
-            enemy2_cam_pose.header.stamp = yolo->stamp;
+            enemy2_cam_pose.header.frame_id="camera";
+            enemy2_cam_pose.header.stamp = ros::Time::now();
             enemy2_cam_pose.pose.position.z = (float(yolo->distance[2])+ROBOT_PERIMETER)/1000 * std::sin((float(yolo->angle_verti[2]) / 100)*3.141592/180);
-            double flat_d =( (float(yolo->distance[1])+ROBOT_PERIMETER)/1000 * std::cos((float(yolo->angle_verti[2]) / 100)*3.141592/180) );  
+            double flat_d =( (float(yolo->distance[2])+ROBOT_PERIMETER)/1000 * std::cos((float(yolo->angle_verti[2]) / 100)*3.141592/180) );  
             enemy2_cam_pose.pose.position.x = flat_d * std::cos((-1*float(yolo->angle_hori[2]) / 100)*3.141592/180);
             enemy2_cam_pose.pose.position.y = flat_d * std::sin((-1*float(yolo->angle_hori[2]) / 100)*3.141592/180);
 
@@ -569,7 +571,7 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
             enemy2_cam_tf.stamp_ = ros::Time(0);
             try
             {
-                tf_ptr_->transformPose(namespace_ + "/" +"map",enemy2_cam_tf,enemy2_global_tf);
+                tf_ptr_->transformPose("map",enemy2_cam_tf,enemy2_global_tf);
                 tf::poseStampedTFToMsg(enemy2_global_tf,enemy2_global_pose);
                 enemy_pose_2_ = enemy2_global_pose;
                 enemy_pose_2_ghost_ = enemy_pose_2_;
@@ -585,7 +587,7 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
         } else {
             is_enemy_2_detected_ = false;
         }
-        
+    
         
 
     } else {

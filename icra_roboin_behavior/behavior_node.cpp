@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
     auto get_buff_behavior = std::make_shared<icra_roboin_behavior::GetBuffBehavior>(chassis_executor,gimbal_executor,lockon_module,blackboard);
     auto ready_behavior = std::make_shared<icra_roboin_behavior::ReadyBehavior>(chassis_executor,gimbal_executor,lockon_module,blackboard);
     auto backboot_behavior = std::make_shared<icra_roboin_behavior::BackbootBehavior>(chassis_executor,gimbal_executor,lockon_module,blackboard);
-
+    auto specific_angle_behavior = std::make_shared<icra_roboin_behavior::SpecificAngleBehavior>(chassis_executor,gimbal_executor,lockon_module,blackboard);
 
     std::vector<std::shared_ptr<icra_roboin_behavior::BehaviorBase>> behavior_factory;
     behavior_factory.push_back(std::dynamic_pointer_cast<icra_roboin_behavior::BehaviorBase>(lockon_search_move_behavior));
@@ -63,6 +63,8 @@ int main(int argc, char** argv) {
     behavior_factory.push_back(std::dynamic_pointer_cast<icra_roboin_behavior::BehaviorBase>(get_buff_behavior));
     behavior_factory.push_back(std::dynamic_pointer_cast<icra_roboin_behavior::BehaviorBase>(ready_behavior));
     behavior_factory.push_back(std::dynamic_pointer_cast<icra_roboin_behavior::BehaviorBase>(backboot_behavior));
+    behavior_factory.push_back(std::dynamic_pointer_cast<icra_roboin_behavior::BehaviorBase>(specific_angle_behavior));
+
 
     icra_roboin_behavior::BehaviorInterface behavior_interface(chassis_executor,gimbal_executor,lockon_module,blackboard,behavior_factory);
 
