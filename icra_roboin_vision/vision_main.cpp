@@ -15,9 +15,9 @@ bool team_col = false;
 
 void team_color(const roborts_msgs::RobotStatus::ConstPtr& msg) {
         if (team_col == false) {
-                if (msg->id == 3 || msg->id == 4) {us_color = "red";}
-                else if (msg->id == 13 || msg->id == 14) {us_color = "blue";}
-                ROS_ERROR("us color is : %s\n", us_color.c_str());
+                if (msg->id == 3 || msg->id == 4) {our_color = "red";}
+                else if (msg->id == 13 || msg->id == 14) {our_color = "blue";}
+                ROS_ERROR("our color is : %s\n", our_color.c_str());
                 team_col = true;
         }
 }

@@ -145,11 +145,11 @@ void data_control::assign_data(std::string obj, bbox_t info) {
     else if(obj == dead_num1_str) {assign_armour(dead_armour_id, info);}
     else if(obj == dead_num2_str) {assign_armour(dead_armour_id, info);}
 	
-    if (us_color == "blue") {
+    if (our_color == "blue") {
         if(obj == red_num1_str) {assign_armour(num1_id, info);}
         else if(obj == red_num2_str) {assign_armour(num2_id, info);}
     }
-    else if (us_color == "red") {
+    else if (our_color == "red") {
         if(obj == blue_num1_str) {assign_armour(num1_id, info);}
         else if(obj == blue_num2_str) {assign_armour(num2_id, info);}
     }

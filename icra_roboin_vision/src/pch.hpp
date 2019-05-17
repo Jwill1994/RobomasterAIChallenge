@@ -54,7 +54,7 @@ const std::string  cfg_file = "/home/nvidia/weights/yolov3-tiny_3c_with640480/yo
 const std::string  weights_file = "/home/nvidia/weights/yolov3-tiny_3c_with640480/yolov3-tiny_224_224.backup";
 
 
-std::string us_color = "none"; // 아군 색상
+std::string our_color = "none"; // 아군 색상
 bool get_data = false;      // Used to make loop go only when image is received
 const int imgWidth = 640;   // Width of network's input image
 const int imgHeight = 480;  // Height of network's input image
