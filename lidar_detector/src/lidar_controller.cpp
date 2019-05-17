@@ -4,32 +4,21 @@ void command_input(const std_msgs::Int8::ConstPtr& msg) {behave = msg->data;}
 
 void lidar_input(const sensor_msgs::LaserScan::ConstPtr& msg) {
     if (behave != 0) {return;}
-    geometry_msgs::Twist vel;
-    current_angle = msg->angle_min;
-    counter = 0; angle_counter = 0; side_incline = 0;
-
-    for (short i=0; i<msg->ranges.size(); i++) {
-        if (current_angle >= side_start && current_angle <= side_end) {
-            current_point[0] = msg->ranges[i] * cos(current_angle);
-            current_point[1] = msg->ranges[i] * sin(current_angle);
-            counter++;}
-        else if (current_angle > side_end) {break;} // 원하는 구간 다 지남
+    geometry_msgs::Twist vel; side_incline = 0;
+    current_angle = msg->angle_min + msg->angle_increment*100; // -80도 부터 보기 시작
+    for (short i =0; i<num_angle; i++) { // -60도 까지 보기
+        side_incline += (msg->ranges[101+i]*sin(current_angle + msg->angle_increment)-msg->ranges[100+i] * sin(current_angle)) /
+                        (msg->ranges[101+i]*cos(current_angle + msg->angle_increment)-msg->ranges[100+i] * cos(current_angle)) / num_angle;
         current_angle += msg->angle_increment;
-        if (counter > 1) {
-            side_incline += (current_point[1] - past_point[1]) / (current_point[0] - past_point[0]);
-            angle_counter++;}
-        past_point[0] = current_point[0]; past_point[1] = current_point[1];
     }
-    side_incline /= angle_counter;
-    if (side_incline > min_incline_diff) {vel.angular.z = 1.0;}
-    else if (side_incline < -1 * min_incline_diff) {vel.angular.z = -1.0;}
-    current_angle = msg->angle_min;
+    if (side_incline > min_incline_diff) {vel.angular.z = vel_give;}
+    else if (side_incline < -1 * min_incline_diff) {vel.angular.z = -1*vel_give;}
     if (msg->ranges[90] < 1.5) {
-        if (msg->ranges[90] - reload_wanted_left > min_xy_diff) {vel.linear.y = 1.0;}
-        else if (msg->ranges[90] - reload_wanted_left < -1*min_xy_diff) {vel.linear.y = -1.0;}
+        if (msg->ranges[90] - reload_wanted_left > min_xy_diff) {vel.linear.y = vel_give;}
+        else if (msg->ranges[90] - reload_wanted_left < -1*min_xy_diff) {vel.linear.y = -1*vel_give;}
     }
-    if (msg->ranges[180] - reload_wanted_back > min_xy_diff) {vel.linear.x = -1.0;}
-    else if (msg->ranges[180] - reload_wanted_back < -1*min_xy_diff) {vel.linear.x = 1.0;}
+    if (msg->ranges[180] - reload_wanted_back > min_xy_diff) {vel.linear.x = -1*vel_give;}
+    else if (msg->ranges[180] - reload_wanted_back < -1*min_xy_diff) {vel.linear.x = vel_give;}
     vel_pub_.publish(vel);
 }
 
