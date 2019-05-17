@@ -7,7 +7,6 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   sensor_msgs
   roscpp
-  roborts_msgs
 )
 
 catkin_package()

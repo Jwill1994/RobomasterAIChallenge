@@ -44,6 +44,9 @@ void get_scan(const sensor_msgs::LaserScan::ConstPtr& scan) {
     if (sonic_ok) {
         sonic_ok = false;
         if (sonic_dist > 0.15 && sonic_dist < 1.3) { // lidar minimum 0.15 meter
+            scan_pub.ranges[174] = sonic_dist + lidar_box_dist;
+            scan_pub.ranges[175] = sonic_dist + lidar_box_dist;
+            scan_pub.ranges[176] = sonic_dist + lidar_box_dist;
             scan_pub.ranges[177] = sonic_dist + lidar_box_dist;
             scan_pub.ranges[178] = sonic_dist + lidar_box_dist;
             scan_pub.ranges[179] = sonic_dist + lidar_box_dist;
@@ -52,6 +55,12 @@ void get_scan(const sensor_msgs::LaserScan::ConstPtr& scan) {
             scan_pub.ranges[182] = sonic_dist + lidar_box_dist;
             scan_pub.ranges[183] = sonic_dist + lidar_box_dist;
             scan_pub.ranges[184] = sonic_dist + lidar_box_dist;
+            scan_pub.ranges[185] = sonic_dist + lidar_box_dist;
+            scan_pub.ranges[186] = sonic_dist + lidar_box_dist;
+            scan_pub.ranges[187] = sonic_dist + lidar_box_dist;
+            scan_pub.intensities[174] = 47.0;
+            scan_pub.intensities[175] = 47.0;
+            scan_pub.intensities[176] = 47.0;
             scan_pub.intensities[177] = 47.0;
             scan_pub.intensities[178] = 47.0;
             scan_pub.intensities[179] = 47.0;
@@ -60,6 +69,9 @@ void get_scan(const sensor_msgs::LaserScan::ConstPtr& scan) {
             scan_pub.intensities[182] = 47.0;
             scan_pub.intensities[183] = 47.0;
             scan_pub.intensities[184] = 47.0;
+            scan_pub.intensities[185] = 47.0;
+            scan_pub.intensities[186] = 47.0;
+            scan_pub.intensities[187] = 47.0;
         }
     }
     pub_ok = true;

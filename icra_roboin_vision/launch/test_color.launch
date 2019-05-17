@@ -1,0 +1,8 @@
+<launch>
+
+  <node pkg="icra_roboin_vision" type="roboin_vision_node" name="vision_node" respawn="true">
+    <param name="us_color" type="string" value="blue"/>
+  </node>
+
+
+</launch>
