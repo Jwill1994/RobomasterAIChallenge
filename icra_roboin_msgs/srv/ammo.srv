@@ -1,0 +1,3 @@
+bool shoot
+---
+uint8 remain_bullet

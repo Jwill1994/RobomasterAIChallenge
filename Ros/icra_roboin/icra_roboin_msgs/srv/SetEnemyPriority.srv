@@ -1,5 +1,0 @@
-std_msgs/Header header
-int16 enemy_priority
----
-bool success
-int64 info
