@@ -30,26 +30,6 @@ public:
         try {
             cv_ptr_color = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
             CT_ptr->dataset.detectimg = cv_ptr_color->image;
-#ifdef MAKE_IMG
-            std::ostringstream img_name; img_name.str(""); img_name.clear();
-#ifndef START_NEW
-            bool flag = true;
-            while (flag) {
-                img_name.str(""); img_name.clear();
-                if (num_img < 10) {img_name << "/home/nvidia/img/" << "0000" << num_img << ".jpg";}
-                else if (9 < num_img < 100) {img_name << "/home/nvidia/img/" << "000" << num_img << ".jpg";}
-                else if (99 < num_img < 1000) {img_name << "/home/nvidia/img/" << "00" << num_img << ".jpg";}
-                else if (999 < num_img < 10000) {img_name << "/home/nvidia/img/" << "0" << num_img << ".jpg";}
-                else if (9999 < num_img) {img_name << "/home/nvidia/img/" << num_img << ".jpg";}
-                num_img++; flag = exists_test3(img_name.str());}
-#endif
-            if (num_img < 10) {img_name << "/home/nvidia/img/" << "0000" << num_img << ".jpg";}
-            else if (9 < num_img < 100) {img_name << "/home/nvidia/img/" << "000" <<num_img << ".jpg";}
-            else if (99 < num_img < 1000) {img_name << "/home/nvidia/img/" << "00" << num_img << ".jpg";}
-            else if (999 < num_img < 10000) {img_name << "/home/nvidia/img/" << "0" << num_img << ".jpg";}
-            else if (9999 < num_img) {img_name << "/home/nvidia/img/" <<num_img << ".jpg";}
-            num_img++; cv::imwrite(img_name.str(), CT_ptr->dataset.detectimg);
-#endif
         }
         catch (cv_bridge::Exception& e) {ROS_ERROR("cv_bridge exception: %s", e.what()); return;}
     }

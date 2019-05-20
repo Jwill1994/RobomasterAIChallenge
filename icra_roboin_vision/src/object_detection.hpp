@@ -41,9 +41,6 @@ std::vector<std::string> vision_detector::objects_names_from_file(std::string co
 red_bluesum vision_detector::redbluesum(cv::Mat input_img, int x, int y, int w, int h){
     red_bluesum result;
     cv::Rect region_of_interest = cv::Rect(x,y,w,h);
-#ifdef VISION_DATACHECK
-    std::cout << region_of_interest << std::endl;
-#endif //!VISION_DATACHECK
     cv::Mat image_roi = input_img(region_of_interest);
     cv::Mat hsv;
     cvtColor(image_roi, hsv, CV_BGR2HSV);
@@ -69,9 +66,6 @@ cv::Mat vision_detector::draw_boxes(data_control& CT_data, std::vector<bbox_t> r
     int const colors[6][3] = { { 1,0,1 },{ 0,0,1 },{ 0,1,1 },{ 0,1,0 },{ 1,1,0 },{ 1,0,0 } };
     cv::Mat boxed_img;
     boxed_img= CT_data.dataset.detectimg.clone();
-#ifdef DISPLAY
-    cv::rectangle(boxed_img, cv::Rect(i.x, i.y, i.w, i.h), color, 2);
-#endif //!DISPLAY
     for (auto &i : result_vec) {
         cv::Scalar color = darknet:: obj_id_to_color(i.obj_id);
         if (obj_names.size() > i.obj_id) {
@@ -85,12 +79,6 @@ cv::Mat vision_detector::draw_boxes(data_control& CT_data, std::vector<bbox_t> r
                                                     std::min(i.h,CT_data.dataset.detectimg.cols-i.y-i.h-1));
                 float sumblue=result.bluesum;
                 float sumred=result.redsum;
-#ifdef VISION_DATACHECK
-                std::cout<<"ARMOUR sumblue/sumred: " << (sumblue+1)/(sumred+1) <<
-                            " sumblue: "<<sumblue<<
-                           " sumred: " <<sumred<<
-                           std::endl;
-#endif //!VISION_DATACHECK
                 if(obj_name=="number1"){
                     if(((sumblue+1000)/(sumred+1000)<2 && (sumblue+1000)/(sumred+1000)>0.5)||sumred==sumblue){
                         obj_name= dead_num1_str;
@@ -106,12 +94,6 @@ cv::Mat vision_detector::draw_boxes(data_control& CT_data, std::vector<bbox_t> r
                     else if (sumblue < sumred) {obj_name = red_num2_str;}
                 }
             }
-#ifdef DISPLAY
-            cv::rectangle(boxed_img, cv::Point2f(std::max((int)i.x - 1, 0), std::max((int)i.y - 30, 0)),
-                          cv::Point2f(std::min((int)i.x + max_width, boxed_img.cols - 1), std::min((int)i.y, boxed_img.rows - 1)),
-                          color, CV_FILLED, 8, 0);
-            putText(boxed_img, obj_name, cv::Point2f(i.x, i.y - 10), cv::FONT_HERSHEY_COMPLEX_SMALL, 1.2, cv::Scalar(0, 0, 0), 2);
-#endif //!DISPLAY
             CT_data.assign_data(obj_name, i);
         }
     }
@@ -124,10 +106,6 @@ void vision_detector::vision_detector_run(data_control& CT_data,Detector& detect
         this->detect_Data = detector.detect(CT_data.dataset.detectimg , confThreshold, false);
         cv::Mat boxed_img = this->draw_boxes(CT_data, this->detect_Data, this->obj_names);
         CT_data.after_assign(); // robot color check using armour
-#ifdef DISPLAY
-        cv::imshow("Display window" , boxed_img);
-        //cv::imshow("Depth window", CT_data.dataset.depth_img);
-#endif //!DISPLAY
     }catch(std::runtime_error) {std::cout<<"catched an error\n";}
 }
 #endif

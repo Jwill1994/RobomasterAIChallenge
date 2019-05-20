@@ -17,6 +17,7 @@ bool has_buff
 duration buff_left
 int16 ammo
 geometry_msgs/PoseStamped my_pose
+geometry_msgs/PoseStamped ally_pose
 geometry_msgs/PoseStamped enemy_pose1
 geometry_msgs/PoseStamped enemy_pose2
 uint8 how_many_enemies_detected

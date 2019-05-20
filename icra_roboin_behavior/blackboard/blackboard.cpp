@@ -446,7 +446,8 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
         /*                         Ally                         */
         //////////////////////////////////////////////////////////
 
-        if(yolo->enemy_detected[0] == 5){
+        if(yolo->enemy_detected[0] == 1){
+            ROS_ERROR("1");
             is_ally_detected_ = true;
             time_ally_last_seen_ = yolo->stamp;
 
@@ -471,6 +472,7 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
             ally_cam_tf.stamp_ = ros::Time(0);
             try
             {
+		ROS_ERROR("2");
                 //tf_ptr_->transformPose(namespace_ + "/" +"map",ally_cam_tf,ally_global_tf);
                 tf_ptr_->transformPose("map",ally_cam_tf,ally_global_tf);
                 tf::poseStampedTFToMsg(ally_global_tf,ally_global_pose);
@@ -481,6 +483,7 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
             }
         } else {
             is_ally_detected_ = false;
+            ROS_ERROR("3");
         }
        
 

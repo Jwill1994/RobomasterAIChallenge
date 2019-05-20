@@ -1,5 +1,3 @@
-
-//#ifdef ROS
 #define SETTING
 #include <time.h>
 #include "icra_roboin_msgs/PitchGain.h"
@@ -11,7 +9,7 @@
 #include "roborts_msgs/ShootCmd.h"
 #include "roborts_msgs/FricWhl.h"
 #include "roborts_msgs/RobotHeat.h"
-#include "roborts_msgs/geometry_msgs.h"
+#include "geometry_msgs/Twist.h"
 // #include "obstacle_detector/Obstacles.h" // TODO check again
 #include "ros/ros.h"
 //#include "SendData_Control.hpp"
@@ -30,7 +28,9 @@
 //#define X_CENTER_PIXEL 212
 //#define Y_CENTER_PIXEL 120
 
-#define SEARCH_COUNT 40
+#define MAIN_VEL 0.01
+#define OFFSET_VEL 0.001
+#define SEARCH_COUNT 38
 #define MAX_VEL 1.1
 #define ONE_EXP_LOOP 200
 
@@ -69,7 +69,7 @@ private:
     //float yaw_gains[2][3] = {{0.00045, 0.000006, 0.000203}, {0.s0005, 0.0000003, 0.00103}};
     float yaw_gains[2][3] = {{0.00026, 0.000017, 0.0027}, {0.00022, 0.000013, 0.0035}};  // 기본값 0.0038 0.00001 0.00001
 
-    float SEARCH_VEL = 0.04;  // SEARCH_VEL * SEARCH_COUNT = total angle (1.5~1.7)
+    float SEARCH_VEL = MAIN_VEL;  // SEARCH_VEL * SEARCH_COUNT = total angle (1.5~1.7)
     bool setCenter = false;
     int search_count = 0;
     short search_dir = 1;
@@ -138,17 +138,18 @@ public:
         PITCH_D_GAIN = 0.0;
         start_time = clock();
 
-        run_fric_client =  nh.serviceClient<roborts_msgs::ShootCmd>("cmd_fric");  // topic name 확인하기
+        run_fric_client =  nh.serviceClient<roborts_msgs::FricWhl>("cmd_fric_wheel");  // topic name 확인하기
         roborts_msgs::FricWhl run_fric;
         run_fric.request.open = true;
         while(1) {
-            if (run_fric_client.call(shoot_cmd)) {
-                //ROS_INFO("shoot Call Success");
-                if(run_fric_client.response.received) break;
-                //ROS_INFO("shoot call Received");
-            } else {
-                ROS_ERROR("run fric wheel Call Fail");
-            }
+    		if (run_fric_client.call(run_fric)) {
+        	        ROS_INFO("shoot Call Success");
+			break;
+        	        //if(run_fric.response.received) break;
+        	        //ROS_INFO("shoot call Received");
+        	    } else {
+        	        ROS_ERROR("run fric wheel Call Fail");
+        	    }
         }
 
 
@@ -175,19 +176,11 @@ public:
 */
 
 
-void Chassis::ChassisSpeedCtrlCallback(const geometry_msgs::Twist::ConstPtr &vel){
-    roborts_sdk::cmd_chassis_speed chassis_speed;
-    chassis_speed.vx = vel->linear.x*1000;
-    chassis_speed.vy = vel->linear.y*1000;
-    chassis_speed.vw = vel->angular.z * 1800.0 / M_PI;
-    chassis_speed.rotate_x_offset = 0;
-    chassis_speed.rotate_y_offset = 0;
-    chassis_speed_pub_->Publish(chassis_speed);
-}
+
 
 void GimbalControl::cmdVelCallback(const geometry_msgs::Twist::ConstPtr &vel) {
-    SEARCH_VEL = 0.04 * pow((vel->anglular.z - MAX_VEL),2.0) / 1.21;
-    chassis_ang_z = vel->anglular.z;
+    SEARCH_VEL = (MAIN_VEL - OFFSET_VEL) * pow((vel->angular.z - MAX_VEL),2.0) / 1.21 + OFFSET_VEL;
+    chassis_ang_z = vel->angular.z;
 }
 
 
@@ -218,7 +211,7 @@ void GimbalControl::sentry() {
 //    }
 
     if(!setCenter)  {
-        //printf("set Center\n");
+        printf("set Center\n");
         YAW_P_GAIN = yaw_gains[1][0];
         YAW_I_GAIN = yaw_gains[1][1];
         YAW_D_GAIN = yaw_gains[1][2];
@@ -245,10 +238,8 @@ void GimbalControl::sentry() {
         search_count = 0;
         //printf("--------------direction change----------\n");
     }
-    search_count++;
-}
 
-    else if (ccurrent_angle <= -1 * SEARCH_VEL * SEARCH_COUNT) {
+    else if (current_angle <= -1 * SEARCH_VEL * SEARCH_COUNT) {
         search_dir = 1;
         search_count = 0;
 //printf("--------------direction change----------\n");
@@ -307,7 +298,7 @@ void GimbalControl::cmdShoot(int shoot) { // 1: shoot, 0: stop
     shoot_cmd.request.mode = shoot;
     shoot_cmd.request.number = shoot;
     if(shoot == 1) shoot_count++;
-    if(shoot_count < 4) return;
+    if(shoot_count < 8) return;
     shoot_count = 0;
 
 
@@ -317,8 +308,8 @@ void GimbalControl::cmdShoot(int shoot) { // 1: shoot, 0: stop
 
             icra_roboin_msgs::ammo subtract_ammo;
 
-            .reqeust.shoot = true;
-            count_bullet_client.call(subtract_ammo) {
+            subtract_ammo.request.shoot = true;
+            if(count_bullet_client.call(subtract_ammo)) {
                 ROS_INFO("sent ammo call");
                 printf("remaining bullet: %d\n", subtract_ammo.response.remain_bullet);
             }
@@ -501,7 +492,7 @@ void GimbalControl::run(send_target_info& target) {
             }
             */
 
-            //this->sentry();//
+            this->sentry();//
 
         }
 

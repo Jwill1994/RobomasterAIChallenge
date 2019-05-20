@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
     icra_roboin_msgs
     sensor_msgs
     std_msgs
+    geometry_msgs
 )
 generate_messages(
   DEPENDENCIES
