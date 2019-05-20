@@ -248,12 +248,12 @@ void GimbalControl::sentry() {
     search_count++;
 }
 
-else if (ccurrent_angle <= -1 * SEARCH_VEL * SEARCH_COUNT) {
-search_dir = 1;
-search_count = 0;
+    else if (ccurrent_angle <= -1 * SEARCH_VEL * SEARCH_COUNT) {
+        search_dir = 1;
+        search_count = 0;
 //printf("--------------direction change----------\n");
-}
-search_count++;
+    }
+    search_count++;
 }
 
 
