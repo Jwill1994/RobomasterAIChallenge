@@ -1,12 +1,11 @@
 // v4.0
 // v3.01까지 곽동환 작업, v4.0부터 김형철 작업
 //#define DISPLAY // 화면 보이기
-
 //#define DEBUG // 각 함수가 잘 작동하는지 확인
 //#define VISION_DATACHECK // 디스플레이, CV 관련 디버깅
 //#define ZIMBAL_DATACHECK // 짐벌 관련 디버깅
 //#define MAKE_IMG   // 이미지를 만들고 싶을때
-#define START_NEW // 이미지 번호를 1번부터 배정
+//#define START_NEW // 이미지 번호를 1번부터 배정
 //#define WATCH_LOOP_TIME
 
 #include "src/all.hpp"

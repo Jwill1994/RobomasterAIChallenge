@@ -25,9 +25,6 @@ public:
 	vision_detector(Detector& detector) {
         detector.nms = nmsThreshold;
 		this->obj_names = this->objects_names_from_file(names_file);
-#ifdef DEBUG
-		std::cout << "vision_detector initialized" << std::endl;
-#endif
 	}
 	~vision_detector() = default;
 	void vision_detector_run(data_control& CT_data, Detector& detector);

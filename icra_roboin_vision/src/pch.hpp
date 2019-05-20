@@ -81,7 +81,8 @@ const unsigned int engage_enemy_id = 4;
 const unsigned int num1_id = 5;
 const unsigned int num2_id = 6;
 const unsigned int dead_armour_id = 7;
-const unsigned int robot_id = 8;
+const unsigned int ally_armour_id = 8;
+const unsigned int robot_id = 9;
 
 const std::string robot_str = "robot";
 const std::string blue_num1_str = "#1_blue";

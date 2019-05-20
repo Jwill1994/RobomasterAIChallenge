@@ -28,6 +28,11 @@ void vision_ros::pubEnemyInfo(data_control& CT_data) {
 			ros_msg.distance[1] = CT_data.dataset.distance[i]*1000;
 			num++;
 		}
+		else if (CT_data.dataset.robot_id[i] == alliance_id) {
+			ros_msg.enemy_detected[0] = 1;
+			ros_msg.angle_hori[0] = CT_data.dataset.angle_hori[i];
+			ros_msg.distance[0] = CT_data.dataset.distance[i]*1000;
+		}
 		else if (CT_data.dataset.robot_id[i] == enemy_id) {
 			ros_msg.enemy_detected[2] = 1;
 			ros_msg.angle_hori[2] = CT_data.dataset.angle_hori[i];
