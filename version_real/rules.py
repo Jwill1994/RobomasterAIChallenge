@@ -239,7 +239,7 @@ class rules():
         self.pm.sector_assign(minimum[0], minimum[1], r1[0], r2, r1[2], gamma, value/constant)
         
     def first_occupy(self, pos):
-        self.pm.circle_assign(pos[0], pos[1], self.robot_radius*2.7, 0, mode='abs')
+        self.pm.circle_assign(pos[0], pos[1], self.robot_radius*2.4, 0, mode='abs')
     
     def robot_diff(self, pos):
         self.pm.circle_assign(pos[0], pos[1], .2, -20, mode = 'abs')
@@ -276,18 +276,21 @@ class rules():
             if enemy_pos[0]-e_reload[0] < 1.5 and enemy_pos[1]-e_reload[1] < 1.5 : 
                 value = value * 1.2
       
-        if not my_bonus and enemy_bonus_effect:
+        print(my_bonus, enemy_bonus_effect)      
+        if not my_bonus  and enemy_bonus_effect:
             stance == 'passive'
         # aggressive stance일 경우 최적 거리 distance에서 가장 높은 값을 가지고, 거기서 멀어지면 값이 작아짐.
-        if stance == 'passive' or 'guarded':
+        if stance == 'passive' or stance == 'guarded':
            #circle_assign(enemy_pos[0], enemy_pos[1], int(distance*constant*4), value/constant)
            self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], distance*constant*2, -value/constant, constant)
+           print('passive')
 
         else:
             self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], distance*constant, value/constant, constant*2)
             self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], distance, -1*value/constant, constant)
             if percentage > 70:
                 self.pm.circle_assign(enemy_pos[0], enemy_pos[1], self.robot_radius*2, 0, mode='abs')
+            print('agg')
                 
   
     def current_zone(self, n, value):
@@ -318,3 +321,4 @@ class rules():
             return(1)
 
         
+

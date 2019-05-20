@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import rules
 import time
 import math
-from roborts_msgs.msg import BonusStatus, GameResult, GameStatus, GameSurvivor, ProjectileSupply, RobotBonus, RobotDamage, RobotHeat, RobotShoot, RobotStatus, SupplierStatus
+#from roborts_msgs.msg import BonusStatus, GameResult, GameStatus, GameSurvivor, ProjectileSupply, RobotBonus, RobotDamage, RobotHeat, RobotShoot, RobotStatus, SupplierStatus
 
 
 import rospy
@@ -54,11 +54,11 @@ def buff_control(time):
     global team1_buff_count
     global team2_buff_count
     if 59 < time < 61:
-        team1_buff_count = 2
-        team2_buff_count = 2
+        team1_buff_count = 1
+        team2_buff_count = 1
     if 119 < time < 121:
-        team1_buff_count = 2
-        team2_buff_count = 2
+        team1_buff_count = 1
+        team2_buff_count = 1
         
 def reload_control(time):
     global r1_reload_count
@@ -92,7 +92,7 @@ def robot_setting_2(robot, time,team_pos, team_buff_time, team_buff_count, team_
     robot.reload_zone(robot.stance, team_pos, reload_count, robot.ammo, rz) 
     #out = robot.stuck_recovery(10, 300)
     
-    #robot.first_occupy(team_pos)
+    robot.first_occupy(team_pos)
     robot.wall_limit()
     #if out == 1:
     out = 'Good'
@@ -261,10 +261,17 @@ if __name__ == '__main__':
     robot_move = True
     update_time = 0.1
     
+    
+    
     robots = ['empty','', '', '', '']
     #team2 = 'blue'
     team1 = 'blue'
     team = 'blue'
+    
+    if id_ ==3 or id_==4:
+        team = 'red'
+    else:
+        team = 'blue'
 
     robot1 = rules.rules([100,160], team1, 1)
     #robot2 = rules.rules([100,160], team1, 2)
@@ -272,9 +279,9 @@ if __name__ == '__main__':
     #robot4 = rules.rules([100,160], team2, 4)
 
     r1_pos = [.5,0.5]
-    r2_pos = [7.5, 4.5]
-    r3_pos = [7.5,.5]
-    r4_pos = [0.5, 0.5]
+    r2_pos = [7.5, 0.5]
+    r3_pos = [7.5,4.5]
+    r4_pos = [0.5, 4.5]
     
     startTime = time.time()   
     now = now_time(startTime)
@@ -312,17 +319,17 @@ if __name__ == '__main__':
     r1_behav = 3
     
 
-    rospy.Subscriber("/field_bonus_status", BonusStatus, BonusStatus_callback)
-    rospy.Subscriber("/game_result", GameResult, GameResult_callback)
-    rospy.Subscriber("/game_status", GameStatus, GameStatus_callback)
-    rospy.Subscriber("/game_survivor", GameSurvivor, GameSurvivor_callback)
-    rospy.Subscriber("/projectile_supply", ProjectileSupply, ProjectileSupply_callback)
-    rospy.Subscriber("/robot_bonus", RobotBonus, RobotBonus_callback)
-    rospy.Subscriber("/robot_damage", RobotDamage, RobotDamage_callback)
-    rospy.Subscriber("/robot_heat", RobotHeat, RobotHeat_callback)
-    rospy.Subscriber("/robot_shoot", RobotShoot, RobotShoot_callback)
-    rospy.Subscriber("/robot_status", RobotStatus, RobotStatus_callback)
-    rospy.Subscriber("/field_supplier_status", SupplierStatus, SupplierStatus_callback)
+    #rospy.Subscriber("/field_bonus_status", BonusStatus, BonusStatus_callback)
+    #rospy.Subscriber("/game_result", GameResult, GameResult_callback)
+    #rospy.Subscriber("/game_status", GameStatus, GameStatus_callback)
+    #rospy.Subscriber("/game_survivor", GameSurvivor, GameSurvivor_callback)
+    #rospy.Subscriber("/projectile_supply", ProjectileSupply, ProjectileSupply_callback)
+    #rospy.Subscriber("/robot_bonus", RobotBonus, RobotBonus_callback)
+    #rospy.Subscriber("/robot_damage", RobotDamage, RobotDamage_callback)
+    #rospy.Subscriber("/robot_heat", RobotHeat, RobotHeat_callback)
+    #rospy.Subscriber("/robot_shoot", RobotShoot, RobotShoot_callback)
+    #rospy.Subscriber("/robot_status", RobotStatus, RobotStatus_callback)
+    #rospy.Subscriber("/field_supplier_status", SupplierStatus, SupplierStatus_callback)
     
     enemy_bonus= 0
     enemy_bonus_effect = False
@@ -333,13 +340,15 @@ if __name__ == '__main__':
     #==========================================================
     
     while game_status <4 :
+        print('Wait..')
+        time.sleep(.2)
         print('Wait...')
-        time.sleep(.25)
-    
+        time.sleep(.2)
+
     while remaining_time >0:
-        now = 180-remaining_time
-        print("damage_source : ")
-        print(damage_source)
+        
+        #print("damage_source : ")
+        #print(damage_source)
         
         enemy_bonus_prev = enemy_bonus
         
@@ -358,7 +367,7 @@ if __name__ == '__main__':
         else:
             enemy_bonus_effect = False
         
-
+        print('Ah')
         buff_control(now)  
         reload_control(now)
         r1_state = GetInfoClient(robots[1],1)
@@ -366,10 +375,14 @@ if __name__ == '__main__':
         r1_rotation = r1_state['my_pose']['pose']['orientation']['w']
         e1_pos = [r1_state['enemy_pose1']['pose']['position']['x'], r1_state['enemy_pose1']['pose']['position']['y']] 
         e2_pos = [r1_state['enemy_pose2']['pose']['position']['x'], r1_state['enemy_pose2']['pose']['position']['y']] 
+        try:
+            r2_pos = [r1_state['ally_pose']['pose']['position']['x'], r1_state['ally_pose']['pose']['position']['y']] 
+        except:
+            pass
         robot1.pos = r1_pos
-        e1_detected = r1_state['is_enemy_1_detected']
-        e2_detected = r1_state['is_enemy_2_detected']
-        locked_on = r1_state['locked_on_enemy']
+        #e1_detected = r1_state['is_enemy_1_detected']
+        #e2_detected = r1_state['is_enemy_2_detected']
+        #locked_on = r1_state['locked_on_enemy']
         robot1.pos = r1_pos
         
         robot1.health = remain_hp
@@ -427,7 +440,7 @@ if __name__ == '__main__':
               
         # reload zone th.
         if robot1.isIn(r1_pos, r1_pos, team1, 'reload'):
-            if now - r1_reload_active_counter > 5 and r1_reload_count > 0 and r1_behav == 8 and (status == 2 or status == 0):                
+            if now - r1_reload_active_counter > 5 and r1_reload_count > 0 and r1_behav == 8 and (status == 2 or status == 1):                
                 r1_reload_count = r1_reload_count - 1
                 robot1.ammo = robot1.ammo + 50
                 r1_reload_active_counter = now
@@ -515,4 +528,5 @@ if __name__ == '__main__':
 'locked_on_enemy': 0, 
 'time_passed_from_start': {'secs': 180, 'nsecs': 0}, 
 'ammo': 50}
+
 
