@@ -64,10 +64,11 @@ class rules():
         return result
             
         
-    def set_stance(self, health, ammo, time):
-        stance = 'guarded'
+    def set_stance(self, health, ammo, my_bonus, time):
+        stance = 'guarded'       
         
-        if health > 1200 and ammo > 0:
+        
+        if health > 1200 and ammo > 0 and my_bonus > 0:
             if ammo > 10:
                 stance = 'aggressive'
             else:
@@ -78,6 +79,9 @@ class rules():
             stance = 'aggressive_low_health'
         else:
             stance = 'guarded'      
+            
+            
+        self.stance = stance
         
         return stance
     
@@ -103,29 +107,40 @@ class rules():
             
             self.pm.rectangular_assign(x1,x2,y1,y2, -50, mode='abs')
                       
-    def bonus_zone(self, team_pos, buff_left, buff_zone_count, has_buff, value):
+    def bonus_zone(self, team_pos, buff_left, buff_zone_count, has_buff, value, game_t, my_b, eny_b):
         p = [1.700,3.250,0.200]
         e = [6.300,1.750,0.200] 
         if self.team == 'red':
             p, e = e, p         
-        
-        if not has_buff:
-            value = value * 1.2 
             
-        if buff_zone_count > 0:
-            # 버프 남은 시간이 5초 이하일 경우 매우 높은 value
-            if buff_left < 5:
-                self.pm.square_assign_gradient(p[0], p[1], p[2]*10, value/3,2)
-                self.pm.square_assign(p[0], p[1], p[2]/2, value, mode='abs')
-            # 버프 남은 시간이 5~10초일 경우 근처에서 value가 높지만 미리 점령하면 안되므로 점령 지점은 value가 낮음
-            elif buff_left < 10:
-                self.pm.square_assign_gradient(p[0], p[1], p[2]*10, value,2)               
-                self.pm.square_assign(p[0], p[1], p[2]*2.5, 0, mode='abs')
-            else:                
-                self.pm.square_assign(p[0], p[1], p[2]*2.5, -10)
-            # 버프를 활성화 시키면 안될 때에는 일단 막고 있음
-           
-        self.pm.square_assign(e[0], e[1], e[2]*2.5, -30)
+        flag = False
+        
+        if game_t % 60 < 15:
+            if eny_b == 1 or eny_b == 2:
+                flag = True
+            else:
+                flag = False
+        else:
+            flag = True
+                
+        if flag:
+            if not has_buff:
+                value = value * 1.2 
+                
+            if buff_zone_count > 0:
+                # 버프 남은 시간이 5초 이하일 경우 매우 높은 value
+                if buff_left < 5:
+                    self.pm.square_assign_gradient(p[0], p[1], p[2]*10, value/3,2)
+                    self.pm.square_assign(p[0], p[1], p[2]/2, value, mode='abs')
+                # 버프 남은 시간이 5~10초일 경우 근처에서 value가 높지만 미리 점령하면 안되므로 점령 지점은 value가 낮음
+                elif buff_left < 10:
+                    self.pm.square_assign_gradient(p[0], p[1], p[2]*10, value/10,2)               
+                    self.pm.square_assign(p[0], p[1], p[2]*2.5, 0, mode='abs')
+                else:                
+                    self.pm.square_assign(p[0], p[1], p[2]*2.5, -10)
+                # 버프를 활성화 시키면 안될 때에는 일단 막고 있음
+               
+            self.pm.square_assign(e[0], e[1], e[2]*2.5, -30)
                
     def enemy_zone(self, stance, enemy_pos, percentage, distance, value):
         # 확실하게 적을 포착할 수록 작은 구역에 더 높은 가치, 적의 위치를 잘 모를 경우 작아짐 
@@ -248,37 +263,33 @@ class rules():
                 value = value/2
              self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], 5, -value, 4)        
         
-    def enemy_zone_diff(self, stance, enemy_pos, percentage, distance, value):
+    def enemy_zone_diff(self, stance, enemy_pos, percentage, distance, value, my_bonus, enemy_bonus_effect):
         # 확실하게 적을 포착할 수록 작은 구역에 더 높은 가치, 적의 위치를 잘 모를 경우 작아짐 
         #percent90일때 const2, percent 50일때 const4를 기준으로 선형 할당 
         constant = -0.05*percentage + 6.5 
         
         if self.team == 'blue':
             e_bonus = [6.300,1.750,0.500]
-            e_reload = [4.000,4.400,0.500]
+            e_reload = [4.000,0.750,0.500]
             if enemy_pos[0]-e_bonus[0] < 1.5 and enemy_pos[1]-e_bonus[1] < 1.5 : 
                 value = value * 1.2
             if enemy_pos[0]-e_reload[0] < 1.5 and enemy_pos[1]-e_reload[1] < 1.5 : 
                 value = value * 1.2
-        else:
-            e_bonus = [1.700,3.250,0.500]
-            e_reload = [4.000,0.600,0.500]
-            if enemy_pos[0]-e_bonus[0] < 1.5 and enemy_pos[1]-e_bonus[1] < 1.5 : 
-                value = value * 1.2
-            if enemy_pos[0]-e_reload[0] < 1.5 and enemy_pos[1]-e_reload[1] < 1.5 : 
-                value = value * 1.2
+      
+        if not my_bonus and enemy_bonus_effect:
+            stance == 'passive'
         # aggressive stance일 경우 최적 거리 distance에서 가장 높은 값을 가지고, 거기서 멀어지면 값이 작아짐.
-        if stance == 'aggressive':
+        if stance == 'passive' or 'guarded':
+           #circle_assign(enemy_pos[0], enemy_pos[1], int(distance*constant*4), value/constant)
+           self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], distance*constant*2, -value/constant, constant)
+
+        else:
             self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], distance*constant, value/constant, constant*2)
             self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], distance, -1*value/constant, constant)
             if percentage > 70:
                 self.pm.circle_assign(enemy_pos[0], enemy_pos[1], self.robot_radius*2, 0, mode='abs')
                 
-        # passive stance일 경우 그냥 적에서 멀어질수록 높은 값을 가짐
-        elif stance == 'passive':
-           #circle_assign(enemy_pos[0], enemy_pos[1], int(distance*constant*4), value/constant)
-           self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], distance*constant*2, -value/constant, constant)
-
+  
     def current_zone(self, n, value):
         last = min(n, 45)
         try:
