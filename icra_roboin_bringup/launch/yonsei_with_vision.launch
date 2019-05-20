@@ -22,7 +22,7 @@
           args="0.105  0.0 -0.065  0.0  0.0 0.0 gimbal camera" />
 
 
-  <node name="rplidar_node" pkg="rplidar_ros" type="rplidarNode" output="screen" respawn="true">
+  <node name="rplidar_node" pkg="rplidar_ros" type="rplidarNode" output="screen" respawn="true" launch-prefix="sudo">
       <param name="serial_port" type="string" value="/dev/ttyUSB0"/>
       <param name="serial_baudrate" type="int" value="115200"/>
       <param name="frame_id" type="string" value="base_laser_link"/>
@@ -30,7 +30,7 @@
       <param name="angle_compensate" type="bool" value="true"/>
       <remap from="/scan" to="/scan_before"/>
   </node>
-  <node pkg="lidar_detector" type="lidar_filter_node" name="lidar_filter_node"/>
+  <node pkg="lidar_detector" type="lidar_filter_node" name="lidar_filter_node" launch-prefix="sudo"/>
 
 
   <!-- amcl -->
@@ -64,7 +64,7 @@
   	<param name="rule" value="1vs1"/>
   </node>
 
-  <node pkg="icra_roboin_vision" type="roboin_vision_node" name="vision_node" respawn="true" />
+  <node pkg="icra_roboin_vision" type="roboin_vision_node" name="vision_node" respawn="true",launch-prefix="sudo" />
 
   <include file="$(find realsense2_camera)/launch/icra_roboin_vision.launch" />
 
