@@ -333,10 +333,12 @@ if __name__ == '__main__':
     rospy.Subscriber("/robot_status", RobotStatus, RobotStatus_callback)
     rospy.Subscriber("/field_supplier_status", SupplierStatus, SupplierStatus_callback)
     
+    my_bonus = 0
     enemy_bonus= 0
     enemy_bonus_effect = False
     my_bonus_effect = True
     enemy_bonus_time = -60
+    
 
 
     #==========================================================
@@ -351,6 +353,8 @@ if __name__ == '__main__':
         now = 180 - remaining_time
         
         enemy_bonus_prev = enemy_bonus
+        my_bonus_prev = my_bonus
+        status_prev = status
         
         if team == 'blue':
             my_bonus = blue_bonus
@@ -361,6 +365,23 @@ if __name__ == '__main__':
             
         if enemy_bonus_prev == 1 and enemy_bonus == 2:
             enemy_bonus_time = now
+            team1_buff_count = team1_buff_count - 1
+            
+        if my_bonus_prev==1 and my_bonus == 2:
+            team1_buff_count = team1_buff_count -1
+            team1_has_buff = True
+            team1_buff_time_start = now
+            team1_buff_time = 30.0 # live only th
+            
+        if status_prev == 1 and status == 2:
+            r1_reload_count = r1_reload_count - 1
+            robot1.ammo = robot1.ammo + 50
+            r1_reload_active_counter = now
+            
+        if bonus:
+            team1_has_buff = True
+        else:
+            team1_has_buff = False
             
         if enemy_bonus_time + 30 > now:
             enemy_bonus_effect = True
@@ -409,6 +430,8 @@ if __name__ == '__main__':
         #================ referee system ========================================================================================                
         
         
+            
+        
         # bonus zone th.
         if robot1.isIn(r1_pos, r1_pos, team1, 'bonus'):
             if now - team1_bonus_active_counter > 5 and team1_buff_count > 0 and my_bonus == 2:
@@ -427,8 +450,7 @@ if __name__ == '__main__':
                 team1_has_buff = True
                 team1_buff_time_start = now
                 team1_buff_time = 30.0 # live only th
-                team1_bonus_active_counter = now
-                    
+                team1_bonus_active_counter = now                    
         else:
             team1_bonus_active_counter = now 
 
@@ -448,8 +470,7 @@ if __name__ == '__main__':
                 behav = 1
                 goal = np.array([robot1.pos[0]+1,robot1.pos[1]+1,0,0,0,0,0])   
                 SetGoalClient(goal,robots[1]) 
-                SetBehaviorClient(behav,robots[1])
-                
+                SetBehaviorClient(behav,robots[1])                
         else:
             r1_reload_active_counter = now
         
@@ -484,53 +505,10 @@ if __name__ == '__main__':
     SetGoalClient(goal,robots[1]) 
     SetBehaviorClient(behav,robots[1])
 
- 
-           
-        # force reload - remove it in real game
       
 
 
 
-{'current_behavior_style': 4, 
-'current_behavior_process': 1, 
-'my_pose': 
-{'header': 
-{'stamp': 
-{'secs': 1558029607, 'nsecs': 861191283}, 
-'frame_id': '/map', 'seq': 0}, 
-'pose': 
-{'position': 
-{'y': 3.196442656626007, 'x': 1.7302472321562106, 'z': 0.0}, 
-'orientation': 
-{'y': 0.0, 'x': 0.0, 'z': -0.18683142862779048, 'w': 0.982391987587897}
-}
-}, 
-'last_hit_time': 
-{'secs': 180, 'nsecs': 0}, 
-'goal': 
-{'etc': 0.0, 'ya': 0.0, 'yaw': 0.0, 'xa': 0.0, 
-'header': 
-{'stamp': 
-{'secs': 1558029606, 'nsecs': 449084997}, 'frame_id': '/map', 'seq': 0}, 'y': 0.0, 'x': 0.0, 'yawa': 0.0}, 'stamp': {'secs': 1558029607, 'nsecs': 868204934}, 
-'which_armor_hit': 0, 
-'reload_zone_cooltime': {'secs': 60, 'nsecs': 0}, 
-'my_health': 2000, 
-'how_many_enemies_detected': 0, 
-'has_buff': False, 
-'enemy_priority': 3, 
-'game_state': 1, 
-'game_start_time': {'secs': 0, 'nsecs': 0}, 
-'is_enemy_1_detected': False, 
-'buff_left': {'secs': 210, 'nsecs': 0}, 
-'enemy_pose2': {'header': {'stamp': {'secs': 0, 'nsecs': 0}, 'frame_id': '', 'seq': 0}, 
-'pose': {'position': {'y': 0.0, 'x': 0.0, 'z': 0.0}, 'orientation': {'y': 0.0, 'x': 0.0, 'z': 0.0, 'w': 0.0}}}, 
-'enemy_pose1': {'header': {'stamp': {'secs': 0, 'nsecs': 0}, 'frame_id': '', 'seq': 0}, 'pose': {'position': {'y': 0.0, 'x': 0.0, 'z': 0.0}, 'orientation': {'y': 0.0, 'x': 0.0, 'z': 0.0, 'w': 0.0}}}, 
-'is_hit': False, 
-'is_enemy_2_detected': False, 
-'buff_zone_cooltime': {'secs': 0, 'nsecs': 0}, 
-'locked_on_enemy': 0, 
-'time_passed_from_start': {'secs': 180, 'nsecs': 0}, 
-'ammo': 50}
 
 
 
