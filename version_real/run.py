@@ -50,15 +50,16 @@ chassis_output = 1
 shooter_output = 1
 status = 1
 
+
 def buff_control(time):
     global team1_buff_count
     global team2_buff_count
     if 59 < time < 61:
-        team1_buff_count = 2
-        team2_buff_count = 2
+        team1_buff_count = 1
+        team2_buff_count = 1
     if 119 < time < 121:
-        team1_buff_count = 2
-        team2_buff_count = 2
+        team1_buff_count = 1
+        team2_buff_count = 1
         
 def reload_control(time):
     global r1_reload_count
@@ -74,11 +75,11 @@ def reload_control(time):
 def now_time(start):    
     return time.time() - start
 
-def robot_setting_1(robot, time, team_pos, e1_pos, e2_pos, ez, mc, eo, wc, cz):
-    robot.set_stance(robot.health, robot.ammo, time)
+def robot_setting_1(robot, time, team_pos, e1_pos, e2_pos, ez, mc, eo, wc, cz, my_bonus, enemy_bonus_effect):
+    robot.set_stance(robot.health, robot.ammo,time, bonus)
     robot.init()        
-    robot.enemy_zone_diff(robot.stance, e1_pos, 100, 2.3, ez)
-    robot.enemy_zone_diff(robot.stance, e2_pos, 100, 2.3, ez)
+    robot.enemy_zone_diff(robot.stance, e1_pos, 100, 2.3, ez, my_bonus, enemy_bonus_effect)
+    robot.enemy_zone_diff(robot.stance, e2_pos, 100, 2.3, ez, my_bonus, enemy_bonus_effect)
     robot.move_cost(robot.stance, mc)
     robot.enemy_overlap(e1_pos, e2_pos, eo)
     robot.wall_cover(robot.stance, e1_pos, wc)
@@ -87,12 +88,12 @@ def robot_setting_1(robot, time, team_pos, e1_pos, e2_pos, ez, mc, eo, wc, cz):
     robot.enemy_occupy(e2_pos)
     robot.current_zone(10 , cz)
     
-def robot_setting_2(robot, time,team_pos, team_buff_time, team_buff_count, team_has_buff, reload_count, bz, rz):
-    robot.bonus_zone(team_pos, team_buff_time, team_buff_count, team_has_buff, bz)
+def robot_setting_2(robot, time,team_pos, team_buff_time, team_buff_count, team_has_buff, reload_count, bz, rz, my_bonus, enemy_bonus):
+    robot.bonus_zone(team_pos, team_buff_time, team_buff_count, team_has_buff, bz, time, my_bonus, enemy_bonus)
     robot.reload_zone(robot.stance, team_pos, reload_count, robot.ammo, rz) 
     #out = robot.stuck_recovery(10, 300)
     
-    #robot.first_occupy(team_pos)
+    robot.first_occupy(team_pos)
     robot.wall_limit()
     #if out == 1:
     out = 'Good'
@@ -113,14 +114,14 @@ def robot_set_goal(robot, robot_move):
         SetGoalClient(goal,robots[robot_number]) 
         SetBehaviorClient(behav,robots[robot_number])
     elif 3.8 < goal_x < 4.2 and 4.0 < goal_y < 4.4:
-	behav = 8
-	goal = np.array([4, 4.25, -math.pi/2,0,0,0,0])
+        behav = 8
+        goal = np.array([4, 4.25, -math.pi/2,0,0,0,0])
         SetGoalClient(goal,robots[robot_number]) 
         SetBehaviorClient(behav,robots[robot_number])
     else:
         behav = 3
         goal = np.array([0,0,0,0,0,0,0])
-        SetGoalClient(goal,robots[robot_number]) 
+        SetGoalClient(goal,robots[robot_number])
         SetBehaviorClient(behav,robots[robot_number])
     
     return behav, score, value
@@ -261,25 +262,34 @@ if __name__ == '__main__':
     robot_move = True
     update_time = 0.1
     
+    
+    
     robots = ['empty','', '', '', '']
     #team2 = 'blue'
     team1 = 'blue'
+    team = 'blue'
+    
+    if id_ ==3 or id_==4:
+        team = 'red'
+    else:
+        team = 'blue'
+
     robot1 = rules.rules([100,160], team1, 1)
     #robot2 = rules.rules([100,160], team1, 2)
     #robot3 = rules.rules([100,160], team2, 3)   
     #robot4 = rules.rules([100,160], team2, 4)
 
     r1_pos = [.5,0.5]
-    r2_pos = [7.5, 4.5]
-    r3_pos = [7.5,.5]
-    r4_pos = [0.5, 0.5]
+    r2_pos = [7.5, 0.5]
+    r3_pos = [7.5,4.5]
+    r4_pos = [0.5, 4.5]
     
     startTime = time.time()   
     now = now_time(startTime)
     
     # referee system initialize      
-    team1_buff_count = 2
-    team2_buff_count = 2 
+    team1_buff_count = 1
+    team2_buff_count = 1
     r1_reload_count = 0
     r2_reload_count = 0
     r3_reload_count = 0
@@ -308,7 +318,8 @@ if __name__ == '__main__':
     cz = [50,50,50,50,25]    
     thres = 2
     r1_behav = 3
-    
+
+   
 
     rospy.Subscriber("/field_bonus_status", BonusStatus, BonusStatus_callback)
     rospy.Subscriber("/game_result", GameResult, GameResult_callback)
@@ -322,35 +333,69 @@ if __name__ == '__main__':
     rospy.Subscriber("/robot_status", RobotStatus, RobotStatus_callback)
     rospy.Subscriber("/field_supplier_status", SupplierStatus, SupplierStatus_callback)
     
-    while now < 180:   
-        print("damage_source : ")
-        print(damage_source)
+    enemy_bonus= 0
+    enemy_bonus_effect = False
+    my_bonus_effect = True
+    enemy_bonus_time = -60
 
-        now = now_time(startTime) # <- game time 0~180 .th
+
+    #==========================================================
+    
+    while game_status <4 :
+        print('Wait..')
+        time.sleep(.2)
+        print('Wait...')
+        time.sleep(.2)
+
+    while remaining_time >0:
+        now = 180 - remaining_time
+        
+        enemy_bonus_prev = enemy_bonus
+        
+        if team == 'blue':
+            my_bonus = blue_bonus
+            enemy_bonus = red_bonus
+        else:
+            my_bonus = red_bonus
+            enemy_bonus = blue_bonus
+            
+        if enemy_bonus_prev == 1 and enemy_bonus == 2:
+            enemy_bonus_time = now
+            
+        if enemy_bonus_time + 30 > now:
+            enemy_bonus_effect = True
+        else:
+            enemy_bonus_effect = False
+        
+        print('Ah')
         buff_control(now)  
         reload_control(now)
         r1_state = GetInfoClient(robots[1],1)
         r1_pos = [r1_state['my_pose']['pose']['position']['x'], r1_state['my_pose']['pose']['position']['y']] 
         r1_rotation = r1_state['my_pose']['pose']['orientation']['w']
-	e1_pos = [r1_state['enemy_pose1']['pose']['position']['x'], r1_state['enemy_pose1']['pose']['position']['y']] 
+        e1_pos = [r1_state['enemy_pose1']['pose']['position']['x'], r1_state['enemy_pose1']['pose']['position']['y']] 
         e2_pos = [r1_state['enemy_pose2']['pose']['position']['x'], r1_state['enemy_pose2']['pose']['position']['y']] 
+        try:
+            r2_pos = [r1_state['ally_pose']['pose']['position']['x'], r1_state['ally_pose']['pose']['position']['y']] 
+        except:
+            pass
         robot1.pos = r1_pos
         e1_detected = r1_state['is_enemy_1_detected']
         e2_detected = r1_state['is_enemy_2_detected']
         locked_on = r1_state['locked_on_enemy']
-        
-        #r3_state = GetInfoClient(robots[3],1)
-        #r3_pos = [r3_state['my_pose']['pose']['position']['x'], r3_state['my_pose']['pose']['position']['y']]      
-        
         robot1.pos = r1_pos
+        
+        robot1.health = remain_hp
+        
+        
+        # game info ==========================================================================
 
-               
                   
         getinfotime = round(now_time(startTime) - now,5)
         # ===================================================================================================================================
         #r1
-        robot_setting_1(robot1, now, r2_pos, e1_pos, e1_pos, ez[1], mc[1], eo[1], wc[1], cz[1])
-        r1_report = robot_setting_2(robot1, now, r2_pos, team1_buff_time, team1_buff_count, team1_has_buff, r1_reload_count, bz[1], rz[1])                 
+        robot_setting_1(robot1, now, r2_pos, e1_pos, e1_pos, ez[1], mc[1], eo[1], wc[1], cz[1], bonus, enemy_bonus_effect)
+        r1_report = robot_setting_2(robot1, now, r2_pos, team1_buff_time, team1_buff_count, team1_has_buff, r1_reload_count, bz[1], rz[1], my_bonus, enemy_bonus)                 
         r1_behav, r1_score, r1_value = robot_set_goal(robot1, robot_move)           
           
         #r3
@@ -363,14 +408,27 @@ if __name__ == '__main__':
         decisiontime = round(now_time(startTime) - now,5)          
         #================ referee system ========================================================================================                
         
+        
         # bonus zone th.
         if robot1.isIn(r1_pos, r1_pos, team1, 'bonus'):
-            if now - team1_bonus_active_counter > 5 and team1_buff_count > 0:
+            if now - team1_bonus_active_counter > 5 and team1_buff_count > 0 and my_bonus == 2:
                 team1_buff_count = team1_buff_count -1
                 team1_has_buff = True
                 team1_buff_time_start = now
                 team1_buff_time = 30.0 # live only th
                 team1_bonus_active_counter = now
+            elif my_bonus == 0:
+                behav = 1
+                goal = np.array([robot1.pos[0]-1,robot1.pos[1],0,0,0,0,0])   
+                SetGoalClient(goal,robots[1]) 
+                SetBehaviorClient(behav,robots[1])
+            elif my_bonus == 2:
+                team1_buff_count = team1_buff_count -1
+                team1_has_buff = True
+                team1_buff_time_start = now
+                team1_buff_time = 30.0 # live only th
+                team1_bonus_active_counter = now
+                    
         else:
             team1_bonus_active_counter = now 
 
@@ -382,10 +440,16 @@ if __name__ == '__main__':
               
         # reload zone th.
         if robot1.isIn(r1_pos, r1_pos, team1, 'reload'):
-            if now - r1_reload_active_counter > 5 and r1_reload_count > 0 and r1_behav == 8:                
+            if now - r1_reload_active_counter > 5 and r1_reload_count > 0 and r1_behav == 8 and (status == 2 or status == 1):                
                 r1_reload_count = r1_reload_count - 1
                 robot1.ammo = robot1.ammo + 50
                 r1_reload_active_counter = now
+            elif status == 0:
+                behav = 1
+                goal = np.array([robot1.pos[0]+1,robot1.pos[1]+1,0,0,0,0,0])   
+                SetGoalClient(goal,robots[1]) 
+                SetBehaviorClient(behav,robots[1])
+                
         else:
             r1_reload_active_counter = now
         
@@ -398,22 +462,32 @@ if __name__ == '__main__':
         #out = robot1.out()        
         #image = np.flip(out, axis=0)
         #plt.imshow(image, 'hot')
-        
-        visualizetime = round(now_time(startTime) - now,5) 
         print('=====================================================================')
+        print('ammo', status)
+        print('brb', bonus, red_bonus, blue_bonus)
+        print(enemy_bonus, enemy_bonus_effect, enemy_bonus_time, my_bonus_effect)
+        print('a')
+        visualizetime = round(now_time(startTime) - now,5)  
         print('time:', now, 'buff_left:', team1_buff_time, team2_buff_time)        
         print('bonus', team1_buff_count, team2_buff_count, 'reload', r1_reload_count)
         print('r1_behav', r1_behav, 'pos : ', round(r1_score,2), np.round(robot1.pos,2), 'Max :' , round(r1_value[0],2), np.round(r1_value[1],2), 'ammo', robot1.ammo)
         print('ori', r1_rotation)
         print('enemy_detected', e1_detected, e2_detected)
         print('enemy_pose', e1_pos, e2_pos)
-        print('lockedon', locked_on)
+        print('team', r2_pos)
+
+        if 45 < now < 47 or 105 < now < 108:
+            robot1.ammo = 0
+        
+    behav = 1
+    goal = np.array([robot1.pos[0],robot1.pos[1],0,0,0,0,0])   
+    SetGoalClient(goal,robots[1]) 
+    SetBehaviorClient(behav,robots[1])
 
  
            
         # force reload - remove it in real game
-        if 45 < now < 47 or 105 < now < 108:
-            robot1.ammo = 5
+      
 
 
 
@@ -457,4 +531,6 @@ if __name__ == '__main__':
 'locked_on_enemy': 0, 
 'time_passed_from_start': {'secs': 180, 'nsecs': 0}, 
 'ammo': 50}
+
+
 
