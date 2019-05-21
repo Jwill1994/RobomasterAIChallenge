@@ -93,18 +93,27 @@ void data_control::VisionDataset_initialize(VisionDataset& dataset) {
 
 void data_control::after_assign() { // robot_id -> enemy_id or dead_id
 	for (short i=0; i<this->dataset.armour.number_of_armour; i++) {
-        if (this->dataset.armour.armour_id[i] == num1_id || this->dataset.armour.armour_id[i] == num2_id) {
+        	if (this->dataset.armour.armour_id[i] == num1_id || this->dataset.armour.armour_id[i] == num2_id) {
 			for (short j=0; j<this->dataset.number_of_robot; j++) {
 				if (abs(this->dataset.Center_X[j]-this->dataset.armour.Center_x[i])<this->dataset.width[j]
 				&& abs(this->dataset.Center_Y[j]-this->dataset.armour.Center_y[i])<this->dataset.height[j]
 				&& this->dataset.robot_id[j] == robot_id) {
+					std::cout<<"enemy_detected\n";
 					this->dataset.robot_id[j] = enemy_id;}}}
 		else if (this->dataset.armour.armour_id[i] == dead_armour_id) {
 			for (short j=0; j<this->dataset.number_of_robot; j++) {
 				if (abs(this->dataset.Center_X[j]-this->dataset.armour.Center_x[i])<this->dataset.width[j]
 				&& abs(this->dataset.Center_Y[j]-this->dataset.armour.Center_y[i])<this->dataset.height[j]
 				&& this->dataset.robot_id[j] == robot_id) {
-					this->dataset.robot_id[j] = dead_id;}}}}}
+					std::cout<<"dead_detected\n";
+					this->dataset.robot_id[j] = dead_id;}}}
+		else if (this->dataset.armour.armour_id[i] == ally_armour_id) {
+			for (short j=0; j<this->dataset.number_of_robot; j++) {
+				if (abs(this->dataset.Center_X[j]-this->dataset.armour.Center_x[i])<this->dataset.width[j]
+				&& abs(this->dataset.Center_Y[j]-this->dataset.armour.Center_y[i])<this->dataset.height[j]
+				&& this->dataset.robot_id[j] == robot_id) {
+					std::cout<<"ally_detected\n";
+					this->dataset.robot_id[j] = alliance_id;}}}}}
 
 void data_control::runing_initialize() {this->VisionDataset_initialize(this->dataset);}
 
@@ -134,10 +143,7 @@ void data_control::assign_robot(short num, bbox_t info) {
     this->dataset.height[index] = info.h;
     this->dataset.distance[index] = assign_distance(this->dataset.Center_X[index], this->dataset.Center_Y[index]);
     this->dataset.number_of_robot += 1;
-        //double x = (this->dataset.Center_X[index] - 320)*this->dataset.distance[index]*0.00156;
-        //double f = sqrt(pow(this->dataset.distance[index],2.0)-pow(x,2.0));
-        //this->dataset.angle_hori[index] = atan2(x,f);}
-        this->dataset.angle_hori[index] = 100*180 / 3.141592 * atan2(this->dataset.Center_X[index] - 320, 320/tan(3.141592/180*0.5*69.4)   );
+    this->dataset.angle_hori[index] = 100*180 / 3.141592 * atan2(this->dataset.Center_X[index] - 320, 320/tan(3.141592/180*0.5*69.4));
     }
 
 void data_control::assign_data(std::string obj, bbox_t info) {
@@ -148,10 +154,14 @@ void data_control::assign_data(std::string obj, bbox_t info) {
     if (us_color == "blue") {
         if(obj == red_num1_str) {assign_armour(num1_id, info);}
         else if(obj == red_num2_str) {assign_armour(num2_id, info);}
+        else if(obj == blue_num1_str) {assign_armour(ally_armour_id, info);}
+        else if(obj == blue_num2_str) {assign_armour(ally_armour_id, info);}
     }
     else if (us_color == "red") {
         if(obj == blue_num1_str) {assign_armour(num1_id, info);}
         else if(obj == blue_num2_str) {assign_armour(num2_id, info);}
+        else if(obj == red_num1_str) {assign_armour(ally_armour_id, info);}
+        else if(obj == red_num2_str) {assign_armour(ally_armour_id, info);}
     }
 
 }
@@ -168,7 +178,8 @@ void send_control::send_gimbal_maker(data_control& CT_data) {
 	int robot_check = 0;
 	if(CT_data.dataset.armour.number_of_armour>0) {
 		for(int i=0; i<CT_data.dataset.armour.number_of_armour; i++) {
-			if(CT_data.dataset.armour.armour_id[i] != dead_armour_id) {
+			if(CT_data.dataset.armour.armour_id[i] != dead_armour_id
+			&& CT_data.dataset.armour.armour_id[i] != ally_armour_id) {
 				infochecker = 3; // armour
 				if (target_area < CT_data.dataset.armour.width[i] * CT_data.dataset.armour.height[i]) {
 					target = i;

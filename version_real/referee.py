@@ -34,6 +34,7 @@ chassis_output = 1
 shooter_output = 1
 status = 1
 
+flag = [False, False, False, False, False, False, False, False, False, False, False]
 
 
 
@@ -47,6 +48,7 @@ def BonusStatus_callback(data):
    red_bonus = data.red_bonus
    global blue_bonus
    blue_bonus = data.blue_bonus
+   flag[0] = True
 
 def GameResult_callback(data):
    #uint8  DRAW=0
@@ -54,6 +56,7 @@ def GameResult_callback(data):
    #uint8  BLUE_WIN=2
    global result
    result = data.result
+   flag[1] = True
 
 def GameStatus_callback(data):
    #uint8 PRE_MATCH = 0
@@ -66,6 +69,7 @@ def GameStatus_callback(data):
    game_status = data.game_status
    global remaining_time
    remaining_time = data.remaining_time
+   flag[2] = True
 
 def GameSurvivor_callback(data):
    #bool
@@ -77,16 +81,19 @@ def GameSurvivor_callback(data):
    blue3 = data.blue3
    global blue4
    blue4 = data.blue4
+   flag[3] = True
 
 def ProjectileSupply_callback(data):
    #projectile number
    global number
    number = data.number
+   flag[4] = True
 
 def RobotBonus_callback(data):
    #robot bonus
    global bonus
    bonus = data.bonus
+   flag[5] = True
 
 def RobotDamage_callback(data):
    #robot damage
@@ -102,6 +109,7 @@ def RobotDamage_callback(data):
    #uint8 RIGHT = 3
    global damage_source
    damage_source = data.damage_source
+   flag[6] = True
 
 def RobotHeat_callback(data):
    #robot power and heat data
@@ -115,6 +123,7 @@ def RobotHeat_callback(data):
    chassis_power_buffer = data.chassis_power_buffer
    global shooter_heat
    shooter_heat = data.shooter_heat
+   flag[7] = True
 
 def RobotShoot_callback(data):
    #robot shoot data
@@ -122,6 +131,7 @@ def RobotShoot_callback(data):
    frequency = data.frequency
    global speed
    speed = data.speed
+   flag[8] = True
 
 def RobotStatus_callback(data):
    #robot status
@@ -143,6 +153,7 @@ def RobotStatus_callback(data):
    chassis_output = data.chassis_output
    global shooter_output
    shooter_output = data.shooter_output
+   flag[9] = True
 
 def SupplierStatus_callback(data):
    #supplier status
@@ -151,5 +162,9 @@ def SupplierStatus_callback(data):
    #uint8 SUPPLYING = 2
    global status
    status = data.status
+   flag[10] = True
+
+
+
    
 

@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+import pyautogui as pyau
+import time
+time.sleep(4)
+pyau.keyDown('ctrl')
+time.sleep(2)
+pyau.keyDown('alt')
+time.sleep(2)
+pyau.press('t')
+time.sleep(2)
+pyau.keyUp('alt')
+pyau.keyUp('ctrl')
+time.sleep(2)
+pyau.typewrite('sudo -s')
+pyau.press('enter')
+time.sleep(2)
+pyau.typewrite('rlaxogks')
+pyau.press('enter')
+time.sleep(2)
+pyau.typewrite('roslaunch icra_roboin_bringup yonsei_with_vision.launch')
+pyau.press('enter')
+time.sleep(2)
+pyau.keyDown('ctrl')
+time.sleep(2)
+pyau.keyDown('alt')
+time.sleep(2)
+pyau.press('t')
+time.sleep(2)
+pyau.keyUp('alt')
+pyau.keyUp('ctrl')
+time.sleep(2)
+pyau.typewrite('python ~/Desktop/roboinTX2/src/version_real/run.py')
+pyau.press('enter')
+
+
+

@@ -9,6 +9,7 @@
 #include "GimbalControl.hpp"
 #include "remote.hpp"
 #include "roborts_msgs/RobotStatus.h"
+#include "roborts_msgs/GameStatus.h"
 #include <time.h>
 #endif // !ALL_HPP
 

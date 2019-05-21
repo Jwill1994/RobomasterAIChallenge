@@ -128,6 +128,9 @@ bool BehaviorInterface::GetGeneralInfoServiceCB(icra_roboin_msgs::BlackboardGene
     resp.how_many_enemies_detected = blackboard_->GetNumberOfDetectedEnemies();
     resp.enemy_pose1 = blackboard_->GetEnemyPose(PlayerType::ENEMY_ONE);
     resp.enemy_pose2 = blackboard_->GetEnemyPose(PlayerType::ENEMY_TWO);
+    resp.ally_pose = blackboard_->GetAllyPoseFromVision();
+
+    ROS_ERROR("5");
     resp.is_enemy_1_detected = blackboard_->GetIsEnemyDetected(PlayerType::ENEMY_ONE);
     resp.is_enemy_2_detected = blackboard_->GetIsEnemyDetected(PlayerType::ENEMY_TWO);
     resp.locked_on_enemy = int(blackboard_->GetLockedOnEnemy()); // 0,1,2 : no lockon, enemy1, enemy2

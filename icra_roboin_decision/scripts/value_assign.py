@@ -18,9 +18,9 @@ class potentialField():
     def square_assign(self, x, y, d, value, *args, **kargs):
         setting = kargs.get('mode', None)
         
-        x = int(x*1.0/self.grid)
-        y = int(y*1.0/self.grid)
-        d = int(d*1.0/self.grid)       
+        x = int(x/self.grid)
+        y = int(y/self.grid)
+        d = int(d/self.grid)       
         
         left = max(x-d,0)
         right = min(x+d+1, self.width)
@@ -45,10 +45,10 @@ class potentialField():
         if y2 > 5:
             y2 = 0      
         
-        x1 = int(x1*1.0/self.grid*1.0)
-        x2 = int(x2*1.0/self.grid*1.0)+1
-        y1 = int(y1*1.0/self.grid*1.0)
-        y2 = int(y2*1.0/self.grid*1.0)+1
+        x1 = int(x1/self.grid)
+        x2 = int(x2/self.grid)+1
+        y1 = int(y1/self.grid)
+        y2 = int(y2/self.grid)+1
         
         if setting == 'abs':
             self.value_matrix[y1:y2, x1:x2] = value             
@@ -57,12 +57,12 @@ class potentialField():
 
     # 정사각형으로 가운데로 갈수록 값이 커지는 형태로 값 더해줌
     def square_assign_gradient(self, x, y, d, value, gradient):
-        x = int(x*1.0/self.grid)
-        y = int(y*1.0/self.grid)
-        d = int(d*1.0/self.grid)
+        x = int(x/self.grid)
+        y = int(y/self.grid)
+        d = int(d/self.grid)
         
         steps = int(d/gradient+1)
-        value= value*1.0/steps
+        value= value/steps
         for i in range(steps):        
             left_in = max(x-d+gradient*i,0)
             right_in = min(x+d+1-gradient*i, self.value_matrix.shape[1])
@@ -74,9 +74,9 @@ class potentialField():
     def circle_assign(self, x, y, r, value, *args, **kargs):
         setting = kargs.get('mode', None)
         
-        x = int(x*1.0/self.grid)
-        y = int(y*1.0/self.grid)
-        r = int(r*1.0/self.grid)        
+        x = int(x/self.grid)
+        y = int(y/self.grid)
+        r = int(r/self.grid)        
         m, n = self.value_matrix.shape
         a, b = np.ogrid[-y:m-y, -x:n-x]
         mask = a*a+b*b <= r*r    
@@ -89,10 +89,10 @@ class potentialField():
     def sector_assign(self, x, y, r1, r2, theta, gamma, value, *args, **kargs):
         setting = kargs.get('mode', None)
         
-        x = int(x*1.0/self.grid)
-        y = int(y*1.0/self.grid)
-        r1 = int(r1*1.0/self.grid)      
-        r2 = int(r2*1.0/self.grid)  
+        x = int(x/self.grid)
+        y = int(y/self.grid)
+        r1 = int(r1/self.grid)      
+        r2 = int(r2/self.grid)  
                 
         if r1 > r2: r1, r2 = r2, r1
         
@@ -110,15 +110,14 @@ class potentialField():
         mask2 = a*a+b*b >= r1*r1
 
         if lower < 1.5*math.pi and lower > 0.5*math.pi:
-            mask3 = (slope1*a-x) > (slope1*b-y)
+            mask3 = a < slope1*b
         else:
-            mask3 = (slope1*a-x) < (b-y)
+            mask3 = a > slope1*b
             
         if upper < 1.5*math.pi and upper > 0.5*math.pi:
-            mask4 = (slope2*a-x) < (b-y)
+            mask4 = a > slope2*b
         else:
-            mask4 = (slope2*a-x) > (b-y)           
-        
+            mask4 = a < slope2*b             
         
         mask = np.multiply(mask1, mask2)
         mask = np.multiply(mask, mask3)
@@ -131,12 +130,12 @@ class potentialField():
             
     # 원형으로 가운데로 갈수록 값이 커지는 형태로 값 더해줌
     def circle_assign_gradient(self, x, y, r, value, gradient):
-        x = int(x*1.0/self.grid)
-        y = int(y*1.0/self.grid)
-        r = int(r*1.0/self.grid)
+        x = int(x/self.grid)
+        y = int(y/self.grid)
+        r = int(r/self.grid)
         
         steps = int(r/gradient+1)
-        value = value*1.0/steps
+        value = value/steps
         
         for i in range(steps):
             m, n = self.value_matrix.shape
@@ -175,8 +174,8 @@ class potentialField():
         return self.value_matrix
     
     def plot(self):
-        image = np.flip(self.value_matrix, axis=0)    
-        plt.imshow(image)
+        image = np.flip(self.value_matrix, axis=0)
+        plt.imshow(image, 'hot')
         
         # return distnace and relative angles
     def p2pRelation(self, p1, p2):  
@@ -185,9 +184,12 @@ class potentialField():
         
         dist = math.sqrt(xd*xd+yd*yd)
         e1_angle = math.atan2(yd,xd)
-        if e1_angle == math.pi:
-            e2_angle = math.pi/2
+        e2_angle = e1_angle+math.pi
+        
+        if e1_angle % 2*math.pi < 0.0001 or e1_angle % 2*math.pi > 2*math.pi-0.001:
+            e2_angle = math.pi
+        elif e1_angle == math.pi:
+            e2_angle = 0
         
         return dist, e1_angle, e2_angle
     
-

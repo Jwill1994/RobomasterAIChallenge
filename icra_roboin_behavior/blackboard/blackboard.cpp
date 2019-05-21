@@ -445,16 +445,18 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
         //////////////////////////////////////////////////////////
         /*                         Ally                         */
         //////////////////////////////////////////////////////////
-/*
-        if(yolo->enemy_detected[0] == 5){
+
+        if(yolo->enemy_detected[0] == 1){
+            ROS_ERROR("1");
             is_ally_detected_ = true;
             time_ally_last_seen_ = yolo->stamp;
 
             //tf transform code
             tf::Stamped<tf::Pose> ally_cam_tf, ally_global_tf;
             geometry_msgs::PoseStamped ally_cam_pose, ally_global_pose;
-            ally_cam_pose.header.frame_id=namespace_ + "/" +"base_link";
-            ally_cam_pose.header.stamp = yolo->stamp;
+            //ally_cam_pose.header.frame_id=namespace_ + "/" +"base_link";
+            ally_cam_pose.header.frame_id="camera";
+            ally_cam_pose.header.stamp = ros::Time::now();
             ally_cam_pose.pose.position.z = (float(yolo->distance[0])+ROBOT_PERIMETER)/1000 * std::sin((float(yolo->angle_verti[0]) / 100)*3.141592/180);
             double flat_d =( (float(yolo->distance[0])+ROBOT_PERIMETER)/1000 * std::cos((float(yolo->angle_verti[0]) / 100)*3.141592/180) ); 
             ally_cam_pose.pose.position.x = flat_d * std::cos((-1*float(yolo->angle_hori[0]) / 100)*3.141592/180);
@@ -470,7 +472,9 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
             ally_cam_tf.stamp_ = ros::Time(0);
             try
             {
-                tf_ptr_->transformPose(namespace_ + "/" +"map",ally_cam_tf,ally_global_tf);
+		ROS_ERROR("2");
+                //tf_ptr_->transformPose(namespace_ + "/" +"map",ally_cam_tf,ally_global_tf);
+                tf_ptr_->transformPose("map",ally_cam_tf,ally_global_tf);
                 tf::poseStampedTFToMsg(ally_global_tf,ally_global_pose);
                 ally_pose_from_vision_ = ally_global_pose;
             }
@@ -479,8 +483,9 @@ void Blackboard::EnemyDetectionCB(const icra_roboin_msgs::YoloDetectionInfo::Con
             }
         } else {
             is_ally_detected_ = false;
+            ROS_ERROR("3");
         }
-*/        
+       
 
         //////////////////////////////////////////////////////////
         /*                       Enemy 1                        */

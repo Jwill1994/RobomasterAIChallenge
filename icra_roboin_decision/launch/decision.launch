@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="icra_roboin_decision" type="run.py" name="decision_node" respawn="true" output="screen">
+  </node>
+</launch> 

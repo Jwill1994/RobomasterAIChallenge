@@ -16,7 +16,7 @@ public:
 	vision_ros(ros::NodeHandle &nh) {enemy_info_pub = nh.advertise<icra_roboin_msgs::YoloDetectionInfo>("enemy_info", 1);}
 	void pubEnemyInfo(data_control& CT_data);
 };
-// engage_id=1, enemy_id=2, dead_id=3
+
 void vision_ros::pubEnemyInfo(data_control& CT_data) {
 	icra_roboin_msgs::YoloDetectionInfo ros_msg;
 	int num = 0;
@@ -26,6 +26,12 @@ void vision_ros::pubEnemyInfo(data_control& CT_data) {
 			ros_msg.enemy_detected[1] = 1;
 			ros_msg.angle_hori[1] = CT_data.dataset.angle_hori[i];
 			ros_msg.distance[1] = CT_data.dataset.distance[i]*1000;
+			num++;
+		}
+		else if (CT_data.dataset.robot_id[i] == alliance_id) {
+			ros_msg.enemy_detected[0] = 1;
+			ros_msg.angle_hori[0] = CT_data.dataset.angle_hori[i];
+			ros_msg.distance[0] = CT_data.dataset.distance[i]*1000;
 			num++;
 		}
 		else if (CT_data.dataset.robot_id[i] == enemy_id) {

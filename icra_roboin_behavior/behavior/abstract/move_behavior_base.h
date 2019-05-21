@@ -65,7 +65,7 @@ class MoveBehaviorBase: public BehaviorBase{
                   lockon_module_->LockonInterface(LockonMode::ANGULAR_VEL,-1.);
                   break;
                 case ArmorType::REAR:
-                  lockon_module_->LockonInterface(LockonMode::ANGULAR_VEL,1.1);
+                  lockon_module_->LockonInterface(LockonMode::ANGULAR_VEL,1.);
                   break;
             } 
         }

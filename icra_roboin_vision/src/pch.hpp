@@ -36,9 +36,6 @@
 #include <opencv2/dnn.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/imgcodecs.hpp>
-#ifdef MAKEING_IMG
-#include <opencv2/videoio/videoio.hpp>
-#endif //!MAKEING_IMG
 #ifndef VIRTUAL
 #include <opencv2/tracking.hpp>  //need to install opencv_contrib 
 #include <opencv2/core/ocl.hpp>
@@ -59,7 +56,6 @@ bool get_data = false;      // Used to make loop go only when image is received
 const int imgWidth = 640;   // Width of network's input image
 const int imgHeight = 480;  // Height of network's input image
 const float PI = 3.14159265358979323846;
-//const float confThreshold = 0.3; // Confidence threshold
 const float confThreshold = 0.3; // Confidence threshold
 const float nmsThreshold = 0.4;  // Non-maximum suppression threshold
 
@@ -81,6 +77,7 @@ const unsigned int engage_enemy_id = 4;
 const unsigned int num1_id = 5;
 const unsigned int num2_id = 6;
 const unsigned int dead_armour_id = 7;
+const unsigned int ally_armour_id = 9;
 const unsigned int robot_id = 8;
 
 const std::string robot_str = "robot";
