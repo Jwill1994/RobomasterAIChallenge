@@ -1,5 +1,0 @@
-#blackboard
-
-
--typedef: 
--
