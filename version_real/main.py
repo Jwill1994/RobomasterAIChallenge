@@ -75,12 +75,12 @@ def robot_set_goal(robot, robot_move):
     robot_number = robot.robot_num
     
     if score + thres < value[0] and robot_move:
-        behav = 2
+        behav = 1
         goal = np.array([value[1][0],value[1][1],0,0,0,0,0])   
         SetGoalClient(goal,robots[robot_number]) 
         SetBehaviorClient(behav,robots[robot_number])
     else:
-        behav = 1
+        behav = 3
         goal = np.array([0,0,0,0,0,0,0])
         SetGoalClient(goal,robots[robot_number]) 
         SetBehaviorClient(behav,robots[robot_number])
@@ -137,8 +137,8 @@ if __name__ == '__main__':
     now = now_time(startTime)
     
     # referee system initialize      
-    team1_buff_count = 2
-    team2_buff_count = 2 
+    team1_buff_count = 1
+    team2_buff_count = 1
     r1_reload_count = 0
     r2_reload_count = 0
     r3_reload_count = 0
@@ -165,11 +165,11 @@ if __name__ == '__main__':
     bz = [150,150,150,150,150]
     rz = [100,100,100,100,100]
     cz = [25,25,25,25,25]    
-    thres = 30    
+    thres = 10   
     
     
     while now < 180:
-        print("red_bonus : "+str(red_bonus))
+        '''print("red_bonus : "+str(red_bonus))
         print("blue_bonus : "+str(blue_bonus))
         print("result : "+str(result))
         print("blue_bonus : "+str(blue_bonus))
@@ -199,20 +199,29 @@ if __name__ == '__main__':
         print("gimbal_output : "+str(gimbal_output))
         print("chassis_output : "+str(chassis_output))
         print("shooter_output : "+str(shooter_output))
-        print("status : "+str(status))
+        print("status : "+str(status))'''
         now = now_time(startTime)
         buff_control(now)  
         reload_control(now)
         
+        
         r1_state = GetInfoClient("robot_0",1)
-        r1_pos = [r1_state['my_pose']['pose']['position']['x'], r1_state['my_pose']['pose']['position']['y']]        
+        r1_pos = [r1_state['my_pose']['pose']['position']['x'], r1_state['my_pose']['pose']['position']['y']]    
+        robot1.ammo = r1_state['ammo']
+        robot1.health = r1_state['my_health']        
         robot1.pos = r1_pos
         r2_state = GetInfoClient("robot_1",1)
-        r2_pos = [r2_state['my_pose']['pose']['position']['x'], r2_state['my_pose']['pose']['position']['y']]      
+        r2_pos = [r2_state['my_pose']['pose']['position']['x'], r2_state['my_pose']['pose']['position']['y']]     
+        robot2.ammo = r2_state['ammo']
+        robot2.health = r2_state['my_health'] 
         r3_state = GetInfoClient("robot_2",1)
         r3_pos = [r3_state['my_pose']['pose']['position']['x'], r3_state['my_pose']['pose']['position']['y']]      
+        robot3.ammo = r3_state['ammo']
+        robot3.health = r3_state['my_health'] 
         r4_state = GetInfoClient("robot_3",1)
-        r4_pos = [r4_state['my_pose']['pose']['position']['x'], r4_state['my_pose']['pose']['position']['y']]         
+        r4_pos = [r4_state['my_pose']['pose']['position']['x'], r4_state['my_pose']['pose']['position']['y']]        
+        robot4.ammo = r4_state['ammo']
+        robot4.health = r4_state['my_health'] 
 
         robot1.pos = r1_pos
         robot2.pos = r2_pos
@@ -357,12 +366,11 @@ if __name__ == '__main__':
         print('=====================================================================')
         print('time:', now, 'buff_left:', team1_buff_time, team2_buff_time)        
         print('bonus', team1_buff_count, team2_buff_count, 'reload', r1_reload_count)
-        print('r1_behav', r1_behav, 'pos : ', round(r1_score,2), np.round(r1_pos,2), 'Max :' , round(r1_value[0],2), np.round(r1_value[1],2), 'ammo', robot1.ammo)
-        print('r2_behav', r2_behav, 'pos : ', round(r2_score,2), np.round(r2_pos,2), 'Max :' , round(r2_value[0],2), np.round(r2_value[1],2), 'ammo', robot2.ammo)
-        print('r3_behav', r3_behav, 'pos : ', round(r3_score,2), np.round(r3_pos,2), 'Max :' , round(r3_value[0],2), np.round(r3_value[1],2), 'ammo', robot3.ammo)
-        print('r4_behav', r4_behav, 'pos : ', round(r4_score,2), np.round(r4_pos,2), 'Max :' , round(r4_value[0],2), np.round(r4_value[1],2), 'ammo', robot4.ammo)
-        print(r1_report, r2_report, r3_report, r4_report)        
-        print(getinfotime, decisiontime, refereetime, visualizetime)   
+        print('r1_behav', r1_behav, 'pos', round(r1_score,2), np.round(r1_pos,2), 'Max' , round(r1_value[0],2), np.round(r1_value[1],2), 'ammo', robot1.ammo, robot1.stance, robot1.health)
+        print('r2_behav', r2_behav, 'pos', round(r2_score,2), np.round(r2_pos,2), 'Max' , round(r2_value[0],2), np.round(r2_value[1],2), 'ammo', robot2.ammo, robot2.stance, robot2.health)
+        print('r3_behav', r3_behav, 'pos', round(r3_score,2), np.round(r3_pos,2), 'Max' , round(r3_value[0],2), np.round(r3_value[1],2), 'ammo', robot3.ammo, robot3.stance, robot3.health)
+        print('r4_behav', r4_behav, 'pos', round(r4_score,2), np.round(r4_pos,2), 'Max' , round(r4_value[0],2), np.round(r4_value[1],2), 'ammo', robot4.ammo, robot4.stance, robot4.health )    
+        #print(getinfotime, decisiontime, refereetime, visualizetime)   
         
         # force reload - no attack 
         if 45 < now < 47:

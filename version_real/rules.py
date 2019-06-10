@@ -40,9 +40,9 @@ class rules():
     
     def isIn(self, pos1, pos2, team, zone):
         if team == 'blue':
-            p = [[1.700,3.250,0.300], [4.000,4.250,0.100]]
+            p = [[1.700,3.250,0.300], [4.000,0.75,0.100]]
         else:
-            p = [[6.300,1.750,0.300], [4.000,0.75, 0.100]]
+            p = [[6.300,1.750,0.300], [4.000,4.25, 0.100]]
         
         if zone == 'bonus': 
             p = p[0]
@@ -64,11 +64,11 @@ class rules():
         return result
             
         
-    def set_stance(self, health, ammo, my_bonus, time):
+    def set_stance(self, health, ammo, time):
         stance = 'guarded'       
         
         
-        if health > 1200 and ammo > 0 and my_bonus > 0:
+        if health > 1200 and ammo > 0:
             if ammo > 10:
                 stance = 'aggressive'
             else:
@@ -107,21 +107,14 @@ class rules():
             
             self.pm.rectangular_assign(x1,x2,y1,y2, -50, mode='abs')
                       
-    def bonus_zone(self, team_pos, buff_left, buff_zone_count, has_buff, value, game_t, my_b, eny_b):
+    def bonus_zone(self, team_pos, buff_left, buff_zone_count, has_buff, value):
         p = [1.700,3.250,0.200]
         e = [6.300,1.750,0.200] 
         if self.team == 'red':
             p, e = e, p         
             
-        flag = False
-        
-        if game_t % 60 < 15:
-            if eny_b == 1 or eny_b == 2:
-                flag = True
-            else:
-                flag = False
-        else:
-            flag = True
+        flag = True
+
                 
         if flag:
             if not has_buff:
@@ -184,8 +177,8 @@ class rules():
     
     #(robot.stance, reload_count, robot.ammo, rz)     
     def reload_zone(self, stance, team_pos, reload_count, bullets, value):
-        our = [4,4.25,0.1]
-        enemy = [4,0.6,0.5]
+        our = [4,0.75,0.1]
+        enemy = [4,4.25,0.5]
         #distance= self.robot_radius*2.5
         #constant = 2.5
         if self.team == 'red':
@@ -263,34 +256,34 @@ class rules():
                 value = value/2
              self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], 5, -value, 4)        
         
-    def enemy_zone_diff(self, stance, enemy_pos, percentage, distance, value, my_bonus, enemy_bonus_effect):
+    def enemy_zone_diff(self, stance, enemy_pos, percentage, distance, value):
         # 확실하게 적을 포착할 수록 작은 구역에 더 높은 가치, 적의 위치를 잘 모를 경우 작아짐 
         #percent90일때 const2, percent 50일때 const4를 기준으로 선형 할당 
         constant = -0.05*percentage + 6.5 
         
         if self.team == 'blue':
             e_bonus = [6.300,1.750,0.500]
-            e_reload = [4.000,0.750,0.500]
-            if enemy_pos[0]-e_bonus[0] < 1.5 and enemy_pos[1]-e_bonus[1] < 1.5 : 
-                value = value * 1.2
-            if enemy_pos[0]-e_reload[0] < 1.5 and enemy_pos[1]-e_reload[1] < 1.5 : 
-                value = value * 1.2
-      
-        print(my_bonus, enemy_bonus_effect)      
-        if not my_bonus  and enemy_bonus_effect:
-            stance == 'passive'
+            e_reload = [4.000,4.250,0.500]
+        else:
+            e_bonus = [6.300,1.750,0.500]
+            e_reload = [4.000,0.750,0.500]        
+            
+        if enemy_pos[0]-e_bonus[0] < 1.5 and enemy_pos[1]-e_bonus[1] < 1.5 : 
+            value = value * 1.2
+        if enemy_pos[0]-e_reload[0] < 1.5 and enemy_pos[1]-e_reload[1] < 1.5 : 
+            value = value * 1.2      
+
         # aggressive stance일 경우 최적 거리 distance에서 가장 높은 값을 가지고, 거기서 멀어지면 값이 작아짐.
         if stance == 'passive' or stance == 'guarded':
            #circle_assign(enemy_pos[0], enemy_pos[1], int(distance*constant*4), value/constant)
            self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], distance*constant*2, -value/constant, constant)
-           print('passive')
 
         else:
             self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], distance*constant, value/constant, constant*2)
             self.pm.circle_assign_gradient(enemy_pos[0], enemy_pos[1], distance, -1*value/constant, constant)
             if percentage > 70:
                 self.pm.circle_assign(enemy_pos[0], enemy_pos[1], self.robot_radius*2, 0, mode='abs')
-            print('agg')
+  
                 
   
     def current_zone(self, n, value):
