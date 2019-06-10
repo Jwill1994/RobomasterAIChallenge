@@ -88,7 +88,7 @@ def RefereeHitClient(which_armor,your_hp,damage=50,robot_name=""):
 #    dicts = {"ARMOR":RobotDamage.ARMOR,"BACKWARD":RobotDamage.BACKWARD,"EXCEED_HEAT":RobotDamage.EXCEED_HEAT,"EXCEED_POWER":RobotDamage.EXCEED_POWER,"FORWARD":RobotDamage.FORWARD,"LEFT":RobotDamage.LEFT,"OFFLINE":RobotDamage.OFFLINE,"RIGHT":RobotDamage.RIGHT}
 #    pub = rospy.Publisher(robot_name+"/robot_damage",RobotDamage,queue_size=10)
 #    rate=r
-    
+
 
 def RefereePenaltyClient(penalty=0, damage = 1000,robot_name=""):
     rospy.wait_for_service(robot_name + "/referee_penalty_service")

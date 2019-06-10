@@ -2,7 +2,7 @@
 import roslib
 import sys
 import rospy
-from referee_modules.referee_interface import GetInfoClient, ShootClient, AmmoConsumeClient
+from referee_modules.referee_interface import GetInfoClient, ShootClient, AmmoConsumeClient, TagClient
 
 if __name__ == '__main__':
 	rospy.init_node('simulate_shooter')
@@ -29,6 +29,9 @@ if __name__ == '__main__':
                                 else:
                                         ShootClient(-5.0,-5.0,ns)
                                         count += 1
+
+                        TagClient(ns)
+
 			rate.sleep()
 		except:
 			rate.sleep()

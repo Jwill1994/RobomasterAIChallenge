@@ -20,14 +20,33 @@ Blackboard::Blackboard(TeamType team = TeamType::BLUE_TEAM, RuleType rule = Rule
     tf_ptr_ = std::make_shared<tf::TransformListener>(ros::Duration(10));
     namespace_ = ros::this_node::getNamespace();
     namespace_.erase(0,namespace_.find_first_not_of("/"));
+//    namespace__=namespace_;
+
 
     //DEPRECATED: referee_hit_service_ = nh.advertiseService("referee_hit_service",&Blackboard::RefereeHitCB,this);
     referee_game_state_service_ = nh.advertiseService("referee_game_state_service",&Blackboard::RefereeGameStateCB,this);
     referee_penalty_service_ = nh.advertiseService("referee_penalty_service",&Blackboard::RefereePenaltyCB,this);
     referee_buff_service_ = nh.advertiseService("referee_buff_service",&Blackboard::RefereeBuffCB,this);
     referee_reload_service_ = nh.advertiseService("referee_reload_service",&Blackboard::RefereeReloadCB,this);
+//    namespace__.erase(0,6);
+//    //namespace__.erase(0,namespace_.find_first_not_of("/"));
+//    if(namespace__=="0"){
 
-    robot_damage_sub_ = nh.subscribe("/robot_damage",10,&Blackboard::RobotDamageCB,this);
+//    }
+//    else if(namespace__=="1"){
+
+//    }
+//    else if(namespace__=="2"){
+
+//    }
+//    else if(namespace__=="3"){
+
+//    }
+//    else{
+
+//    }
+//    robot_damage_sub_ = nh.subscribe(namespace__+"/"+"robot_damage",10,&Blackboard::RobotDamageCB,this);
+    robot_damage_sub_ = nh.subscribe("robot_damage",10,&Blackboard::RobotDamageCB,this);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -333,13 +352,33 @@ void Blackboard::UpdateTime(){
     } else {
         time_left_for_buff_zone_to_online_ = ros::Duration(60)-ros::Duration((time_passed_from_game_start_.sec % 60),time_passed_from_game_start_.nsec) ; //buffzone opens every 1min
     }
+
+    if(time_left_for_buff_zone_to_online_.toSec() <= 0){
+        is_buff_zone_online_ = true;
+
+    }
+
+    if(b==true){
     time_buff_left_ = ros::Duration(BUFF_DURATION) + (time_last_buffed_-ros::Time::now());
+    }
+    else if(b==false){
+    time_buff_left_ = ros::Duration(0);
+    }
+
     if(time_buff_left_.toSec() <= 0){
         time_buff_left_ = ros::Duration(0);
+        has_buff_=false;
+        b=false;
     }
-    time_left_for_reload_zone_to_online_ = ros::Duration(RELOADING_DURATION) + (time_last_buffed_-ros::Time::now());
+    else if(time_buff_left_.toSec() > 0){
+        has_buff_=true;
+    }
+
+    if(a==true){
+    time_left_for_reload_zone_to_online_ = ros::Duration(RELOADING_DURATION) + (time_last_reloaded_-ros::Time::now());
     if(time_left_for_reload_zone_to_online_.toSec() <= 0){
         time_left_for_reload_zone_to_online_ = ros::Duration(0);
+    }
     }
 }
 void Blackboard::TransformGoalPoseQuaternion(){
@@ -370,7 +409,12 @@ void Blackboard::RobotDamageCB(const roborts_msgs::RobotDamage::ConstPtr& msg){
     is_hit_fast_response_ = true;
     is_hit_smart_response_ = true;
     time_last_hit_ = ros::Time::now();
+    if(has_buff_==true){
+    my_health_ -= DAMAGE*0.5;
+    }
+    else if(has_buff_==false){
     my_health_ -= DAMAGE;
+    }
     which_armor_hit_ = static_cast<ArmorType>(msg -> damage_source);
 }
 
@@ -418,9 +462,13 @@ bool Blackboard::RefereePenaltyCB(icra_roboin_msgs::RefereePenalty::Request& req
                      
 bool Blackboard::RefereeBuffCB(icra_roboin_msgs::RefereeBuff::Request& req,
                             icra_roboin_msgs::RefereeBuff::Response& resp){
-    if(req.buff_type == 0){
-        time_last_buffed_ = req.header.stamp;
+    if(is_buff_zone_online_==true){
+    time_last_buffed_ = req.header.stamp;
+    b = true;
+    is_buff_zone_online_ = false;
+    has_buff_=true;
     }
+
     resp.success = true;
     return true;
 }
@@ -429,7 +477,8 @@ bool Blackboard::RefereeReloadCB(icra_roboin_msgs::RefereeReload::Request& req,
                             icra_roboin_msgs::RefereeReload::Response& resp){
     is_reloading_ = false;
     ammo_ = START_AMMO;
-    time_last_reloaded_ = req.header.stamp;
+    time_last_reloaded_ = ros::Time::now();
+    a = true;
     resp.success = true;
     return true;
 }

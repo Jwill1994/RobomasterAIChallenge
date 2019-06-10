@@ -39,6 +39,10 @@ class Robot:
 
 class Referee1vs1:
     def __init__(self):
+        self.robot0_multiple = 1
+        self.robot1_multiple = 1
+        self.robot2_multiple = 1
+        self.robot3_multiple = 1
         self.robot0=Robot(robot_name="robot_0",team="red")
         self.robot1=Robot(robot_name="robot_1",team="red")
         self.robot2=Robot(robot_name="robot_2",team="blue")
@@ -51,9 +55,11 @@ class Referee1vs1:
         self.tag_server_1 = rospy.Service("robot_1"+'/referee_tag_service',RefereeTag,self.TagCB_1)
         self.tag_server_2 = rospy.Service("robot_2"+'/referee_tag_service',RefereeTag,self.TagCB_2)
         self.tag_server_3 = rospy.Service("robot_3"+'/referee_tag_service',RefereeTag,self.TagCB_3)
-        self.hit_damage = 15
+
+
+        self.hit_damage = 20
         self.start_ammo = 50
-        self.start_hp = 1000
+        self.start_hp = 2000
         self.game_state = 1   #dead ready play end
         self.game_start_time = 0
         self.winner = 0
@@ -106,6 +112,55 @@ class Referee1vs1:
             if( (rospy.Time.now() - self.robot3.reload_time).to_sec() > 5 ):
                 RefereeReloadClient("robot_3")
                 self.robot3.is_reloading=False
+
+        self.robot0_information0 = GetInfoClient("robot_0")
+        self.robot1_information1 = GetInfoClient("robot_1")
+        self.robot2_information2 = GetInfoClient("robot_2")
+        self.robot3_information3 = GetInfoClient("robot_3")
+
+
+        if(self.robot0_information0["has_buff"]==False):
+            if (5.2 <= self.robot0.x and self.robot0.x <= 6.2) and (1.55 <= self.robot0.y and self.robot0.y <= 2):
+                if(self.robot0_information0["buff_zone_cooltime"]["secs"] <= 0):
+                    RefereeBuffClient(0, 0.5, "robot_0")
+                    self.robot0_multiple=0.5
+        elif(self.robot0_information0["has_buff"]==True):
+            self.robot0_multiple=1
+
+        if(self.robot1_information1["has_buff"]==False):
+            if (5.2 <= self.robot1.x and self.robot1.x <= 6.2) and (1.55 <= self.robot1.y and self.robot1.y <= 2):
+                if(self.robot1_information1["buff_zone_cooltime"]["secs"] <= 0):
+                    RefereeBuffClient(0, 0.5, "robot_1")
+                    self.robot1_multiple=0.5
+        elif(self.robot1_information1["has_buff"]==True):
+            self.robot1_multiple=1
+
+        if(self.robot2_information2["has_buff"]==False):
+            if (1.8 <= self.robot2.x and self.robot2.x <= 2.8) and (3.45 <= self.robot2.y and self.robot2.y <= 3):
+                if(self.robot2_information2["buff_zone_cooltime"]["secs"] <= 0):
+                    RefereeBuffClient(0, 0.5, "robot_2")
+                    self.robot2_multiple=0.5
+        elif(self.robot2_information2["has_buff"]==True):
+            self.robot2_multiple=1
+
+        if(self.robot3_information3["has_buff"]==False):
+            if (1.8 <= self.robot3.x and self.robot3.x <= 2.8) and (3.45 <= self.robot3.y and self.robot3.y <= 3):
+                if(self.robot3_information3["buff_zone_cooltime"]["secs"] <= 0):
+                    RefereeBuffClient(0, 0.5, "robot_3")
+                    self.robot3_multiple=0.5
+        elif(self.robot3_information3["has_buff"]==True):
+            self.robot3_multiple=1
+
+
+        if (self.robot0.hp <= 0):
+            RefereeGameStateClient(3,"robot_0")
+        if (self.robot1.hp <= 0):
+            RefereeGameStateClient(3,"robot_1")
+        if (self.robot2.hp <= 0):
+            RefereeGameStateClient(3,"robot_2")
+        if (self.robot3.hp <= 0):
+            RefereeGameStateClient(3,"robot_3")
+
         
         if (self.robot0.hp <= 0 or self.robot1.hp <= 0) and (self.robot2.hp <= 0 or self.robot3.hp <= 0):
             RefereeGameStateClient(3,"robot_0")
@@ -163,56 +218,56 @@ class Referee1vs1:
             return RefereeShootResponse(5,True)
         elif ((self.robot2.x - req.x)**2) + ((self.robot2.y - req.y)**2) < 0.25:
             
-            
-            self.robot2.hp -= self.hit_damage
+
+            self.robot2.hp -= self.hit_damage*self.robot2_multiple
             hit_angle =(math.atan2(self.robot0.y-self.robot2.y,self.robot0.x-self.robot2.x) - QuaternionToYaw(self.robot2.orientation)) % 6.283184
             if 0 <= hit_angle and hit_angle < 0.785398:
                 #RefereeHitClient(0,self.robot1.hp,self.hit_damage,"robot_1")
                 self.robot2.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.FORWARD)
-                print "robot_1 hit: front armor"
+                print "robot_2 hit: front armor"
             if 0.785398 <= hit_angle and hit_angle < 2.356194:
                 #RefereeHitClient(1,self.robot1.hp,self.hit_damage,"robot_1")
                 self.robot2.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.LEFT)
-                print "robot_1 hit: left armor"
+                print "robot_2 hit: left armor"
             if 2.356194 <= hit_angle and hit_angle < 3.92699:
                 #RefereeHitClient(2,self.robot1.hp,self.hit_damage,"robot_1")
                 self.robot2.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.BACKWARD)
-                print "robot_1 hit: rear armor"
+                print "robot_2 hit: rear armor"
             if 3.92699 <= hit_angle and hit_angle < 5.497786:
                 #RefereeHitClient(3,self.robot1.hp,self.hit_damage,"robot_1")
                 self.robot2.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.RIGHT)
-                print "robot_1 hit: right armor"
+                print "robot_2 hit: right armor"
             if 5.497786 <= hit_angle and hit_angle < 6.3:
                 #RefereeHitClient(0,self.robot1.hp,self.hit_damage,"robot_1")
                 self.robot2.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.FORWARD)
-                print "robot_1 hit: front armor"
+                print "robot_2 hit: front armor"
 
             return RefereeShootResponse(1,True)
         elif ((self.robot3.x - req.x)**2) + ((self.robot3.y - req.y)**2) < 0.25:
 
 
-            self.robot3.hp -= self.hit_damage
+            self.robot3.hp -= self.hit_damage*self.robot3_multiple
             hit_angle =(math.atan2(self.robot0.y-self.robot3.y,self.robot0.x-self.robot3.x) - QuaternionToYaw(self.robot3.orientation)) % 6.283184
             if 0 <= hit_angle and hit_angle < 0.785398:
                 #RefereeHitClient(0,self.robot1.hp,self.hit_damage,"robot_1")
                 self.robot3.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.FORWARD)
-                print "robot_1 hit: front armor"
+                print "robot_3 hit: front armor"
             if 0.785398 <= hit_angle and hit_angle < 2.356194:
                 #RefereeHitClient(1,self.robot1.hp,self.hit_damage,"robot_1")
                 self.robot3.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.LEFT)
-                print "robot_1 hit: left armor"
+                print "robot_3 hit: left armor"
             if 2.356194 <= hit_angle and hit_angle < 3.92699:
                 #RefereeHitClient(2,self.robot1.hp,self.hit_damage,"robot_1")
                 self.robot3.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.BACKWARD)
-                print "robot_1 hit: rear armor"
+                print "robot_3 hit: rear armor"
             if 3.92699 <= hit_angle and hit_angle < 5.497786:
                 #RefereeHitClient(3,self.robot1.hp,self.hit_damage,"robot_1")
                 self.robot3.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.RIGHT)
-                print "robot_1 hit: right armor"
+                print "robot_3 hit: right armor"
             if 5.497786 <= hit_angle and hit_angle < 6.3:
                 #RefereeHitClient(0,self.robot1.hp,self.hit_damage,"robot_1")
                 self.robot3.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.FORWARD)
-                print "robot_1 hit: front armor"
+                print "robot_3 hit: front armor"
 
             return RefereeShootResponse(1,True)
         else:
@@ -233,55 +288,55 @@ class Referee1vs1:
             return RefereeShootResponse(5,True)
         elif ((self.robot2.x - req.x)**2) + ((self.robot2.y - req.y)**2) < 0.25:
             
-            self.robot2.hp -= self.hit_damage
+            self.robot2.hp -= self.hit_damage*self.robot2_multiple
             hit_angle =(math.atan2(self.robot1.y-self.robot2.y,self.robot1.x-self.robot2.x) - QuaternionToYaw(self.robot2.orientation)) % 6.283184
             if 0 <= hit_angle and hit_angle < 0.785398:
                 #RefereeHitClient(0,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot2.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.FORWARD)
-                print "robot_0 hit: front armor"
+                print "robot_2 hit: front armor"
             if 0.785398 <= hit_angle and hit_angle < 2.356194:
                 #RefereeHitClient(1,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot2.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.LEFT)
-                print "robot_0 hit: left armor"
+                print "robot_2 hit: left armor"
             if 2.356194 <= hit_angle and hit_angle < 3.92699:
                 #RefereeHitClient(2,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot2.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.BACKWARD)
-                print "robot_0 hit: rear armor"
+                print "robot_2 hit: rear armor"
             if 3.92699 <= hit_angle and hit_angle < 5.497786:
                 #RefereeHitClient(3,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot2.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.RIGHT)
-                print "robot_0 hit: right armor"
+                print "robot_2 hit: right armor"
             if 5.497786 <= hit_angle and hit_angle < 6.3:
                 #RefereeHitClient(0,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot2.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.FORWARD)
-                print "robot_0 hit: front armor"
+                print "robot_2 hit: front armor"
             
             
             return RefereeShootResponse(1,True)
         elif ((self.robot3.x - req.x)**2) + ((self.robot3.y - req.y)**2) < 0.25:
 
-            self.robot3.hp -= self.hit_damage
+            self.robot3.hp -= self.hit_damage*self.robot3_multiple
             hit_angle =(math.atan2(self.robot1.y-self.robot3.y,self.robot1.x-self.robot3.x) - QuaternionToYaw(self.robot3.orientation)) % 6.283184
             if 0 <= hit_angle and hit_angle < 0.785398:
                 #RefereeHitClient(0,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot3.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.FORWARD)
-                print "robot_0 hit: front armor"
+                print "robot_3 hit: front armor"
             if 0.785398 <= hit_angle and hit_angle < 2.356194:
                 #RefereeHitClient(1,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot3.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.LEFT)
-                print "robot_0 hit: left armor"
+                print "robot_3 hit: left armor"
             if 2.356194 <= hit_angle and hit_angle < 3.92699:
                 #RefereeHitClient(2,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot3.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.BACKWARD)
-                print "robot_0 hit: rear armor"
+                print "robot_3 hit: rear armor"
             if 3.92699 <= hit_angle and hit_angle < 5.497786:
                 #RefereeHitClient(3,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot3.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.RIGHT)
-                print "robot_0 hit: right armor"
+                print "robot_3 hit: right armor"
             if 5.497786 <= hit_angle and hit_angle < 6.3:
                 #RefereeHitClient(0,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot3.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.FORWARD)
-                print "robot_0 hit: front armor"
+                print "robot_3 hit: front armor"
 
 
             return RefereeShootResponse(1,True)
@@ -301,7 +356,7 @@ class Referee1vs1:
             return RefereeShootResponse(5,True)
         elif ((self.robot0.x - req.x)**2) + ((self.robot0.y - req.y)**2) < 0.25:
 
-            self.robot0.hp -= self.hit_damage
+            self.robot0.hp -= self.hit_damage*self.robot0_multiple
             hit_angle =(math.atan2(self.robot2.y-self.robot0.y,self.robot2.x-self.robot0.x) - QuaternionToYaw(self.robot0.orientation)) % 6.283184
             if 0 <= hit_angle and hit_angle < 0.785398:
                 #RefereeHitClient(0,self.robot0.hp,self.hit_damage,"robot_0")
@@ -328,28 +383,28 @@ class Referee1vs1:
             return RefereeShootResponse(1,True)
         elif ((self.robot1.x - req.x)**2) + ((self.robot1.y - req.y)**2) < 0.25:
 
-            self.robot1.hp -= self.hit_damage
+            self.robot1.hp -= self.hit_damage*self.robot1_multiple
             hit_angle =(math.atan2(self.robot2.y-self.robot1.y,self.robot2.x-self.robot1.x) - QuaternionToYaw(self.robot1.orientation)) % 6.283184
             if 0 <= hit_angle and hit_angle < 0.785398:
                 #RefereeHitClient(0,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot1.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.FORWARD)
-                print "robot_0 hit: front armor"
+                print "robot_1 hit: front armor"
             if 0.785398 <= hit_angle and hit_angle < 2.356194:
                 #RefereeHitClient(1,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot1.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.LEFT)
-                print "robot_0 hit: left armor"
+                print "robot_1 hit: left armor"
             if 2.356194 <= hit_angle and hit_angle < 3.92699:
                 #RefereeHitClient(2,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot1.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.BACKWARD)
-                print "robot_0 hit: rear armor"
+                print "robot_1 hit: rear armor"
             if 3.92699 <= hit_angle and hit_angle < 5.497786:
                 #RefereeHitClient(3,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot1.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.RIGHT)
-                print "robot_0 hit: right armor"
+                print "robot_1 hit: right armor"
             if 5.497786 <= hit_angle and hit_angle < 6.3:
                 #RefereeHitClient(0,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot1.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.FORWARD)
-                print "robot_0 hit: front armor"
+                print "robot_1 hit: front armor"
 
 
             return RefereeShootResponse(1,True)
@@ -368,7 +423,7 @@ class Referee1vs1:
             return RefereeShootResponse(5,True)
         elif ((self.robot0.x - (8-req.x))**2) + ((self.robot0.y - (5-req.y))**2) < 0.25:
 
-            self.robot0.hp -= self.hit_damage
+            self.robot0.hp -= self.hit_damage*self.robot0_multiple
             hit_angle =(math.atan2(self.robot3.y-self.robot0.y,self.robot3.x-self.robot0.x) - QuaternionToYaw(self.robot0.orientation)) % 6.283184
             if 0 <= hit_angle and hit_angle < 0.785398:
                 #RefereeHitClient(0,self.robot0.hp,self.hit_damage,"robot_0")
@@ -395,28 +450,28 @@ class Referee1vs1:
             return RefereeShootResponse(1,True)
         elif ((self.robot1.x - (8-req.x))**2) + ((self.robot1.y - (5-req.y))**2) < 0.25:
 
-            self.robot1.hp -= self.hit_damage
+            self.robot1.hp -= self.hit_damage*self.robot1_multiple
             hit_angle =(math.atan2(self.robot3.y-self.robot1.y,self.robot3.x-self.robot1.x) - QuaternionToYaw(self.robot1.orientation)) % 6.283184
             if 0 <= hit_angle and hit_angle < 0.785398:
                 #RefereeHitClient(0,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot1.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.FORWARD)
-                print "robot_0 hit: front armor"
+                print "robot_1 hit: front armor"
             if 0.785398 <= hit_angle and hit_angle < 2.356194:
                 #RefereeHitClient(1,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot1.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.LEFT)
-                print "robot_0 hit: left armor"
+                print "robot_1 hit: left armor"
             if 2.356194 <= hit_angle and hit_angle < 3.92699:
                 #RefereeHitClient(2,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot1.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.BACKWARD)
-                print "robot_0 hit: rear armor"
+                print "robot_1 hit: rear armor"
             if 3.92699 <= hit_angle and hit_angle < 5.497786:
                 #RefereeHitClient(3,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot1.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.RIGHT)
-                print "robot_0 hit: right armor"
+                print "robot_1 hit: right armor"
             if 5.497786 <= hit_angle and hit_angle < 6.3:
                 #RefereeHitClient(0,self.robot0.hp,self.hit_damage,"robot_0")
                 self.robot1.robot_damage_pub.publish(RobotDamage.ARMOR,RobotDamage.FORWARD)
-                print "robot_0 hit: front armor"
+                print "robot_1 hit: front armor"
 
 
             return RefereeShootResponse(1,True)
@@ -424,35 +479,66 @@ class Referee1vs1:
             return RefereeShootResponse(3,True)
 
     def TagCB_0(self,req):
-        
-        if ((self.robot0.x - 4)**2) + ((self.robot0.y - 4.5)**2) <0.25:
-            self.robot0.is_reloading = True
-            self.robot0.reload_time = rospy.Time.now()
-            return RefereeTagResponse(1,True)
+        self.robot0_information = GetInfoClient("robot_0")
+        if(self.robot0_information["reload_zone_cooltime"]["secs"]==0):
+            if ((self.robot0.x - 4)**2) + ((self.robot0.y - 4.5)**2) <0.25:
+                if (self.robot0.is_reloading == False):
+                    self.robot0.is_reloading = True
+                    self.robot0.reload_time = rospy.Time.now()
+                    return RefereeTagResponse(1,True)
+                else:
+                    self.robot0.is_reloading = True
+                    return RefereeTagResponse(1,True)
+            else:
+                return RefereeTagResponse(0,True)
         else:
             return RefereeTagResponse(0,True)
         
     def TagCB_1(self,req):
-        if ((self.robot1.x - 4)**2) + ((self.robot1.y - 4.5)**2) <0.25:
-            self.robot1.is_reloading = True
-            self.robot1.reload_time = rospy.Time.now()
-            return RefereeTagResponse(1,True)
+        self.robot1_information = GetInfoClient("robot_1")
+        if(self.robot1_information["reload_zone_cooltime"]["secs"]==0):
+            if ((self.robot1.x - 4)**2) + ((self.robot1.y - 4.5)**2) <0.25:
+                if (self.robot1.is_reloading == False):
+                    self.robot1.is_reloading = True
+                    self.robot1.reload_time = rospy.Time.now()
+                    return RefereeTagResponse(1,True)
+                else:
+                    self.robot1.is_reloading = True
+                    return RefereeTagResponse(1,True)
+            else:
+                return RefereeTagResponse(0,True)
         else:
             return RefereeTagResponse(0,True)
+
     def TagCB_2(self,req):
-
-        if ((self.robot2.x - 4)**2) + ((self.robot2.y - 0.5)**2) <0.25:
-            self.robot2.is_reloading = True
-            self.robot2.reload_time = rospy.Time.now()
-            return RefereeTagResponse(1,True)
+        self.robot2_information = GetInfoClient("robot_2")
+        if(self.robot2_information["reload_zone_cooltime"]["secs"]==0):
+            if ((self.robot2.x - 4)**2) + ((self.robot2.y - 0.5)**2) <0.25:
+                if (self.robot2.is_reloading == False):
+                    self.robot2.is_reloading = True
+                    self.robot2.reload_time = rospy.Time.now()
+                    return RefereeTagResponse(1,True)
+                else:
+                    self.robot2.is_reloading = True
+                    return RefereeTagResponse(1,True)
+            else:
+                return RefereeTagResponse(0,True)
         else:
             return RefereeTagResponse(0,True)
-    def TagCB_3(self,req):
 
-        if ((self.robot3.x - 4)**2) + ((self.robot3.y - 0.5)**2) <0.25:
-            self.robot3.is_reloading = True
-            self.robot3.reload_time = rospy.Time.now()
-            return RefereeTagResponse(1,True)
+    def TagCB_3(self,req):
+        self.robot3_information = GetInfoClient("robot_3")
+        if(self.robot3_information["reload_zone_cooltime"]["secs"]==0):
+            if ((self.robot3.x - 4)**2) + ((self.robot3.y - 0.5)**2) <0.25:
+                if (self.robot3.is_reloading == False):
+                    self.robot3.is_reloading = True
+                    self.robot3.reload_time = rospy.Time.now()
+                    return RefereeTagResponse(1,True)
+                else:
+                    self.robot3.is_reloading = True
+                    return RefereeTagResponse(1,True)
+            else:
+                return RefereeTagResponse(0,True)
         else:
             return RefereeTagResponse(0,True)
         

@@ -51,6 +51,8 @@ class Blackboard {
 
         /*   Referee Info Interface   */
         //Game State Info
+        bool a = false;
+        bool b = false;
         ros::Time GetTimeGameStarted() const;  
         const ros::Duration GetTimePassedFromGameStart();  
         GameState GetGameState() const;
@@ -133,7 +135,7 @@ class Blackboard {
         //Zone Info
         bool is_buff_zone_online_=true;
         ros::Time time_last_buffed_; 
-        ros::Duration time_left_for_buff_zone_to_online_;  
+        ros::Duration time_left_for_buff_zone_to_online_ = ros::Duration(0);
         bool is_reload_zone_online_=true;
         ros::Time time_last_reloaded_;  
         ros::Duration time_left_for_reload_zone_to_online_;  
@@ -149,7 +151,7 @@ class Blackboard {
 
         //Defense Buff Info
         bool has_buff_=false;
-        ros::Duration time_buff_left_;
+        ros::Duration time_buff_left_ = ros::Duration(0);
         bool has_enemy_buff_=false;
         ros::Duration time_enemy_buff_left_;
         std::array<double,3> enemy_buff_time_estimation_moments_; //variance, skewness, kurtosis
@@ -229,7 +231,7 @@ class Blackboard {
         std::shared_ptr<tf::TransformListener> tf_ptr_;
         ros::Subscriber enemy_detection_sub_;  // receives Yolo detection result.   Topic name:"enemy_info"
         std::string namespace_;  // ROS namespace of this node
-
+        std::string namespace__;
 
         /* DEPRECATED
         // update HP of robot according to referee hit judgement and record it.    Service name: "referee_hit_service"
