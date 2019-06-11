@@ -85,9 +85,9 @@ floorplan
 )
 
 # throw in a robot
- rmcar(pose [ 1 1 0 0 ] name "red robot" color "red" )
- rmcar(pose [ 7 1 0 180 ] name "red robot" color "yellow" )
- rmcar(pose [ 1 4 0 0 ] name "blue robot" color "blue" )
- rmcar(pose [ 7 4 0 180 ] name "blue robot" color "green" )
+ rmcar(pose [ .5 .5 0 0 ] name "red robot" color "red" )
+ rmcar(pose [ 7.5 .5 0 180 ] name "red robot" color "yellow" )
+ rmcar(pose [ .5 4.5 0 0 ] name "blue robot" color "blue" )
+ rmcar(pose [ 7.5 4.5 0 180 ] name "blue robot" color "green" )
 # throw in a block for test
 

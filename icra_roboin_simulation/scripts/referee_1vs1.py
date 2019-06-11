@@ -3,13 +3,15 @@ import math
 import rospy
 import roslib
 import numpy as np
-from referee_modules.referee_interface import GetInfoClient, RefereeBuffClient,RefereeGameStateClient,RefereeHitClient,RefereePenaltyClient,RefereeReloadClient,YawToQuaternion,QuaternionToYaw
+from referee_modules.referee_interface import SetBehaviorClient, SetGoalClient, TagClient, GetInfoClient, RefereeBuffClient,RefereeGameStateClient,RefereeHitClient,RefereePenaltyClient,RefereeReloadClient,YawToQuaternion,QuaternionToYaw
 from icra_roboin_msgs.srv import SetGoal_2,BehaviorStyleSet,BlackboardGeneralInfo,RefereeBuff,RefereeGameState,RefereeHit,RefereePenalty,RefereeShoot,RefereeTag,RefereeReload,RefereeShootResponse,RefereeTagResponse
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Header
 from geometry_msgs.msg import Quaternion, PointStamped,PoseStamped
 from tf.transformations import quaternion_from_euler, euler_from_quaternion
 from roborts_msgs.msg import RobotDamage
+from std_msgs.msg import Bool
+import time
 
 class Robot:
     def __init__(self,robot_name = "",team="blue"):
@@ -39,6 +41,7 @@ class Robot:
 
 class Referee1vs1:
     def __init__(self):
+        self.gamestatus = False
         self.robot0_multiple = 1
         self.robot1_multiple = 1
         self.robot2_multiple = 1
@@ -57,29 +60,65 @@ class Referee1vs1:
         self.tag_server_3 = rospy.Service("robot_3"+'/referee_tag_service',RefereeTag,self.TagCB_3)
 
 
-        self.hit_damage = 20
-        self.start_ammo = 50
+        self.hit_damage = 50
+        self.start_ammo = 40
         self.start_hp = 2000
         self.game_state = 1   #dead ready play end
         self.game_start_time = 0
         self.winner = 0
         self.ReadyInit()
-        
+
+        self.gamestatusinfo = rospy.Publisher("/game_cycle", Bool, queue_size=10)
+
     def Run(self):
         if self.game_state == 3:
             print self.winner
             print "end->ready"
+
+            SetBehaviorClient(1,"robot_0")
+            SetBehaviorClient(1,"robot_1")
+            SetBehaviorClient(1,"robot_2")
+            SetBehaviorClient(1,"robot_3")
+
+            SetGoalClient([7.5,0.5,0,0,0,0,0],"robot_0")
+            SetGoalClient([0.5,0.5,0,0,0,0,0],"robot_1")
+            SetGoalClient([7.5,4.5,0,0,0,0,0],"robot_2")
+            SetGoalClient([0.5,4.5,0,0,0,0,0],"robot_3")
+
             self.game_state = 1
             self.ReadyInit()
+            a = False
+            self.gamestatusinfo.publish(a)
+
+            time.sleep(5)
+
         if self.game_state == 1:
             #print "ready check"
             if self.ReadyCheck():
                 print "start"
                 self.game_state = 2
                 self.PlayInit()
+                a = False
+                self.gamestatusinfo.publish(a)
+            else:
+                SetBehaviorClient(1,"robot_0")
+                SetBehaviorClient(1,"robot_1")
+                SetBehaviorClient(1,"robot_2")
+                SetBehaviorClient(1,"robot_3")
+
+                SetGoalClient([0.5,0.5,0,0,0,0,0],"robot_0")
+                SetGoalClient([7.5,0.5,1.57,0,0,0,0],"robot_1")
+                SetGoalClient([0.5,4.5,0,0,0,0,0],"robot_2")
+                SetGoalClient([7.5,4.5,1.57,0,0,0,0],"robot_3")
+
         if self.game_state == 2:
+
+            time.sleep(5)
+
             #print "playing"
             self.Play()     
+            a = True
+            self.gamestatusinfo.publish(a)
                 
     def PlayInit(self):
         self.robot0.hp = self.start_hp
@@ -95,6 +134,11 @@ class Referee1vs1:
             
         
     def Play(self):
+
+        TagClient("robot_0")
+        TagClient("robot_1")
+        TagClient("robot_2")
+        TagClient("robot_3")
         
         if self.robot0.is_reloading :
             if( (rospy.Time.now() - self.robot0.reload_time).to_sec() > 5 ):
@@ -192,7 +236,7 @@ class Referee1vs1:
 
         self.winner = 0
     def ReadyCheck(self):
-        if ((((self.robot0.x - 1) ** 2) + ((self.robot0.y - 1) ** 2)) <= 0.3 and (((self.robot1.x - 7) ** 2) + ((self.robot1.y - 1) ** 2)) <= 0.3) and ((((self.robot2.x - 1) ** 2) + ((self.robot2.y - 4) ** 2)) <= 0.3 and (((self.robot3.x - 7) ** 2) + ((self.robot3.y - 4) ** 2)) <= 0.3):
+        if ((((self.robot0.x - 0.5) ** 2) + ((self.robot0.y - 0.5) ** 2)) <= 0.3 and (((self.robot1.x - 7.5) ** 2) + ((self.robot1.y - 0.5) ** 2)) <= 0.3) and ((((self.robot2.x - 0.5) ** 2) + ((self.robot2.y - 4.5) ** 2)) <= 0.3 and (((self.robot3.x - 7.5) ** 2) + ((self.robot3.y - 4.5) ** 2)) <= 0.3):
 
             #print "ready"
             return True
@@ -481,7 +525,7 @@ class Referee1vs1:
     def TagCB_0(self,req):
         self.robot0_information = GetInfoClient("robot_0")
         if(self.robot0_information["reload_zone_cooltime"]["secs"]==0):
-            if ((self.robot0.x - 4)**2) + ((self.robot0.y - 4.5)**2) <0.25:
+            if ((self.robot0.x - 4)**2) + ((self.robot0.y - 4.25)**2) <0.4:
                 if (self.robot0.is_reloading == False):
                     self.robot0.is_reloading = True
                     self.robot0.reload_time = rospy.Time.now()
@@ -497,7 +541,7 @@ class Referee1vs1:
     def TagCB_1(self,req):
         self.robot1_information = GetInfoClient("robot_1")
         if(self.robot1_information["reload_zone_cooltime"]["secs"]==0):
-            if ((self.robot1.x - 4)**2) + ((self.robot1.y - 4.5)**2) <0.25:
+            if ((self.robot1.x - 4)**2) + ((self.robot1.y - 4.25)**2) <0.4:
                 if (self.robot1.is_reloading == False):
                     self.robot1.is_reloading = True
                     self.robot1.reload_time = rospy.Time.now()
@@ -513,7 +557,7 @@ class Referee1vs1:
     def TagCB_2(self,req):
         self.robot2_information = GetInfoClient("robot_2")
         if(self.robot2_information["reload_zone_cooltime"]["secs"]==0):
-            if ((self.robot2.x - 4)**2) + ((self.robot2.y - 0.5)**2) <0.25:
+            if ((self.robot2.x - 4)**2) + ((self.robot2.y - 0.75)**2) <0.4:
                 if (self.robot2.is_reloading == False):
                     self.robot2.is_reloading = True
                     self.robot2.reload_time = rospy.Time.now()
@@ -529,7 +573,7 @@ class Referee1vs1:
     def TagCB_3(self,req):
         self.robot3_information = GetInfoClient("robot_3")
         if(self.robot3_information["reload_zone_cooltime"]["secs"]==0):
-            if ((self.robot3.x - 4)**2) + ((self.robot3.y - 0.5)**2) <0.25:
+            if ((self.robot3.x - 4)**2) + ((self.robot3.y - 0.75)**2) <0.4:
                 if (self.robot3.is_reloading == False):
                     self.robot3.is_reloading = True
                     self.robot3.reload_time = rospy.Time.now()

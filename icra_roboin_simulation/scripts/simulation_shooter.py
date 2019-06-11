@@ -30,7 +30,7 @@ if __name__ == '__main__':
                                         ShootClient(-5.0,-5.0,ns)
                                         count += 1
 
-                        TagClient(ns)
+
 
 			rate.sleep()
 		except:
