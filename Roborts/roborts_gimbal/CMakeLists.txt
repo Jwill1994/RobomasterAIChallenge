@@ -47,6 +47,10 @@ add_executable(gimbal_test_node src/gimbal_test.cpp)
 target_link_libraries(gimbal_test_node
   ${catkin_LIBRARIES})
 
+add_dependencies(angle_to_command roborts_msgs_generate_messages)
+add_dependencies(gimbal_test_node roborts_msgs_generate_messages)
+add_dependencies(gazebo_shooter_plugin roborts_msgs_generate_messages)
+
 
 # ### INSTALL ###
 

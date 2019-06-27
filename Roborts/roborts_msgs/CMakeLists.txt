@@ -27,10 +27,9 @@ add_message_files(
     ObstacleMsg.msg
     ShootInfo.msg
     ShootState.msg
-    CmdPose.msg
-    CostStatus.msg
-    Follower.msg
-)
+    SubBehavior.msg
+    NavStatus.msg
+    )
 
 add_message_files(
     DIRECTORY msg/referee_system

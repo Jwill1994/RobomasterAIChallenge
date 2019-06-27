@@ -1,0 +1,3 @@
+float64 angle_diff
+float64 trans_vel
+float64 lap_time
